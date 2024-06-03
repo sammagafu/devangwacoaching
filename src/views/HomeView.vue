@@ -250,10 +250,11 @@ const onSlideChange = () => {
     </div>
 
     <!-- pricing Table-->
+    <div class="xl:max-w-[1350px] lg:max-w-[960px] md:max-w-2xl sm:max-w-xl xl mx-auto px-3">
     <div class="container mx-auto pt-32">
       <div class="grid grid-cols-3 md:grid-grid-cols-3 gap-0">
       <div
-        class="w-full max-w-sm p-4 bg-devanga-primary border border-gray-200 rounded-lg shadow sm:p-8">
+        class="w-full max-w-sm p-8 bg-devanga-primary border border-gray-200 rounded-lg shadow sm:p-8">
         <h5 class="mb-4 text-xl font-medium text-white">Free plan</h5>
         <div class="flex items-baseline text-gray-900">
           <span class="text-3xl font-semibold">$</span>
@@ -475,6 +476,7 @@ const onSlideChange = () => {
       </div>
     </div>
     </div>
+  </div>
     <!-- end of pricing table -->
   </section>
 

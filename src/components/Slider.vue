@@ -1,9 +1,10 @@
 <template>
-
+  
   <section class="relative pt-[140px] pb-[80px] bg-cover" :style="{ backgroundImage: 'url(' + slide0 + ')' }">
-    <div class="absolute inset-0 bg-devanga-secondary opacity-90"></div> 
+    <div class="absolute inset-0 bg-devanga-secondary opacity-95"></div>
+    <div class="xl:max-w-[1350px] lg:max-w-[960px] md:max-w-2xl sm:max-w-xl xl mx-auto px-3">
     <div class="container mx-auto -z-50">
-      <div class="grid grid-cols-1 pl-40">
+      <div class="grid grid-cols-1">
         <div class="xl:pt-12 z-[1]">
           <h1
             class="relative py-2  font-raleway text-black-800 font-bold text-[80px] mb-[20px] lg:text-[100px] xl:text-[120px] 2xl:text-[140px] leading-[64px] lg:leading-[80px] xl:leading-[90px] 2xl:leading-[110px] 2xl:before:w-[120px] xl:before:w-[100px] 2xl:before:h-[120px] xl:before:h-[100px] before:rounded-full before:bg-primary before:block before:absolute before:top-[0px] before:left-0 before:-z-[1] lg:before:w-[85px] lg:before:h-[85px] before:w-[70px] before:h-[70px] aos-init aos-animate"
@@ -103,6 +104,7 @@
         </div>
       </div>
     </div>
+  </div>
 
     <div class="hidden md:block">
       <img
