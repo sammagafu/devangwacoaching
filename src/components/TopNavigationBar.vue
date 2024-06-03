@@ -21,7 +21,7 @@
           <a href="#" class="block py-2 px-3 text-devanga-primary font-raleway">Devangwa Community</a>
         </li>
         <li>
-          <a href="#" class="block py-2 px-3 text-devanga-primary font-raleway">Contact</a>
+          <router-link :to="{name:'contact'}" class="block py-2 px-3 text-devanga-primary font-raleway">Contact Us</router-link>
         </li>
       </ul>
     </div>
