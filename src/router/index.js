@@ -18,7 +18,43 @@ const router = createRouter({
       path: '/contact',
       name: 'contact',
       component: () => import('../views/pages/Contact.vue')
-    }
+    },
+    {
+      path: '/coaching',
+      name: 'coaching',
+      // component: () => import('../views/pages/Contact.vue')
+      children : [
+        {
+          path: '',
+          name: 'coaching-list',
+          component: () => import('@/views/pages/course/CoursesList.vue')
+        },
+        {
+          path: 'details',
+          name: 'coaching-detail',
+          component: () => import('@/views/pages/course/CourseDetail.vue')
+        },
+      ]
+    },
+
+    {
+      path: '/event',
+      name: 'event',
+      // component: () => import('../views/pages/Contact.vue')
+      children : [
+        {
+          path: '',
+          name: 'event-list',
+          component: () => import('@/views/pages/event/EventList.vue')
+        },
+        {
+          path: 'details',
+          name: 'event-detail',
+          component: () => import('@/views/pages/event/EventDetails.vue')
+        },
+      ]
+    },
+
   ]
 })
 

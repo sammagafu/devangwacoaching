@@ -15,11 +15,16 @@
           <router-link :to="{name:'about'}" class="block py-2 px-3 text-devanga-primary font-raleway">About Us</router-link>
         </li>
         <li>
-          <a href="#" class="block py-2 px-3 text-devanga-primary font-raleway">Coaching</a>
+          <router-link :to="{name:'coaching-list'}" class="block py-2 px-3 text-devanga-primary font-raleway">Coaching</router-link>
         </li>
+        <li>
+          <a href="#" class="block py-2 px-3 text-devanga-primary font-raleway">Events</a>
+        </li>
+
         <li>
           <a href="#" class="block py-2 px-3 text-devanga-primary font-raleway">Devangwa Community</a>
         </li>
+
         <li>
           <router-link :to="{name:'contact'}" class="block py-2 px-3 text-devanga-primary font-raleway">Contact Us</router-link>
         </li>
