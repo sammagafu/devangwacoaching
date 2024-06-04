@@ -11,14 +11,13 @@
     <div class="w-full md:block md:w-auto" id="navbar-default" :class="{ 'hidden': !isOpen }">
       <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
         <li>
-          <!-- <a href="#" class="block py-2 px-3 text-devanga-primary font-raleway">About</a> -->
           <router-link :to="{name:'about'}" class="block py-2 px-3 text-devanga-primary font-raleway">About Us</router-link>
         </li>
         <li>
           <router-link :to="{name:'coaching-list'}" class="block py-2 px-3 text-devanga-primary font-raleway">Coaching</router-link>
         </li>
         <li>
-          <a href="#" class="block py-2 px-3 text-devanga-primary font-raleway">Events</a>
+          <router-link :to="{name:'event-list'}" class="block py-2 px-3 text-devanga-primary font-raleway">Events</router-link>
         </li>
 
         <li>
