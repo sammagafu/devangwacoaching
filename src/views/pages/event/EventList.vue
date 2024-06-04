@@ -30,7 +30,7 @@
                             <span>Humberg City, Germany</span>
                         </li>
                     </ul>
-                    <router-link :to="{name:'event-detail'}" class="btn px-8 py-[11px] bg-devanga-primary text-white hover:bg-primary">Book A Seat</router-link>
+                    <router-link :to="{name:'event-detail'}" class="btn px-8 py-[11px] bg-devanga-secondary text-white hover:bg-primary">Book A Seat</router-link>
                 </div>
             
             </div>

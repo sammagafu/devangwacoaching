@@ -489,7 +489,7 @@ const onSlideChange = () => {
 
       <div class="grid grid-cols-12">
         <div class="col-span-12 aos-init aos-animate" data-aos="fade-up">
-          <div class="font-bold font-Syne text-center leading-none flex flex-wrap flex-col gap-y-2 mb-10">
+          <div class="font-bold font-raleway text-center leading-none flex flex-wrap flex-col gap-y-2 mb-10">
             <span class="text-orange text-xl">Blog</span>
             <h3 class="text-black-800 text-4xl lg:text-5xl xl:text-[64px] tracking-[-1.5px]">
               My blog
@@ -520,7 +520,7 @@ const onSlideChange = () => {
 
             </ul>
             <div class="flex justify-between items-end text-black-800 hover:text-orange group">
-              <h4 class="font-bold font-Syne transition-all leading-8 text-[18px] md:text-[20px] 2xl:text-[22px]">
+              <h4 class="font-bold font-raleway transition-all leading-8 text-[18px] md:text-[20px] 2xl:text-[22px]">
                 <a href="blog-details.html">Right-lo-left
                   behind development in mobile web design</a>
               </h4>
@@ -558,7 +558,7 @@ const onSlideChange = () => {
 
             </ul>
             <div class="flex justify-between items-end text-black-800 hover:text-orange group">
-              <h4 class="font-bold font-Syne transition-all leading-8 text-[18px] md:text-[20px] 2xl:text-[22px]">
+              <h4 class="font-bold font-raleway transition-all leading-8 text-[18px] md:text-[20px] 2xl:text-[22px]">
                 <a href="blog-details.html">Connect
                   craft: Reading
                   the smart experience</a>
@@ -597,7 +597,7 @@ const onSlideChange = () => {
 
             </ul>
             <div class="flex justify-between items-end text-black-800 hover:text-orange group">
-              <h4 class="font-bold font-Syne transition-all leading-8 text-[18px] md:text-[20px] 2xl:text-[22px]">
+              <h4 class="font-bold font-raleway transition-all leading-8 text-[18px] md:text-[20px] 2xl:text-[22px]">
                 <a href="blog-details.html">Ecoglow: Sustainable
                   skincare a brighter tomorrow</a>
               </h4>
@@ -635,7 +635,7 @@ const onSlideChange = () => {
 
             </ul>
             <div class="flex justify-between items-end text-black-800 hover:text-orange group">
-              <h4 class="font-bold font-Syne transition-all leading-8 text-[18px] md:text-[20px] 2xl:text-[22px]">
+              <h4 class="font-bold font-raleway transition-all leading-8 text-[18px] md:text-[20px] 2xl:text-[22px]">
                 <a href="blog-details.html">Right-lo-left behind
                   development in mobile web design</a>
               </h4>
@@ -665,7 +665,7 @@ const onSlideChange = () => {
     <div class="container mx-auto px-8 xl:pr-0 xl:pl-[4%] 2xl:pl-[6%] 3xl:pl-[17%]">
       <div class="flex flex-col xl:flex-row gap-x-[55px] 2xl:gap-x-[100px] 3xl:gap-x-[165px]">
 
-        <div class="font-bold font-Syne leading-none flex flex-wrap flex-col gap-y-2 md:text-center xl:text-left mb-10">
+        <div class="font-bold font-raleway leading-none flex flex-wrap flex-col gap-y-2 md:text-center xl:text-left mb-10">
           <span class="text-orange text-xl">Testimonial</span>
           <h3 class="inline-block text-black-800 text-4xl lg:text-5xl xl:text-[64px] tracking-[-1.5px]">
             <span
@@ -673,10 +673,10 @@ const onSlideChange = () => {
             <br class="hidden xl:inline-block"> feedback
           </h3>
         </div>
-        <swiper :slides-per-view="3" :space-between="50" @swiper="onSwiper" @slideChange="onSlideChange"
+        <swiper :slides-per-view="3" :space-between="20" @swiper="onSwiper" @slideChange="onSlideChange"
           :modules="modules" :autoplay="true">
           <swiper-slide>
-            <div class="swiper-slide swiper-slide-prev" style="width: 336.333px; margin-right: 45px;" role="group"
+            <div class="swiper-slide swiper-slide-prev" role="group"
               aria-label="1 / 4">
               <span class="inline-block mb-5 sm:mb-8">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -692,7 +692,7 @@ const onSlideChange = () => {
                 via cross-unit applications. Credibly exploit
                 one-to-one strategic theme areas and clicks-and-mortar services”</p>
               <h4
-                class="flex flex-wrap items-center gap-4 text-black-800 text-[16px] sm:text-lg font-extrabold font-Syne leading-7">
+                class="flex flex-wrap items-center gap-4 text-black-800 text-[16px] sm:text-lg font-extrabold font-raleway leading-7">
                 <span><svg width="48" height="2" viewBox="0 0 48 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 1H48" stroke="#080808" stroke-opacity="0.4"></path>
                   </svg>
@@ -701,7 +701,7 @@ const onSlideChange = () => {
             </div>
           </swiper-slide>
           <swiper-slide>
-            <div class="swiper-slide swiper-slide-prev" style="width: 336.333px; margin-right: 45px;" role="group"
+            <div class="swiper-slide swiper-slide-prev" role="group"
               aria-label="1 / 4">
               <span class="inline-block mb-5 sm:mb-8">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -717,7 +717,7 @@ const onSlideChange = () => {
                 via cross-unit applications. Credibly exploit
                 one-to-one strategic theme areas and clicks-and-mortar services”</p>
               <h4
-                class="flex flex-wrap items-center gap-4 text-black-800 text-[16px] sm:text-lg font-extrabold font-Syne leading-7">
+                class="flex flex-wrap items-center gap-4 text-black-800 text-[16px] sm:text-lg font-extrabold font-raleway leading-7">
                 <span><svg width="48" height="2" viewBox="0 0 48 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 1H48" stroke="#080808" stroke-opacity="0.4"></path>
                   </svg>
@@ -726,7 +726,7 @@ const onSlideChange = () => {
             </div>
           </swiper-slide>
           <swiper-slide>
-            <div class="swiper-slide swiper-slide-prev" style="width: 336.333px; margin-right: 45px;" role="group"
+            <div class="swiper-slide swiper-slide-prev" role="group"
               aria-label="1 / 4">
               <span class="inline-block mb-5 sm:mb-8">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -742,7 +742,7 @@ const onSlideChange = () => {
                 via cross-unit applications. Credibly exploit
                 one-to-one strategic theme areas and clicks-and-mortar services”</p>
               <h4
-                class="flex flex-wrap items-center gap-4 text-black-800 text-[16px] sm:text-lg font-extrabold font-Syne leading-7">
+                class="flex flex-wrap items-center gap-4 text-black-800 text-[16px] sm:text-lg font-extrabold font-raleway leading-7">
                 <span><svg width="48" height="2" viewBox="0 0 48 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 1H48" stroke="#080808" stroke-opacity="0.4"></path>
                   </svg>
@@ -751,7 +751,7 @@ const onSlideChange = () => {
             </div>
           </swiper-slide>
           <swiper-slide>
-            <div class="swiper-slide swiper-slide-prev" style="width: 336.333px; margin-right: 45px;" role="group"
+            <div class="swiper-slide swiper-slide-prev" role="group"
               aria-label="1 / 4">
               <span class="inline-block mb-5 sm:mb-8">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -767,7 +767,7 @@ const onSlideChange = () => {
                 via cross-unit applications. Credibly exploit
                 one-to-one strategic theme areas and clicks-and-mortar services”</p>
               <h4
-                class="flex flex-wrap items-center gap-4 text-black-800 text-[16px] sm:text-lg font-extrabold font-Syne leading-7">
+                class="flex flex-wrap items-center gap-4 text-black-800 text-[16px] sm:text-lg font-extrabold font-raleway leading-7">
                 <span><svg width="48" height="2" viewBox="0 0 48 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 1H48" stroke="#080808" stroke-opacity="0.4"></path>
                   </svg>
