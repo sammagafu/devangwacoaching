@@ -39,7 +39,7 @@ const router = createRouter({
 
     {
       path: '/event',
-      name: 'event',
+      name: 'main-event',
       // component: () => import('../views/pages/Contact.vue')
       children : [
         {
@@ -78,7 +78,7 @@ const router = createRouter({
     },
     {
       path: '/community',
-      name: 'auth',
+      name: 'community',
       // component: () => import('../views/pages/Contact.vue')
       children : [
         {
@@ -87,15 +87,15 @@ const router = createRouter({
           component: () => import('@/views/pages/community/Community.vue')
         },
         {
-          path: 'register',
-          name: 'register',
-          component: () => import('@/views/pages/auth/Register.vue')
+          path: ':id',
+          name: 'community-details',
+          component: () => import('@/views/pages/community/CommunityDetails.vue')
         },
-        {
-          path: 'forget-password',
-          name: 'forget-password',
-          component: () => import('@/views/pages/auth/ForgotPassword.vue')
-        },
+        // {
+        //   path: 'forget-password',
+        //   name: 'forget-password',
+        //   component: () => import('@/views/pages/auth/ForgotPassword.vue')
+        // },
       ]
     },
 

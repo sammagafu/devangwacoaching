@@ -4,7 +4,7 @@
       <img src="@/assets/images/placeholder/main-event.png" alt="" class=" lg:mb-10 mb-6 block w-full">
       <div class="grid grid-cols-12 gap-[30px]">
         <div class="lg:col-span-8 col-span-12">
-          <h3>
+          <h3 class="font-bold uppercase text-devanga-alternative">
             Event Details
           </h3>
           <div class="lg:my-6 my-4">
