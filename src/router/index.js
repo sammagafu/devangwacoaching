@@ -54,7 +54,6 @@ const router = createRouter({
         },
       ]
     },
-
     {
       path: '/auth',
       name: 'auth',
@@ -64,6 +63,28 @@ const router = createRouter({
           path: 'login',
           name: 'login',
           component: () => import('@/views/pages/auth/Login.vue')
+        },
+        {
+          path: 'register',
+          name: 'register',
+          component: () => import('@/views/pages/auth/Register.vue')
+        },
+        {
+          path: 'forget-password',
+          name: 'forget-password',
+          component: () => import('@/views/pages/auth/ForgotPassword.vue')
+        },
+      ]
+    },
+    {
+      path: '/community',
+      name: 'auth',
+      // component: () => import('../views/pages/Contact.vue')
+      children : [
+        {
+          path: '',
+          name: 'community-index',
+          component: () => import('@/views/pages/community/Community.vue')
         },
         {
           path: 'register',

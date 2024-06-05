@@ -21,7 +21,7 @@
         </li>
 
         <li>
-          <a href="#" class="block py-2 px-3 text-devanga-primary font-raleway">Devangwa Community</a>
+          <router-link :to="{name:'community-index'}" class="block py-2 px-3 text-devanga-primary font-raleway">Devangwa Community</router-link>
         </li>
 
         <li>
