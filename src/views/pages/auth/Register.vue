@@ -36,15 +36,6 @@
               placeholder="+2557884111111" v-model="phone"/>
             <p class="text-xs text-gray-400">start with +255 or any country code</p>
           </div>
-  
-          <div class="mb-6">
-            <label for="mct" class="text-gray-300">MCT Number</label>
-            <input id="mct" type="text"
-              class="form-control block w-full px-4 py-2 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-              placeholder="Enter your MCT" v-model="mct"/>
-            <p class="text-xs text-red-500">For doctors only</p>
-          </div>
-  
                   <!-- Password input -->
           <div class="mb-6">
             <label for="avatar" class="text-gray-300 block">avatar</label>
