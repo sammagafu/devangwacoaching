@@ -5,7 +5,7 @@
         <h2 class="text-center py-4">Welcome to PAT Learning Management System. <br> Already have an account? <router-link
             :to="{ name: 'login' }" class="text-sky-600">Login</router-link>
         </h2>
-        <form @submit.prevent="regusterUsers">
+        <form @submit.prevent="registerUser">
           <!-- Email input -->
           <div class="mb-6">
             <label for="fullname">Full name</label>
@@ -56,6 +56,47 @@
   </template>
 
 <script setup>
+import { ref, computed } from 'vue';
+import RadioButton from 'primevue/radiobutton';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore'; // Import your auth store
+import apiService from '@/service/apiService'; // Import your API service
+
+
+const router = useRouter();
+const email = ref('');
+const fullname = ref('');
+const usertype = ref("")
+const is_individual = computed(() => usertype.value === 'individual');
+const is_company = computed(() => usertype.value === 'business');
+const password = ref('');
+const rememberMe = ref(false);
+const authStore = useAuthStore();
+
+const logoUrl = computed(() => {
+  return `/layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
+});
+
+const registerUser = async () => {
+  try {
+    const response = await apiService.post('auth/users/', {
+      full_name : fullname.value,
+      email: email.value,
+      password: password.value,
+      is_individual: is_individual.value,
+      is_company: is_company.value,
+    });
+    
+  } catch (error) {
+    console.error('Error logging in:', error);
+    // Handle error, such as displaying a message to the user
+  }
+  router.push({ name: 'login' });
+};
+
+
+  
+
 
 </script>
 

@@ -5,12 +5,12 @@
         <h2 class="text-center py-3">Welcome to PAT Learning Management System. <br> Don't have an account yet?
           <router-link :to="{ name: 'register' }" class="text-sky-600">Sign up</router-link>
         </h2>
-        <form @submit.prevent="">
+        <form @submit.prevent="login">
           <!-- Email input -->
           <div class="mb-6">
-            <input type="email"
+            <input type="text"
               class="form-control block w-full px-4 py-2 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-devanga-primary focus:outline-none"
-              placeholder="Email address" v-model="email" />
+              placeholder="Enter your username" v-model="email" />
           </div>
   
           <!-- Password input -->
@@ -42,10 +42,33 @@
     </div>
   </template>
 
-  
-
-
 <script setup>
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore'; // Import your auth store
+import apiService from '@/service/apiService'; // Import your API service
+
+
+const router = useRouter();
+const email = ref('');
+const password = ref('');
+const rememberMe = ref(false);
+const authStore = useAuthStore();
+
+const logoUrl = computed(() => {
+    return `/layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
+});
+
+
+const login = async () => {
+      try {
+        await authStore.login(email.value, password.value, rememberMe.value);
+        router.push('/');
+      } catch (error) {
+        // Handle login error
+        console.error(error);
+      }
+    };
 
 </script>
 

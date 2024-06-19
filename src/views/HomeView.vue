@@ -1,17 +1,35 @@
 <script setup>
 import Slider from '@/components/Slider.vue';
 import Footer from '@/components/Footer.vue';
+import apiService from '@/service/apiService'; // Import your API service
+
 // swipper
 import { Swiper, SwiperSlide } from 'swiper/vue';
+import { ref,onMounted } from 'vue';
 import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
 import 'swiper/css';
 const modules = [Autoplay, Pagination, Navigation, EffectFade];
 const onSwiper = (swiper) => {
   console.log(swiper);
 };
+
 const onSlideChange = () => {
   console.log('slide change');
 };
+
+const events =  ref([])
+const getEvents = () => {
+    apiService.get('coaching/events/').then(response => {
+      events.value = response.data
+    }).catch(error => {
+        console.log(error);
+    })
+};
+
+
+onMounted(()=>{
+  getEvents();
+});
 
 
 
@@ -826,7 +844,4 @@ const onSlideChange = () => {
       </div>
     </div>
   </div>
-  <!--End Clinets -->
-
-  <Footer></Footer>
 </template>
