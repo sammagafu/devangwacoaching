@@ -7,29 +7,29 @@
         </h2>
         <form @submit.prevent="login">
           <!-- Email input -->
-          <div class="mb-6">
-            <input type="text"
-              class="form-control block w-full px-4 py-2 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-devanga-primary focus:outline-none"
-              placeholder="Enter your username" v-model="email" />
-          </div>
+          <div class="flex flex-col gap-2">
+          <label for="email">Enter email</label>
+          <InputText id="email" v-model="email" aria-describedby="email-help" type="email" size="large"
+            placeholder="mwajuma@gmail.com" />
+          <small class="p-invalid" v-if="submitted && !email">E-mail is required.</small>
+        </div>
   
           <!-- Password input -->
-          <div class="mb-6">
-            <input type="password"
-              class="form-control block w-full px-4 py-2 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-devanga-primary focus:outline-none"
-              placeholder="Password" v-model="password" />
-          </div>
+          <div class="flex flex-col gap-2 my-2">
+          <label for="password">Enter password</label>
+          <Password v-model="password" toggleMask size="large" placeholder="........" />
+          <small class="p-invalid" v-if="submitted && !password">Password price is required.</small>
+        </div>
   
-          <div class="flex justify-between items-center mb-6">
-            <div class="form-group form-check">
-              <input type="checkbox"
-                class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-devanga-primary checked:border-devanga-primary focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                id="exampleCheck3" checked />
+
+            <div class="flex justify-between items-center">
+              <div class="block my-4">
+              <Checkbox v-model="rememberMe" :binary="true" class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-devanga-primary checked:border-devanga-primary focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"/>
               <label class="form-check-label inline-block text-gray-800" for="exampleCheck2">Remember me</label>
             </div>
             <router-link :to="{name:'forget-password'}" class="text-devanga-primary hover:text-blue-700 focus:text-blue-700 active:text-blue-800 duration-200 transition ease-in-out">Forgot
               password?</router-link>
-          </div>
+            </div>
   
           <!-- Submit button -->
           <button type="submit"
@@ -53,6 +53,7 @@ const router = useRouter();
 const email = ref('');
 const password = ref('');
 const rememberMe = ref(false);
+const submitted = ref(false)
 const authStore = useAuthStore();
 
 const logoUrl = computed(() => {
@@ -63,7 +64,7 @@ const logoUrl = computed(() => {
 const login = async () => {
       try {
         await authStore.login(email.value, password.value, rememberMe.value);
-        router.push('/');
+        router.push('/admin');
       } catch (error) {
         // Handle login error
         console.error(error);

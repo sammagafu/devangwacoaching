@@ -33,9 +33,9 @@ export const useAuthStore = defineStore({
           email,
           password,
         });
+        console.log(response);
         this.setTokens(response.data.access, response.data.refresh, rememberMe);
         apiService.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
-
         // Assuming you might get user information during login
         const userResponse = await apiService.get('auth/users/me/');
         this.setUser(userResponse.data);

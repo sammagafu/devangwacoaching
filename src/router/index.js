@@ -3,6 +3,7 @@ import AdminLayout from '@/layout/AdminLayout.vue';
 import UserLayout from '@/layout/UserLayout.vue';
 import DefaultLayout from '@/layout/DefaultLayout.vue';
 import HomeView from '../views/HomeView.vue'
+import { useAuthStore } from '@/stores/authStore';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -115,6 +116,9 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: AdminLayout, 
+      meta: {
+        requiresAuth: true // Add meta field for authentication guard
+      },
       children:[
         {
           path: '',
@@ -133,14 +137,62 @@ const router = createRouter({
             },
             {
               path:':slug',
-              name:'create-detail',
+              name:'admin-course-detail',
+              component : ()=>import('@/views/pages/admin/courses/CourseDetail.vue')
+            },
+          ]
+        },
+        {
+          path:'users/',
+          name: 'users',
+          // component : ()=>import('@/views/pages/admin/courses/CreateCourse.vue')
+          children:[
+            {
+              path:'',
+              name:'manage-users',
+              component : ()=>import('@/views/pages/admin/users/ManageUsers.vue')
+            },
+            {
+              path:':slug',
+              name:'user-detail',
               component : ()=>import('@/views/pages/admin/courses/CreateCourse.vue')
             },
           ]
-        }
+        },
+        {
+          path:'event/',
+          name: 'admin-event',
+          // component : ()=>import('@/views/pages/admin/courses/CreateCourse.vue')
+          children:[
+            {
+              path:'',
+              name:'manage-event',
+              component : ()=>import('@/views/pages/admin/events/ManageEvent.vue')
+            },
+            {
+              path:':slug',
+              name:'event-detail',
+              component : ()=>import('@/views/pages/admin/courses/CreateCourse.vue')
+            },
+          ]
+        },
+
       ]
     }
   ]
 })
+
+// Auth guard
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = useAuthStore().isAuthenticated;
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+  if (requiresAuth && !isAuthenticated) {
+    next({ name: 'login' }); // Redirect to login if route requires authentication and user is not authenticated
+  } else {
+    next(); // Continue to the requested route
+  }
+});
+
 
 export default router

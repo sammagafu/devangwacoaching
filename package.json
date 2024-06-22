@@ -9,10 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@primevue/themes": "^4.0.0-rc.2",
     "axios": "^1.7.2",
+    "chart.js": "^4.4.3",
     "pinia": "^2.1.7",
-    "primeicons": "^7.0.0",
-    "primevue": "^3.52.0",
+    "primeicons": "^4.1.0",
+    "primevue": "^4.0.0-rc.2",
     "quill": "^2.0.2",
     "swiper": "^11.1.4",
     "vue": "^3.4.21",

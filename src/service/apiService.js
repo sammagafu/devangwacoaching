@@ -24,11 +24,11 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const authStore = useAuthStore();
     const originalRequest = error.config;
-
+    console.log(authStore.refreshToken);
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const response = await axios.post(`${baseURL}auth/jwt/refresh`, {
+        const response = await axios.post(`${baseURL}auth/jwt/refresh/`, {
           refresh: authStore.refreshToken,
         });
         const newToken = response.data.access;

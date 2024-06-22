@@ -6,10 +6,10 @@
         <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
         </svg>
-    </button>
+    </button> 
     <router-link :to="{ name: 'home' }"><img src="@/assets/images/logo/devangwa-logo.svg" class="h-24" alt=""></router-link>
     <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-      <router-link :to="{name:'register'}" class="text-white bg-devanga-secondary hover:bg-devanga-primary focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">
+      <router-link :to="{name:'register'}" class="text-white bg-devanga-primary hover:bg-devanga-secondary focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold font-raleway rounded-lg text-l px-6 py-4 text-center">
         Get started
       </router-link>
     
