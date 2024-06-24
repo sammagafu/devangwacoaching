@@ -19,6 +19,7 @@
     "swiper": "^11.1.4",
     "vue": "^3.4.21",
     "vue-axios": "^3.5.2",
+    "vue-moments-ago": "^0.2.0",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {

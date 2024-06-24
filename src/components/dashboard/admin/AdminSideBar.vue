@@ -30,7 +30,7 @@ const items = ref([
         items: [
             {
                 label: 'Manage Users',
-                icon: 'pi pi-file-edit',
+                icon: 'pi pi-user',
                 to: '/admin/users/'
             },
             // {
@@ -53,36 +53,37 @@ const items = ref([
     {
         label: 'Course',
         icon: 'pi pi-desktop',
-        shortcut: '⌘+R',
         items: [
             {
                 label: 'Manage Course',
-                icon: 'pi pi-chart-line',
+                icon: 'pi pi-folder-open',
                 to: '/admin/courses/'
             },
-            {
-                label: 'Products',
-                icon: 'pi pi-list',
-                badge: 6
-            }
         ]
     },
     {
-        label: 'Events',
+        label: 'Coaching',
         icon: 'pi pi-calendar',
         shortcut: '⌘+W',
         items: [
             {
-                label: 'Manage Events',
-                icon: 'pi pi-cog',
+                label: 'Events',
+                icon: 'pi pi-calendar-times',
                 to: '/admin/event/'
             },
-            {
-                label: 'Privacy',
-                icon: 'pi pi-shield',
-                shortcut: '⌘+P'
-            }
         ]
-    }
+    },
+    {
+        label: 'Community',
+        icon: 'pi pi-users',
+        shortcut: '⌘+W',
+        items: [
+            {
+                label: 'Events',
+                icon: 'pi pi-calendar-times',
+                to: '/admin/event/'
+            },
+        ]
+    },
 ]);
 </script>

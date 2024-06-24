@@ -166,7 +166,7 @@
                         <span class="text-2xl font-semibold">${{ item.price }}</span>
                         <div class="flex gap-2">
                             <router-link :to="{name:'admin-course-detail',params: { slug: item.slug }}"><Button icon="pi pi-eye" severity="info"></Button></router-link>
-                            <Button icon="pi pi-pencil"></Button>
+                            <Button icon="pi pi-pencil "></Button>
                             <Button icon="pi pi-trash" severity="danger"></Button>  
                         </div>
                       </div>
@@ -256,7 +256,7 @@ const options = ref(['list', 'grid']);
   
   // Method to fetch courses from API
   const getCourses = () => {
-      apiService.get('course/')
+      apiService.get('course/courses/')
           .then(response => {
               courses.value = response.data;
           })
