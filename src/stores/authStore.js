@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useRouter } from 'vue-router';
-import apiService from '@/service/apiService'; 
+import apiService from '@/service/apiService';
 
 export const useAuthStore = defineStore({
   id: 'auth',
@@ -28,17 +28,17 @@ export const useAuthStore = defineStore({
 
   actions: {
     async login(email, password, rememberMe) {
+      const router = useRouter();
       try {
         const response = await apiService.post('auth/jwt/create/', {
           email,
           password,
         });
-        console.log(response);
         this.setTokens(response.data.access, response.data.refresh, rememberMe);
         apiService.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
-        // Assuming you might get user information during login
         const userResponse = await apiService.get('auth/users/me/');
         this.setUser(userResponse.data);
+        router.push({ name: 'dashboard' });
       } catch (error) {
         console.error('Login error:', error);
         throw error;
@@ -46,6 +46,7 @@ export const useAuthStore = defineStore({
     },
 
     logout() {
+      const router = useRouter();
       this.accessToken = '';
       this.refreshToken = '';
       localStorage.removeItem('accessToken');
@@ -57,6 +58,7 @@ export const useAuthStore = defineStore({
       sessionStorage.removeItem('user');
       delete apiService.defaults.headers.common['Authorization'];
       this.user = null;
+      router.push({ name: 'login' });
     },
 
     setTokens(accessToken, refreshToken, rememberMe) {

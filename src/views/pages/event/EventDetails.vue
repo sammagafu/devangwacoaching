@@ -1,20 +1,14 @@
 <template>
       <Breadcrum></Breadcrum>
       <div class="container mx-auto font-raleway py-32">
-      <img src="@/assets/images/placeholder/main-event.png" alt="" class=" lg:mb-10 mb-6 block w-full">
+      <img :src="eventDetails.cover" alt="" class=" lg:mb-10 mb-6 block w-full">
       <div class="grid grid-cols-12 gap-[30px]">
         <div class="lg:col-span-8 col-span-12">
           <h3 class="font-bold uppercase text-devanga-alternative">
-            Event Details
+            {{eventDetails.title}}
           </h3>
-          <div class="lg:my-6 my-4">
-            There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form,
-            by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of
-            Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum
-            generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the
-            Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to
-            generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition,
-            injected humour.
+          <div class="lg:my-6 my-4" v-html="eventDetails.description">
+    
           </div>
 
           <div class=" py-6">
@@ -130,4 +124,27 @@
 </template>
 <script setup>
 import Breadcrum from '@/components/Breadcrum.vue';
+import { ref, onBeforeMount } from 'vue';
+import apiService from '@/service/apiService';
+import { useRouter, useRoute } from 'vue-router';
+
+
+const eventDetails = ref([])
+const route = useRoute()
+const slug = route.params.slug
+
+
+
+const getCoursesDetail = () => {
+  apiService.get(`coaching/events/${slug}/`)
+    .then(response => {
+      eventDetails.value = response.data
+    })
+    .catch(error => {
+      console.error('Error deleting course:', error);
+    });
+};
+onBeforeMount(() => {
+  getCoursesDetail();
+});
 </script>

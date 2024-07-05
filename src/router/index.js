@@ -39,14 +39,14 @@ const router = createRouter({
               component: () => import('@/views/pages/course/CoursesList.vue')
             },
             {
-              path: 'details',
+              path: ':slug',
               name: 'coaching-detail',
               component: () => import('@/views/pages/course/CourseDetail.vue')
             },
           ]
         },
         {
-          path: '/event',
+          path: '/events/',
           name: 'main-event',
           // component: () => import('../views/pages/Contact.vue')
           children : [
@@ -56,8 +56,8 @@ const router = createRouter({
               component: () => import('@/views/pages/event/EventList.vue')
             },
             {
-              path: 'details',
-              name: 'event-detail',
+              path: ':slug',
+              name: 'user-event-detail',
               component: () => import('@/views/pages/event/EventDetails.vue')
             },
           ]
@@ -172,7 +172,7 @@ const router = createRouter({
             {
               path:':slug',
               name:'event-detail',
-              component : ()=>import('@/views/pages/admin/courses/CreateCourse.vue')
+              component : ()=>import('@/views/pages/admin/events/EventDetail.vue')
             },
           ]
         },

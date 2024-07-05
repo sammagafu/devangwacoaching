@@ -16,16 +16,14 @@
             class="font-raleway text-devanga-yellow font-bold text-[80px] lg:text-[100px] xl:text-[120px] 2xl:text-[140px] leading-[64px] lg:leading-[80px] xl:leading-[90px] 2xl:leading-[110px] mb-[20px] aos-init aos-animate"
             data-aos="fade-right" data-aos-delay="600">
             Coaching</h2>
-          <p class="font-raleway text-black-700 font-bold text-lg md:text-xl xl:text-2xl leading-tight mb-[30px] aos-init aos-animate"
-            data-aos="fade-right" data-aos-delay="800">Product
-            Designer |
-            Based in
-            Germany</p>
+          <p class="font-raleway text-devanga-ken font-bold text-lg md:text-xl xl:text-2xl leading-tight my-[30px] aos-init aos-animate"
+            data-aos="fade-right" data-aos-delay="800">Guiding You to Deeper Connections
+          </p>
 
           <div class="flex flex-wrap mb-[50px] md:mb-[60px] xl:mb-[70px] 2xl:mb-[80px]">
             <!-- Link Start -->
             <span data-aos="fade-right" data-aos-delay="1000" class="aos-init aos-animate">
-              <a href="contact.html" class="flex items-center flex-wrap btn-primary mr-2 group">Let’s
+              <a href="contact.html" class="flex items-center flex-wrap bg-devanga-ken p-4 mr-2 group">Let’s
                 Talk
                 <span class="inline-block ml-3 group-hover:animate-arrow-move-up">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,11 +36,8 @@
               </a>
             </span>
             <!-- Link End -->
-
-            <!-- Link Start -->
-            <span data-aos="fade-right" data-aos-delay="1200" class="aos-init aos-animate">
-              <a href="projects.html" class="flex items-center flex-wrap btn-primary-outline group">
-                My Work
+            <span data-aos="fade-right" data-aos-delay="1000" class="aos-init aos-animate">
+              <a href="contact.html" class="flex items-center flex-wrap border-devanga-ken p-4 mr-2 group">What we do
                 <span class="inline-block ml-3 group-hover:animate-arrow-move-up">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7" stroke="currentColor" stroke-opacity="0.9" stroke-width="2"

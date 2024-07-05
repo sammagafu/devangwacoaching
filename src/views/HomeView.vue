@@ -5,7 +5,7 @@ import apiService from '@/service/apiService'; // Import your API service
 
 // swipper
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import { ref,onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
 import 'swiper/css';
 const modules = [Autoplay, Pagination, Navigation, EffectFade];
@@ -17,18 +17,28 @@ const onSlideChange = () => {
   console.log('slide change');
 };
 
-const events =  ref([])
+const events = ref([])
 const getEvents = () => {
-    apiService.get('coaching/events/').then(response => {
-      events.value = response.data
-    }).catch(error => {
-        console.log(error);
-    })
+  apiService.get('coaching/events/').then(response => {
+    events.value = response.data
+  }).catch(error => {
+    console.log(error);
+  })
+};
+
+const courses = ref([])
+const getCourses = () => {
+  apiService.get('course/courses/').then(response => {
+    courses.value = response.data
+  }).catch(error => {
+    console.log(error);
+  })
 };
 
 
-onMounted(()=>{
+onMounted(() => {
   getEvents();
+  getCourses();
 });
 
 
@@ -38,18 +48,124 @@ onMounted(()=>{
 <template>
   <Slider />
 
-  <section class="bg-devanga-primary py-40" id="projects">
-    <div class="xl:max-w-[1350px] lg:max-w-[960px] md:max-w-2xl sm:max-w-xl xl mx-auto px-3">
+  <section class="relative md:py-24 py-16 font-raleway">
+            <div class="xl:max-w-[1350px] lg:max-w-[960px] md:max-w-2xl sm:max-w-xl xl mx-auto">
+                <div class="grid grid-cols-1 py-8">
+                    <h3 class="font-raleway font-bold lg:text-6xl md:text-5xl sm:text-4xl text-devanga-primary lg:leading-[120%] md:leading-tight">Services for my clients</h3>
+                    <p class="text-2xl">Start working with Techwind that can provide everything you need to generate awareness, drive traffic, connect.</p>
+                </div><!--end grid-->
+
+                <div class="grid md:grid-cols-3 grid-cols-1 mt-8 gap-[24px]">
+                    <div class="group relative overflow-hidden p-8 rounded-lg shadow dark:shadow-gray-800 hover:shadow-md dark:hover:shadow-gray-700 bg-white dark:bg-slate-900 text-center duration-500">
+                        <img src="@/assets/images/services/conversation.png" class="size-16 mx-auto" alt="">
+
+                        <div class="content mt-7">
+                            <h2 class="title text-xl font-semibold">One to One Coaching</h2>
+                            <p class="text-slate-400 mt-3">After you decide to start training we will make sure you get the best fitness program. Our sport experts and latest sports equipment are the winning combination.</p>
+                        </div>
+
+                        <div class="opacity-0 group-hover:opacity-100 duration-500">
+                            <div class="absolute inset-0">
+                                <img src="@/assets/images/services/one-one.jpg" alt="">
+                                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black"></div>
+                            </div>
+
+                            <div class="absolute bottom-0 start-0 end-0 mb-6">
+                                <a href="" class="text-white text-xl font-bold">One to One Coaching</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end feature content-->
+
+                    <div class="group relative overflow-hidden p-6 rounded-lg shadow dark:shadow-gray-800 hover:shadow-md dark:hover:shadow-gray-700 bg-white dark:bg-slate-900 text-center duration-500">
+                        <img src="@/assets/images/services/programmer.png" class="size-16 mx-auto" alt="">
+
+                        <div class="content mt-7">
+                            <h2 class="title text-xl font-semibold">Executive Coaching</h2>
+                            <p class="text-slate-400 mt-3">After you decide to start training we will make sure you get the best fitness program. Our sport experts and latest sports equipment are the winning combination.</p>
+                        </div>
+
+                        <div class="opacity-0 group-hover:opacity-100 duration-500">
+                            <div class="absolute inset-0">
+                                <img src="@/assets/images/services/executive.jpg" alt="">
+                                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black"></div>
+                            </div>
+
+                            <div class="absolute bottom-0 start-0 end-0 mb-6">
+                                <a href="" class="text-white text-xl font-bold">Executive Coaching</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end feature content-->
+
+                    <div class="group relative overflow-hidden p-6 rounded-lg shadow dark:shadow-gray-800 hover:shadow-md dark:hover:shadow-gray-700 bg-white dark:bg-slate-900 text-center duration-500">
+                        <img src="@/assets/images/services/group.png" class="size-16 mx-auto" alt="">
+
+                        <div class="content mt-7">
+                            <h2 class="title text-xl font-semibold">Group Coaching</h2>
+                            <p class="text-slate-400 mt-3">After you decide to start training we will make sure you get the best fitness program. Our sport experts and latest sports equipment are the winning combination.</p>
+                        </div>
+
+                        <div class="opacity-0 group-hover:opacity-100 duration-500">
+                            <div class="absolute inset-0">
+                                <img src="@/assets/images/services/group.jpg" alt="">
+                                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black"></div>
+                            </div>
+
+                            <div class="absolute bottom-0 start-0 end-0 mb-6">
+                                <a href="" class="text-white text-xl font-bold">Group Coaching</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end feature content-->
+                </div>
+            </div><!--end container-->
+        </section>
+
+  <section class="py-16 font-raleway">
+    <div class="xl:max-w-[1350px] lg:max-w-[960px] md:max-w-2xl sm:max-w-xl xl mx-auto">
+      <div class="grid md:grid-cols-12 grid-cols-1 items-center gap-[30px]">
+                    <div class="lg:col-span-5 md:col-span-6">
+                        <div class="relative">
+                            <img src="@/assets/images/hero/hero.png" class="rounded-full" alt="">
+                            <div class="absolute bottom-2/4 translate-y-2/4 start-0 end-0 text-center">
+                                <a href="#!" data-type="youtube" data-id="S_CGed6E610" class="lightbox size-20 rounded-full shadow-lg dark:shadow-gray-800 inline-flex items-center justify-center bg-white dark:bg-slate-900 text-indigo-600 dark:text-white">
+                                    <i class="mdi mdi-play inline-flex items-center justify-center text-2xl"></i>
+                                </a>
+                            </div>
+
+                            <div class="absolute top-0 start-0 -z-1">
+                                <img src="@/assets/images/hero/dots.svg" alt="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 md:col-span-6">
+                        <div class="lg:ms-5">
+                            <h6 class="text-indigo-600 text-sm font-bold uppercase mb-2">About Me</h6>
+                            <h3 class="mb-4 md:text-3xl md:leading-normal text-2xl leading-normal font-semibold">Unleash Your Real <br> Potential and <br> Live Limitless!</h3>
+
+                            <p class="text-slate-400 max-w-xl">I am glad that you have made it here to send a distress signal, and inform the Senate that all on board were killed. Dantooine.  I’m not going to Alderaan. I really got to go.</p>
+                            <p class="text-slate-400 max-w-xl mt-2">But that to me. Send a distress signal, and inform the Senate that all on board were killed. Dantooine. They’re on Dantooine. The plans you refer to will soon be back in our hands. Alderaan? I’m not going to Alderaan. I got to go home.</p>
+                            <!-- <img src="assets/images/sign.png" class="mt-3" alt="">                             -->
+                        </div>
+                    </div>
+                </div>
+    </div>
+  </section>
+
+  <section class="py-40" id="projects">
+    <div class="xl:max-w-[1350px] lg:max-w-[960px] md:max-w-2xl sm:max-w-xl xl mx-auto">
       <!-- heading -->
-      <div class="text-center max-w-[920px] mx-auto md:mb-[60px] sm:mb-[50px] mb-[45px]">
-        <p class="text-2xl font-caveat text-devanga-yellow relative flex justify-center items-center sm:gap-6 gap-[14px] mx-auto mb-[30px]"
+      <div class="py-8">
+        <p class="text-2xl font-caveat text-devanga-primary relative flex justify-center items-center sm:gap-6 gap-[14px] mx-auto mb-[30px]"
           data-aos="fade-down" data-aos-duration="1000">
-          <span class="sm:w-20 w-[50px] h-[1px] bg-devanga-yellow"></span>
+          <span class="sm:w-20 w-[50px] h-[1px] text-devanga-primary"></span>
           Our Courses & Publications
-          <span class="sm:w-20 w-[50px] h-[1px] bg-devanga-yellow"></span>
+          <span class="sm:w-20 w-[50px] h-[1px] text-devanga-primary"></span>
         </p>
         <h2
-          class="font-raleway font-medium lg:text-6xl md:text-5xl sm:text-4xl text-[29px] text-white lg:leading-[120%] md:leading-tight leading-9"
+          class="font-raleway font-bold lg:text-6xl md:text-5xl sm:text-4xl text-devanga-primary lg:leading-[120%] md:leading-tight"
           data-aos="fade-up" data-aos-duration="1200">
           Look At My Portfolio And Give Me Your Feedback
         </h2>
@@ -59,22 +175,32 @@ onMounted(()=>{
       <div class="md:columns-2 col-span-1 xxl:gap-[58px] lg:gap-12 md:gap-[30px]">
         <!-- card 1 -->
         <div class="project__item overflow-hidden group xl:mb-[60px] lg:mb-[50px] mb-[30px] aos-init" data-aos="fade-up"
-          data-aos-duration="1000">
-          <a href="@/assets/images/placeholder/project1.png"
+          data-aos-duration="1000" v-for="courses in courses" :key="courses.id">
+          <template v-if="courses.cover === 'http://localhost:8000/media/cover-img.jpg'">
+            <router-link class="overflow-hidden lg:mb-[30px] mb-[20px] block w-full cursor-pointer">
+              <img src="@/assets/images/placeholder/placeholder.jpg" alt="img" class="w-full overflow-hidden duration-500 rounded-[10px] group-hover:scale-105">
+            </router-link>
+          </template>
+
+          <template v-else>
+            <a href="@/assets/images/placeholder/placeholder.jpg"
             class="imgc overflow-hidden lg:mb-[30px] mb-[20px] block w-full cursor-pointer">
-            <img src="@/assets/images/placeholder/project1.png" alt="img"
+            <img :src="courses.cover" alt="img"
               class="w-full overflow-hidden duration-500 rounded-[10px] group-hover:scale-105">
           </a>
+          </template>
+          
           <div class="content flex items-center justify-between gap-1">
             <a href="./protfolio.html" class="left__cont">
               <span class="text-devanga-yellow xl:mb-4 mb-2 block uppercase xl:text-lg text-base">
                 PRODUCT DESIGN
               </span>
-              <h3 class="xl:text-[30px] sm:text-2xl text-xl font-semibold text-white">
-                Brand Identity &amp; Motion Design
+              <h3 class="xl:text-[30px] sm:text-2xl text-xl font-semibold text-devanga-primary">
+                {{ courses.title }}
               </h3>
             </a>
-            <a href="@/assets/images/placeholder/project1.png"
+
+            <a href="@/assets/images/placeholder/placeholder.jpg"
               class="imgc h-[45px] w-[45px] sm:w-[60px] sm:h-[60px] rounded-md bg-white flex justify-center items-center duration-500 group-hover:bg-devanga-yellow cursor-pointer">
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd"
@@ -89,164 +215,6 @@ onMounted(()=>{
         </div>
         <!-- card 1 -->
 
-        <!-- card 2 -->
-        <div class="overflow-hidden group xl:mb-[60px] lg:mb-[50px] mb-[30px] aos-init" data-aos="fade-up"
-          data-aos-duration="1000">
-          <a href="@/assets/images/placeholder/project1.png"
-            class="imgc overflow-hidden lg:mb-[30px] mb-[20px] block w-full cursor-pointer">
-            <img src="@/assets/images/placeholder/project1.png" alt="img"
-              class="w-full overflow-hidden duration-500 rounded-[10px] group-hover:scale-105">
-          </a>
-
-          <div class="content flex items-center justify-between gap-1">
-            <a href="./protfolio.html" class="left__cont">
-              <span class="text-devanga-yellow xl:mb-4 mb-2 block uppercase xl:text-lg text-base">
-                UI/UX DESIGN
-              </span>
-              <h3 class="xl:text-[30px] sm:text-2xl text-xl font-semibold text-white">
-                Mobile Application Development
-              </h3>
-            </a>
-            <a href="@/assets/images/placeholder/project1.png"
-              class="imgc h-[45px] w-[45px] sm:w-[60px] sm:h-[60px] rounded-md bg-white flex justify-center items-center duration-500 group-hover:bg-devanga-yellow cursor-pointer">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M30.8839 9.11612C31.372 9.60427 31.372 10.3957 30.8839 10.8839L10.8839 30.8839C10.3957 31.372 9.60427 31.372 9.11612 30.8839C8.62796 30.3957 8.62796 29.6043 9.11612 29.1161L29.1161 9.11612C29.6043 8.62796 30.3957 8.62796 30.8839 9.11612Z"
-                  fill="currentColor" fill-opacity="0.9"></path>
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M12.5 10C12.5 9.30964 13.0596 8.75 13.75 8.75H30C30.6904 8.75 31.25 9.30964 31.25 10V26.25C31.25 26.9404 30.6904 27.5 30 27.5C29.3096 27.5 28.75 26.9404 28.75 26.25V11.25H13.75C13.0596 11.25 12.5 10.6904 12.5 10Z"
-                  fill="currentColor" fill-opacity="0.9"></path>
-              </svg>
-            </a>
-          </div>
-        </div>
-        <!-- card 2 -->
-
-        <!-- card 3 -->
-        <div class="overflow-hidden group aos-init" data-aos="fade-up" data-aos-duration="1000">
-          <a href="@/assets/images/placeholder/project1.png"
-            class="imgc overflow-hidden lg:mb-[30px] mb-[20px] block w-full cursor-pointer">
-            <img src="@/assets/images/placeholder/project1.png" alt="img"
-              class="w-full overflow-hidden duration-500 rounded-[10px] group-hover:scale-105">
-          </a>
-          <div class="content flex items-center justify-between gap-1">
-            <a href="./protfolio.html" class="left__cont">
-              <span class="text-devanga-yellow xl:mb-4 mb-2 block uppercase xl:text-lg text-base">
-                PRODUCT DESIGN
-              </span>
-              <h3 class="xl:text-[30px] sm:text-2xl text-xl font-semibold text-white">
-                Design &amp; Branding Mokeup
-              </h3>
-            </a>
-            <a href="@/assets/images/placeholder/project1.png"
-              class="imgc h-[45px] w-[45px] sm:w-[60px] sm:h-[60px] rounded-md bg-white flex justify-center items-center duration-500 group-hover:bg-devanga-yellow cursor-pointer">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M30.8839 9.11612C31.372 9.60427 31.372 10.3957 30.8839 10.8839L10.8839 30.8839C10.3957 31.372 9.60427 31.372 9.11612 30.8839C8.62796 30.3957 8.62796 29.6043 9.11612 29.1161L29.1161 9.11612C29.6043 8.62796 30.3957 8.62796 30.8839 9.11612Z"
-                  fill="currentColor" fill-opacity="0.9"></path>
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M12.5 10C12.5 9.30964 13.0596 8.75 13.75 8.75H30C30.6904 8.75 31.25 9.30964 31.25 10V26.25C31.25 26.9404 30.6904 27.5 30 27.5C29.3096 27.5 28.75 26.9404 28.75 26.25V11.25H13.75C13.0596 11.25 12.5 10.6904 12.5 10Z"
-                  fill="currentColor" fill-opacity="0.9"></path>
-              </svg>
-            </a>
-          </div>
-        </div>
-        <!-- card 3 -->
-
-        <!-- card 4 -->
-        <div class="project__item overflow-hidden group xl:mb-[60px] lg:mb-[50px] mb-[30px] aos-init" data-aos="fade-up"
-          data-aos-duration="1000">
-          <a href="@/assets/images/placeholder/project1.png"
-            class="imgc overflow-hidden lg:mb-[30px] mb-[20px] block w-full cursor-pointer">
-            <img src="@/assets/images/placeholder/project1.png" alt="img"
-              class="w-full overflow-hidden duration-500 rounded-[10px] group-hover:scale-105">
-          </a>
-          <div class="content flex items-center justify-between gap-1">
-            <a href="./protfolio.html" class="left__cont">
-              <span class="text-devanga-yellow xl:mb-4 mb-2 block uppercase xl:text-lg text-base">
-                UI/UX DESIGN
-              </span>
-              <h3 class="xl:text-[30px] sm:text-2xl text-xl font-semibold text-white">
-                Mobile Application Development
-              </h3>
-            </a>
-            <a href="@/assets/images/placeholder/project1.png"
-              class="imgc h-[45px] w-[45px] sm:w-[60px] sm:h-[60px] rounded-md bg-white flex justify-center items-center duration-500 group-hover:bg-devanga-yellow cursor-pointer">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M30.8839 9.11612C31.372 9.60427 31.372 10.3957 30.8839 10.8839L10.8839 30.8839C10.3957 31.372 9.60427 31.372 9.11612 30.8839C8.62796 30.3957 8.62796 29.6043 9.11612 29.1161L29.1161 9.11612C29.6043 8.62796 30.3957 8.62796 30.8839 9.11612Z"
-                  fill="currentColor" fill-opacity="0.9"></path>
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M12.5 10C12.5 9.30964 13.0596 8.75 13.75 8.75H30C30.6904 8.75 31.25 9.30964 31.25 10V26.25C31.25 26.9404 30.6904 27.5 30 27.5C29.3096 27.5 28.75 26.9404 28.75 26.25V11.25H13.75C13.0596 11.25 12.5 10.6904 12.5 10Z"
-                  fill="currentColor" fill-opacity="0.9"></path>
-              </svg>
-            </a>
-          </div>
-        </div>
-        <!-- card 4 -->
-
-        <!-- card 5 -->
-        <div class="project__item overflow-hidden group xl:mb-[60px] lg:mb-[50px] mb-[30px] aos-init" data-aos="fade-up"
-          data-aos-duration="1000">
-          <a href="@/assets/images/placeholder/project1.png"
-            class="imgc overflow-hidden lg:mb-[30px] mb-[20px] block w-full cursor-pointer">
-            <img src="@/assets/images/placeholder/project1.png" alt="img"
-              class="w-full overflow-hidden duration-500 rounded-[10px] group-hover:scale-105">
-          </a>
-          <div class="content flex items-center justify-between gap-1">
-            <a href="./protfolio.html" class="left__cont">
-              <span class="text-devanga-yellow xl:mb-4 mb-2 block uppercase xl:text-lg text-base">
-                UI/UX DESIGN
-              </span>
-              <h3 class="xl:text-[30px] sm:text-2xl text-xl font-semibold text-white">
-                Mobile Application Development
-              </h3>
-            </a>
-            <a href="@/assets/images/placeholder/project1.png"
-              class="imgc h-[45px] w-[45px] sm:w-[60px] sm:h-[60px] rounded-md bg-white flex justify-center items-center duration-500 group-hover:bg-devanga-yellow cursor-pointer">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M30.8839 9.11612C31.372 9.60427 31.372 10.3957 30.8839 10.8839L10.8839 30.8839C10.3957 31.372 9.60427 31.372 9.11612 30.8839C8.62796 30.3957 8.62796 29.6043 9.11612 29.1161L29.1161 9.11612C29.6043 8.62796 30.3957 8.62796 30.8839 9.11612Z"
-                  fill="currentColor" fill-opacity="0.9"></path>
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M12.5 10C12.5 9.30964 13.0596 8.75 13.75 8.75H30C30.6904 8.75 31.25 9.30964 31.25 10V26.25C31.25 26.9404 30.6904 27.5 30 27.5C29.3096 27.5 28.75 26.9404 28.75 26.25V11.25H13.75C13.0596 11.25 12.5 10.6904 12.5 10Z"
-                  fill="currentColor" fill-opacity="0.9"></path>
-              </svg>
-            </a>
-          </div>
-        </div>
-        <!-- card 5 -->
-
-        <!-- card 6 -->
-        <div class="project__item overflow-hidden group aos-init" data-aos="fade-up" data-aos-duration="1000">
-          <a href="@/assets/images/placeholder/project1.png"
-            class="imgc overflow-hidden lg:mb-[30px] mb-[20px] block w-full cursor-pointer">
-            <img src="@/assets/images/placeholder/project1.png" alt="img"
-              class="w-full overflow-hidden duration-500 rounded-[10px] group-hover:scale-105">
-          </a>
-          <div class="content flex items-center justify-between gap-1">
-            <a href="./protfolio.html" class="left__cont">
-              <span class="text-devanga-yellow xl:mb-4 mb-2 block uppercase xl:text-lg text-base">
-                UI/UX DESIGN
-              </span>
-              <h3 class="xl:text-[30px] sm:text-2xl text-xl font-semibold text-white">
-                Mobile Application Development
-              </h3>
-            </a>
-            <a href="@/assets/images/placeholder/project1.png"
-              class="imgc h-[45px] w-[45px] sm:w-[60px] sm:h-[60px] rounded-md bg-white flex justify-center items-center duration-500 group-hover:bg-devanga-yellow cursor-pointer">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M30.8839 9.11612C31.372 9.60427 31.372 10.3957 30.8839 10.8839L10.8839 30.8839C10.3957 31.372 9.60427 31.372 9.11612 30.8839C8.62796 30.3957 8.62796 29.6043 9.11612 29.1161L29.1161 9.11612C29.6043 8.62796 30.3957 8.62796 30.8839 9.11612Z"
-                  fill="currentColor" fill-opacity="0.9"></path>
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M12.5 10C12.5 9.30964 13.0596 8.75 13.75 8.75H30C30.6904 8.75 31.25 9.30964 31.25 10V26.25C31.25 26.9404 30.6904 27.5 30 27.5C29.3096 27.5 28.75 26.9404 28.75 26.25V11.25H13.75C13.0596 11.25 12.5 10.6904 12.5 10Z"
-                  fill="currentColor" fill-opacity="0.9"></path>
-              </svg>
-            </a>
-          </div>
-        </div>
-        <!-- card 6 -->
       </div>
 
       <!-- -------- Cricle box -->
@@ -269,232 +237,229 @@ onMounted(()=>{
 
     <!-- pricing Table-->
     <div class="xl:max-w-[1350px] lg:max-w-[960px] md:max-w-2xl sm:max-w-xl xl mx-auto px-3">
-    <div class="container mx-auto pt-32">
-      <div class="grid grid-cols-3 md:grid-grid-cols-3 gap-0">
-      <div
-        class="w-full max-w-sm p-8 bg-devanga-primary border border-gray-200 rounded-lg shadow sm:p-8">
-        <h5 class="mb-4 text-xl font-medium text-white">Free plan</h5>
-        <div class="flex items-baseline text-gray-900">
-          <span class="text-3xl font-semibold">$</span>
-          <span class="text-5xl font-extrabold tracking-tight">49</span>
-          <span class="ms-1 text-xl font-normal text-white">/month</span>
-        </div>
-        <ul role="list" class="space-y-5 my-7">
-          <li class="flex items-center">
-            <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-white ms-3">2 team
-              members</span>
-          </li>
-          <li class="flex">
-            <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-white ms-3">20GB Cloud
-              storage</span>
-          </li>
-          <li class="flex">
-            <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-white ms-3">Integration
-              help</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">Sketch Files</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">API Access</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">Complete documentation</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">24×7 phone & email support</span>
-          </li>
-        </ul>
-        <button type="button"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">Choose
-          plan</button>
-      </div>
+      <div class="container mx-auto pt-32">
+        <div class="grid grid-cols-3 md:grid-grid-cols-3 gap-0">
+          <div class="w-full max-w-sm p-8 bg-devanga-primary border border-gray-200 rounded-lg shadow sm:p-8">
+            <h5 class="mb-4 text-xl font-medium text-devanga-primary">Free plan</h5>
+            <div class="flex items-baseline text-gray-900">
+              <span class="text-3xl font-semibold">$</span>
+              <span class="text-5xl font-extrabold tracking-tight">49</span>
+              <span class="ms-1 text-xl font-normal text-devanga-primary">/month</span>
+            </div>
+            <ul role="list" class="space-y-5 my-7">
+              <li class="flex items-center">
+                <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-devanga-primary ms-3">2 team
+                  members</span>
+              </li>
+              <li class="flex">
+                <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-devanga-primary ms-3">20GB Cloud
+                  storage</span>
+              </li>
+              <li class="flex">
+                <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-devanga-primary ms-3">Integration
+                  help</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">Sketch Files</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">API Access</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">Complete documentation</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">24×7 phone & email support</span>
+              </li>
+            </ul>
+            <button type="button"
+              class="text-devanga-primary bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">Choose
+              plan</button>
+          </div>
 
-      <div
-        class="w-full max-w-sm p-4 bg-devanga-secondary border border-gray-200 rounded-lg shadow sm:p-8">
-        <h5 class="mb-4 text-xl font-medium text-white">Group plan</h5>
-        <div class="flex items-baseline text-white">
-          <span class="text-3xl font-semibold">$</span>
-          <span class="text-5xl font-extrabold tracking-tight">49</span>
-          <span class="ms-1 text-xl font-normal text-white">/month</span>
-        </div>
-        <ul role="list" class="space-y-5 my-7">
-          <li class="flex items-center">
-            <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-white ms-3">2 team
-              members</span>
-          </li>
-          <li class="flex">
-            <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-white ms-3">20GB Cloud
-              storage</span>
-          </li>
-          <li class="flex">
-            <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-white ms-3">Integration
-              help</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">Sketch Files</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">API Access</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">Complete documentation</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">24×7 phone & email support</span>
-          </li>
-        </ul>
-        <button type="button"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">Choose
-          plan</button>
-      </div>
+          <div class="w-full max-w-sm p-4 bg-devanga-secondary border border-gray-200 rounded-lg shadow sm:p-8">
+            <h5 class="mb-4 text-xl font-medium text-devanga-primary">Group plan</h5>
+            <div class="flex items-baseline text-devanga-primary">
+              <span class="text-3xl font-semibold">$</span>
+              <span class="text-5xl font-extrabold tracking-tight">49</span>
+              <span class="ms-1 text-xl font-normal text-devanga-primary">/month</span>
+            </div>
+            <ul role="list" class="space-y-5 my-7">
+              <li class="flex items-center">
+                <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-devanga-primary ms-3">2 team
+                  members</span>
+              </li>
+              <li class="flex">
+                <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-devanga-primary ms-3">20GB Cloud
+                  storage</span>
+              </li>
+              <li class="flex">
+                <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-devanga-primary ms-3">Integration
+                  help</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">Sketch Files</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">API Access</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">Complete documentation</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">24×7 phone & email support</span>
+              </li>
+            </ul>
+            <button type="button"
+              class="text-devanga-primary bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">Choose
+              plan</button>
+          </div>
 
-      <div
-        class="w-full max-w-sm p-4 bg-devanga-primary border border-gray-200 rounded-lg shadow sm:p-8">
-        <h5 class="mb-4 text-xl font-medium text-white">Enterprise plan</h5>
-        <div class="flex items-baseline text-gray-900 dark:text-white">
-          <span class="text-3xl font-semibold">$</span>
-          <span class="text-5xl font-extrabold tracking-tight">49</span>
-          <span class="ms-1 text-xl font-normal text-white">/month</span>
+          <div class="w-full max-w-sm p-4 bg-devanga-primary border border-gray-200 rounded-lg shadow sm:p-8">
+            <h5 class="mb-4 text-xl font-medium text-devanga-primary">Enterprise plan</h5>
+            <div class="flex items-baseline text-gray-900 dark:text-devanga-primary">
+              <span class="text-3xl font-semibold">$</span>
+              <span class="text-5xl font-extrabold tracking-tight">49</span>
+              <span class="ms-1 text-xl font-normal text-devanga-primary">/month</span>
+            </div>
+            <ul role="list" class="space-y-5 my-7">
+              <li class="flex items-center">
+                <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-devanga-primary ms-3">2 team
+                  members</span>
+              </li>
+              <li class="flex">
+                <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-devanga-primary ms-3">20GB Cloud
+                  storage</span>
+              </li>
+              <li class="flex">
+                <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-devanga-primary ms-3">Integration
+                  help</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">Sketch Files</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">API Access</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">Complete documentation</span>
+              </li>
+              <li class="flex line-through decoration-gray-500">
+                <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="text-base font-normal leading-tight text-gray-500 ms-3">24×7 phone & email support</span>
+              </li>
+            </ul>
+            <button type="button"
+              class="text-devanga-primary bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">Choose
+              plan</button>
+          </div>
         </div>
-        <ul role="list" class="space-y-5 my-7">
-          <li class="flex items-center">
-            <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-white ms-3">2 team
-              members</span>
-          </li>
-          <li class="flex">
-            <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-white ms-3">20GB Cloud
-              storage</span>
-          </li>
-          <li class="flex">
-            <svg class="flex-shrink-0 w-4 h-4 text-blue-700 dark:text-blue-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-white ms-3">Integration
-              help</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">Sketch Files</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">API Access</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">Complete documentation</span>
-          </li>
-          <li class="flex line-through decoration-gray-500">
-            <svg class="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-            </svg>
-            <span class="text-base font-normal leading-tight text-gray-500 ms-3">24×7 phone & email support</span>
-          </li>
-        </ul>
-        <button type="button"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">Choose
-          plan</button>
       </div>
     </div>
-    </div>
-  </div>
     <!-- end of pricing table -->
   </section>
 
@@ -683,7 +648,8 @@ onMounted(()=>{
     <div class="container mx-auto px-8 xl:pr-0 xl:pl-[4%] 2xl:pl-[6%] 3xl:pl-[17%]">
       <div class="flex flex-col xl:flex-row gap-x-[55px] 2xl:gap-x-[100px] 3xl:gap-x-[165px]">
 
-        <div class="font-bold font-raleway leading-none flex flex-wrap flex-col gap-y-2 md:text-center xl:text-left mb-10">
+        <div
+          class="font-bold font-raleway leading-none flex flex-wrap flex-col gap-y-2 md:text-center xl:text-left mb-10">
           <span class="text-orange text-xl">Testimonial</span>
           <h3 class="inline-block text-black-800 text-4xl lg:text-5xl xl:text-[64px] tracking-[-1.5px]">
             <span
@@ -694,8 +660,7 @@ onMounted(()=>{
         <swiper :slides-per-view="3" :space-between="20" @swiper="onSwiper" @slideChange="onSlideChange"
           :modules="modules" :autoplay="true">
           <swiper-slide>
-            <div class="swiper-slide swiper-slide-prev" role="group"
-              aria-label="1 / 4">
+            <div class="swiper-slide swiper-slide-prev" role="group" aria-label="1 / 4">
               <span class="inline-block mb-5 sm:mb-8">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -719,8 +684,7 @@ onMounted(()=>{
             </div>
           </swiper-slide>
           <swiper-slide>
-            <div class="swiper-slide swiper-slide-prev" role="group"
-              aria-label="1 / 4">
+            <div class="swiper-slide swiper-slide-prev" role="group" aria-label="1 / 4">
               <span class="inline-block mb-5 sm:mb-8">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -744,8 +708,7 @@ onMounted(()=>{
             </div>
           </swiper-slide>
           <swiper-slide>
-            <div class="swiper-slide swiper-slide-prev" role="group"
-              aria-label="1 / 4">
+            <div class="swiper-slide swiper-slide-prev" role="group" aria-label="1 / 4">
               <span class="inline-block mb-5 sm:mb-8">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -769,8 +732,7 @@ onMounted(()=>{
             </div>
           </swiper-slide>
           <swiper-slide>
-            <div class="swiper-slide swiper-slide-prev" role="group"
-              aria-label="1 / 4">
+            <div class="swiper-slide swiper-slide-prev" role="group" aria-label="1 / 4">
               <span class="inline-block mb-5 sm:mb-8">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path

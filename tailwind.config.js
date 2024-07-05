@@ -23,6 +23,12 @@ export default {
         'devanga-yellow': {
           DEFAULT: '#FFC949', // Customize the yellow color
         },
+        'devanga-neautral': {
+          DEFAULT: '#E8F3F1', // Customize the yellow color
+        },
+        'devanga-ken': {
+          DEFAULT: '#EBFCFF', // Customize the yellow color
+        },
       },
     },
   },
