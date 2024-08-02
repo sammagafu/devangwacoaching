@@ -39,9 +39,13 @@
 
                     <!-- Display Posts -->
                     <div class="group" v-for="post in posts" :key="post.id">
+                            <div class="flex flex-row justify-start items-center">
+                                <Avatar :label="getInitials(post.starter.full_name)" class="mr-2" size="large" shape="circle" />
+                                <router-link class="">{{ post.starter.full_name }}</router-link>
+                            </div>
                         <!-- blog thumbnail -->
-                        <div class="overflow-hidden relative">
-                            <img :src="post.post" alt="" class="w-full">
+                        <div class="overflow-hidden relative py-2">
+                            <img :src="post.post" alt="" class="w-full rounded">
                             <div class="text-size-22 leading-6 font-semibold text-white px-15px py-5px md:px-6 md:py-2 bg-devanga-primary rounded text-center absolute top-5 right-5">
                                 <h3>
                                     {{ new Date(post.created_at).getDate() }} <br>
@@ -59,12 +63,6 @@
                             
                             <div class="py-4">
                                 <ul class="flex flex-wrap items-center gap-x-8">
-                                    <li>
-                                        <a href="blog-details.html" class="text-devanga-primary text-sm hover:text-devanga-primary dark:text-devanga-primary-dark dark:hover:text-devanga-primary">
-                                            <span class="pi pi-user"></span>
-                                            {{ post.starter.full_name }}
-                                        </a>
-                                    </li>
                                     <li>
                                         <a href="blog-details.html" class="text-devanga-primary text-sm hover:text-devanga-primary dark:text-devanga-primary-dark dark:hover:text-devanga-primary">
                                             <i class="pi pi-comments"></i> {{ post.likes_count }} Comments
@@ -146,12 +144,13 @@
 
 <script setup>
 import apiService from '@/service/apiService'; // Import your API service
-import { ref, onMounted } from 'vue';
+import { ref, onMounted,computed } from 'vue';
 
 // State variables
 const posts = ref([]); // Store posts data
 
 // Fetch posts data
+const fullname = ref('')
 const getPosts = () => {
     apiService.get('community/threads/')
         .then(response => {
@@ -204,4 +203,11 @@ const triggerFileInput = () => {
 onMounted(() => {
     getPosts();
 });
+
+function getInitials(fullName) {
+  const names = fullName.split(' ');
+  const firstInitial = names[0] ? names[0].charAt(0) : '';
+  const lastInitial = names[1] ? names[1].charAt(0) : '';
+  return firstInitial + lastInitial;
+}
 </script>

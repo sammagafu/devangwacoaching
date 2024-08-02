@@ -73,8 +73,8 @@
                   <div class="pt-6">
                     <div class="flex flex-row justify-between items-start gap-2">
                       <div>
-                        <span class="font-medium text-surface-500 dark:text-surface-400 text-sm">{{ item.description }}</span>
                         <div class="text-lg font-medium mt-1">{{ item.title }}</div>
+                        <span class="font-medium text-surface-500 dark:text-surface-400 text-sm" v-html="item.description"></span>
                       </div>
                       <div class="bg-surface-100 p-1" style="border-radius: 30px">
                         <div class="bg-surface-0 flex items-center gap-2 justify-center py-1 px-2" style="

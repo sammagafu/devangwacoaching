@@ -7,16 +7,8 @@
           <h3 class="font-bold uppercase text-devanga-alternative">
             {{eventDetails.title}}
           </h3>
-          <div class="lg:my-6 my-4" v-html="eventDetails.description">
-    
-          </div>
-
-          <div class=" py-6">
-            Among the major reasons why Python is “slow”, it really boils down to 2 — Python is interpreted as opposed to compiled,
-            ultimately leading to slower execution times; and the fact that it is dynamically typed. Take, for example, TensorFlow,
-            a Machine Learning library available in Python. These libraries were actually written in C++ and made available in
-            Python, sort of forming a Python implementation. The same goes for Numpy and, to an extent, even Caer.
-          </div>
+          <div class="lg:py-6 my-4" v-html="eventDetails.description"></div>
+          
           <div class="flex justify-between border-y border-[#ECECEC] py-4 md:mt-12 mt-10">
             <div class=" text-black font-semibold">Previous</div>
             <ul class="flex space-x-3 lg:justify-end items-center  ">
@@ -43,30 +35,25 @@
                 <li class=" flex space-x-3 ">
                   <div class="flex-1 space-x-3 flex">
                         <span><i class="pi pi-clock"></i></span>
-                        <div>4:00 pm - 6:00 pm</div>
+                        <!-- {{ new Date(post.created_at).getDate() }}{{ eventDetails.start_time }} -->
+                        <div>{{ new Date(eventDetails.start_time).getUTCHours() }} : {{ new Date(eventDetails.start_time).getUTCMinutes() }}</div>
                   </div>
                 </li>
 
                 <li class=" flex space-x-3 ">
                   <div class="flex-1 space-x-3 flex">
                     <span><i class="pi pi-calendar"></i></span>
-                    <div>03 March, 2022</div>
+                    <div>{{ new Date(eventDetails.start_time).getDate() }} - {{ new Date(eventDetails.start_time).getMonth() }} - {{ new Date(eventDetails.start_time).getFullYear() }}</div>
                   </div>
                 </li>
 
                 <li class=" flex space-x-3 ">
                   <div class="flex-1 space-x-3 flex">
                     <span><i class="pi pi-map-marker"></i></span>
-                    <div>12/A, NewYork Sydney City</div>
+                    <div>{{ eventDetails.event_type }}</div>
                   </div>
                 </li>
 
-                <li class=" flex space-x-3 ">
-                  <div class="flex-1 space-x-3 flex">
-                    <span><i class="pi pi-map-marker"></i></span>
-                    <div>yourmail@gmail.com</div>
-                  </div>
-                </li>
 
                 <li class=" flex space-x-3 ">
                   <div class="flex-1 space-x-3 flex">
@@ -81,13 +68,13 @@
 
             </div>
 
-            <div class="wdiget">
+            <!-- <div class="wdiget">
               <h4 class=" widget-title">Special Guests</h4>
               <ul class="list space-y-6">
                 <li class=" flex space-x-4 border-[#ECECEC] ">
                   <div class="flex-none ">
                     <div class="h-20 w-20   rounded-full">
-                      <!-- <img src="assets/images/all-img/rc-1.png" alt="" class=" w-full h-full object-cover rounded-full"> -->
+                      <img src="assets/images/all-img/rc-1.png" alt="" class=" w-full h-full object-cover rounded-full">
                     </div>
                   </div>
                   <div class="flex-1 ">
@@ -102,7 +89,7 @@
                 <li class=" flex space-x-4 border-[#ECECEC] ">
                   <div class="flex-none ">
                     <div class="h-20 w-20   rounded-full">
-                      <!-- <img src="assets/images/all-img/rc-2.png" alt="" class=" w-full h-full object-cover rounded-full"> -->
+                      <img src="assets/images/all-img/rc-2.png" alt="" class=" w-full h-full object-cover rounded-full">
                     </div>
                   </div>
                   <div class="flex-1 ">
@@ -116,7 +103,7 @@
                 </li>
 
               </ul>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
