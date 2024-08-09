@@ -1,6 +1,6 @@
 import '@/assets/css/base.css'
 import PrimeVue from 'primevue/config';
-import Lara from '@primevue/themes/lara';
+// import Lara from '@primevue/themes/lara';
 import Editor  from 'primevue/editor';
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
@@ -116,9 +116,6 @@ app.use(VueAxios, apiService);
 app.use(createPinia());
 app.use(router);
 app.use(PrimeVue, {
-    theme: {
-        preset: Lara
-    }
 });
 
 app.use(ToastService);

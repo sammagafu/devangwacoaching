@@ -64,26 +64,46 @@
                             <div class="py-4">
                                 <ul class="flex flex-wrap items-center gap-x-8">
                                     <li>
-                                        <a href="blog-details.html" class="text-devanga-primary text-sm hover:text-devanga-primary dark:text-devanga-primary-dark dark:hover:text-devanga-primary">
-                                            <i class="pi pi-comments"></i> {{ post.likes_count }} Comments
-                                        </a>
+                                        <span class="text-devanga-primary cursor-pointer text-sm hover:text-devanga-primary dark:text-devanga-primary-dark dark:hover:text-devanga-primary">
+                                            <i class="pi pi-comments"></i> {{ post.replies?.length }} Comments
+                                        </span>
                                     </li>
-                                    <li>
-                                        <a href="blog-details.html" class="text-devanga-primary text-sm hover:text-devanga-primary dark:text-devanga-primary-dark dark:hover:text-devanga-primary">
+                                    <!-- <li>
+                                        <span  class="text-devanga-primary cursor-pointer text-sm hover:text-devanga-primary dark:text-devanga-primary-dark dark:hover:text-devanga-primary">
                                             <i class="pi pi-bookmark"></i> {{ post.bookmarksCount }} Bookmarks
-                                        </a>
-                                    </li>
+                                        </span>
+                                    </li> -->
                                     <li>
-                                        <a href="blog-details.html" class="text-devanga-primary text-sm hover:text-devanga-primary dark:text-devanga-primary-dark dark:hover:text-devanga-primary">
-                                            <i class="pi pi-heart"></i> {{ post.likes_count }} Likes
-                                        </a>
+                                        <span 
+                                            class="text-devanga-primary cursor-pointer text-sm hover:text-devanga-primary dark:text-devanga-primary-dark dark:hover:text-devanga-primary"
+                                            @click="likePost(post.slug)">
+                                            <span v-if="!checkLike(post?.likes)">
+                                                <i class="pi pi-heart"></i> {{ post.likes_count }} Likes
+                                            </span>
+
+                                            <span v-else>
+                                                <i class="pi pi-heart text-red-500"></i> {{ post.likes_count }} Likes
+                                            </span>
+                                        </span>
                                     </li>
                                 </ul>
                             </div>
 
-                            <p class="text-base mb-15px !leading-30px">
+                            <!-- <p class="text-base mb-15px !leading-30px">
                                 {{ post.excerpt }}
-                            </p>
+                            </p> -->    
+                            
+                            <div v-if="showReplyForm">
+                                <textarea v-model="replyContent.content" rows="5" cols="64" placeholder="Write a reply..." class="bg-slate-200 text-black rounded-md"></textarea>
+                                <div class="flex">
+                                    <button @click.prevent="createComment(post.id)" class="px-3 py-1 text-black border border-gray-400 rounded-md mt-2 mb-3">Reply</button>
+                                </div>
+                            </div>
+
+                            <div class="comment-list">
+                            <Comment v-for="comment in post.replies" :key="comment.id" :comment="comment"  />
+                            </div>
+                            
                             <!-- <div class="flex justify-between items-center">
                                 <div class="py-2">
                                     <router-link :to="{ name: 'community-details', params: { id: post.id } }" class="text-devanga-secondary hover:text-devanga-primary">
@@ -97,45 +117,7 @@
 
                 <!-- Sidebar -->
                 <div class="lg:col-start-9 lg:col-span-4">
-                    <!-- <div class="flex flex-col">
-                        <div class="p-5 md:p-30px lg:p-5 2xl:p-30px mb-30px border-devanga-primary dark:border-devanga-primary-dark aos-init aos-animate" data-aos="fade-up">
-                            <h4 class="text-devanga-secondary dark:text-devanga-secondary font-bold before:w-0.5 relative before:h-[21px] before:absolute before:bottom-[5px] before:left-0 leading-30px mb-25px">
-                                Search here
-                            </h4>
-                            <form class="bg-gray-300 px-4 w-full py-2 text-sm text-devanga-primary bg-lightGrey10 dark:bg-lightGrey10-dark dark:text-devanga-primary-dark flex justify-center items-center leading-26px">
-                                <input type="text" placeholder="Search Produce" class="placeholder:text-placeholder bg-transparent focus:outline-none placeholder:opacity-80 w-full">
-                                <button type="submit">
-                                    <i class="icofont-search-1 text-base"></i>
-                                </button>
-                            </form>
-                        </div>
-
-                        <div class="p-5 md:p-30px lg:p-5 2xl:p-30px mb-30px border-devanga-primary dark:border-devanga-primary-dark aos-init aos-animate" data-aos="fade-up">
-                            <h4 class="text-devanga-secondary dark:text-devanga-secondary font-bold before:w-0.5 relative before:h-[21px] before:absolute before:bottom-[5px] before:left-0 leading-30px">
-                                Categories
-                            </h4>
-                            <ul class="flex flex-col gap-y-4">
-                                <li class="text-devanga-primary hover:text-devanga-primary-dark hover:bg-devanga-secondary transition-all duration-300 text-sm font-medium px-4 py-2 border border-devanga-primary hover:border-devanga-secondary dark:border-devanga-primary-dark dark:hover:border-devanga-secondary flex justify-between leading-7">
-                                    <a href="#">Mobile Set</a> <a href="#">03</a>
-                                </li>
-                                <li class="text-devanga-primary hover:text-devanga-primary-dark hover:bg-devanga-secondary transition-all duration-300 text-sm font-medium px-4 py-2 border border-devanga-primary hover:border-devanga-secondary dark:border-devanga-primary-dark dark:hover:border-devanga-secondary flex justify-between leading-7">
-                                    <a href="#">Mobile Set</a> <a href="#">03</a>
-                                </li>
-                                <li class="text-devanga-primary hover:text-devanga-primary-dark hover:bg-devanga-secondary transition-all duration-300 text-sm font-medium px-4 py-2 border border-devanga-primary hover:border-devanga-secondary dark:border-devanga-primary-dark dark:hover:border-devanga-secondary flex justify-between leading-7">
-                                    <a href="#">Raxila Dish nonyte</a> <a href="#">09</a>
-                                </li>
-                                <li class="text-devanga-primary hover:text-devanga-primary-dark hover:bg-devanga-secondary transition-all duration-300 text-sm font-medium px-4 py-2 border border-devanga-primary hover:border-devanga-secondary dark:border-devanga-primary-dark dark:hover:border-devanga-secondary flex justify-between leading-7">
-                                    <a href="#">Fresh Vegetable</a> <a href="#">01</a>
-                                </li>
-                                <li class="text-devanga-primary hover:text-devanga-primary-dark hover:bg-devanga-secondary transition-all duration-300 text-sm font-medium px-4 py-2 border border-devanga-primary hover:border-devanga-secondary dark:border-devanga-primary-dark dark:hover:border-devanga-secondary flex justify-between leading-7">
-                                    <a href="#">Fruites</a> <a href="#">00</a>
-                                </li>
-                                <li class="text-devanga-primary hover:text-devanga-primary-dark hover:bg-devanga-secondary transition-all duration-300 text-sm font-medium px-4 py-2 border border-devanga-primary hover:border-devanga-secondary dark:border-devanga-primary-dark dark:hover:border-devanga-secondary flex justify-between leading-7">
-                                    <a href="#">Gesuriesey</a> <a href="#">26</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div> -->
+                    
                 </div>
             </div>
         </div>
@@ -144,11 +126,24 @@
 
 <script setup>
 import apiService from '@/service/apiService'; // Import your API service
+import { useAuthStore } from '@/stores/authStore';
 import { ref, onMounted,computed } from 'vue';
+import Comment from '../../../components/Comment.vue';
+
+
+const authStore = useAuthStore();
+
+
 
 // State variables
 const posts = ref([]); // Store posts data
 
+const replyContent = ref({
+    thread:"",
+    content:""
+}); // Store reply content
+
+const showReplyForm = ref(true);
 // Fetch posts data
 const fullname = ref('')
 const getPosts = () => {
@@ -187,6 +182,36 @@ const createPost = () => {
         });
 };
 
+const createComment = async (id) => {
+    replyContent.value.thread = id
+    const res = await apiService.post('community/thread-replies/', replyContent.value)
+    if(res.status==200||201){
+        replyContent.value.content = '';
+        getPosts()
+    }
+};
+
+const likePost = async(slug)=>{
+    const res = await apiService.post(`community/threads/${slug}/like/`)
+    if(res.status==200||201){
+        getPosts()
+    }
+}
+
+const unlikePost = async(slug)=>{
+    const res = await apiService.post(`community/threads/${slug}/unlike/`)
+    if(res.status==200||201){
+        getPosts()
+    }
+}
+
+const checkLike = (likes)=>{
+    likes??[];
+    const likers = likes.map(x=>x?.user.id)
+    console.log("likers====>",likers, authStore.user.id)
+    return likers.includes(authStore.user.id)
+}
+
 // Handle file upload
 const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -205,9 +230,12 @@ onMounted(() => {
 });
 
 function getInitials(fullName) {
-  const names = fullName.split(' ');
-  const firstInitial = names[0] ? names[0].charAt(0) : '';
-  const lastInitial = names[1] ? names[1].charAt(0) : '';
+  if (!fullName){
+    fullName = "U ?"
+  };
+  const names = fullName?.split(' ')??[];
+  const firstInitial = names[0] ? names[0].charAt(0) :   '';
+  const lastInitial = names[1] ? names[1].charAt(0) :    '';
   return firstInitial + lastInitial;
 }
 </script>
