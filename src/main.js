@@ -1,6 +1,5 @@
-import '@/assets/css/base.css'
 import PrimeVue from 'primevue/config';
-// import Lara from '@primevue/themes/lara';
+import '@/assets/css/base.css'
 import Editor  from 'primevue/editor';
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
@@ -109,14 +108,23 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
-
+import Aura from '@primevue/themes/aura';
+import 'primeicons/primeicons.css'; // PrimeIcons
 const app = createApp(App)
 
 app.use(VueAxios, apiService);
 app.use(createPinia());
 app.use(router);
 app.use(PrimeVue, {
-});
+    theme: {
+        preset: Aura,
+        options: {
+            prefix: 'p',
+            darkModeSelector: 'system',
+            cssLayer: false
+        }
+    }
+ });
 
 app.use(ToastService);
 app.use(DialogService);
