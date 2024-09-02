@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore.js';
 
-const baseURL = 'http://localhost:8000/api/v1/';
+const baseURL = 'https://devangwacoaching.com/api/v1/';
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
