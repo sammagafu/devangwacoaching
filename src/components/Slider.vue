@@ -23,8 +23,8 @@
           <div class="flex flex-wrap mb-[50px] md:mb-[60px] xl:mb-[70px] 2xl:mb-[80px]">
             <!-- Link Start -->
             <span data-aos="fade-right" data-aos-delay="1000" class="aos-init aos-animate">
-              <a href="contact.html" class="flex items-center flex-wrap bg-devanga-ken p-4 mr-2 group">Let’s
-                Talk
+              <router-link :to="{name:'contact'}" class="flex items-center flex-wrap bg-devanga-ken text-devanga-primary p-4 mr-2 group">let’s
+                Talk 
                 <span class="inline-block ml-3 group-hover:animate-arrow-move-up">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7" stroke="currentColor" stroke-opacity="0.9" stroke-width="2"
@@ -32,12 +32,12 @@
                     <path d="M7 7H17V17" stroke="currentColor" stroke-opacity="0.9" stroke-width="2"
                       stroke-linecap="round" stroke-linejoin="round"></path>
                   </svg>
-                </span>
-              </a>
+                </span>  
+              </router-link>
             </span>
             <!-- Link End -->
             <span data-aos="fade-right" data-aos-delay="1000" class="aos-init aos-animate">
-              <a href="contact.html" class="flex items-center flex-wrap border-devanga-ken p-4 mr-2 group">What we do
+              <router-link :to="{name:'about'}" class="flex items-center flex-wrap border-devanga-ken p-4 mr-2 group">What we do
                 <span class="inline-block ml-3 group-hover:animate-arrow-move-up">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7" stroke="currentColor" stroke-opacity="0.9" stroke-width="2"
@@ -45,8 +45,8 @@
                     <path d="M7 7H17V17" stroke="currentColor" stroke-opacity="0.9" stroke-width="2"
                       stroke-linecap="round" stroke-linejoin="round"></path>
                   </svg>
-                </span>
-              </a>
+                </span>  
+              </router-link>
             </span>
             <!-- Link End -->
           </div>
