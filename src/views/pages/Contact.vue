@@ -1,9 +1,48 @@
 <template>
-<Breadcrum>
-  <template #breadcrum>
-    <Breadcrumb :home="home" :model="items" />
-  </template>
-</Breadcrum>
+    <Breadcrum>
+        <template #breadcrum>
+            <Breadcrumb :home="home" :model="items" />
+        </template>
+    </Breadcrum>
+
+    <section class="pt-20">
+        <div class="mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+            <div
+                class="grid lg:grid-cols-2 bg-[#F8FBFF] divide-y lg:divide-y-0 lg:divide-x divide-[#DFEAF9] border border-[#DFEAF9] shadow-customFive rounded-[15px]">
+
+                <div class="flex flex-col md:flex-row  gap-6 py-14 px-20">
+                    <div>
+                        <img src="@/assets/images/icons/location-pin.png" alt="map icon" class="w-24 h-24">
+                    </div>
+                    <div class="grow">
+                        <h4 class="text-2xl font-semibold text-devanga-primary font-raleway">
+                            Our Address
+                        </h4>
+                        <address class="text-lg text-devanga-primary not-italic font-raleway">
+                            1012 Pebda Parkway, <br>
+                            Morogoro , Tanzania
+                        </address>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-6 py-14 px-20">
+                    <div>
+                        <img src="@/assets/images/icons/contacts.png" alt="map icon" class="w-24 h-24">
+                    </div>
+                    <div class="grow">
+                        <h4 class="text-2xl font-semibold text-devanga-primary font-raleway">
+                            Contact Info
+                        </h4>
+                        <p class="text-lg text-devanga-primary not-italic font-raleway">
+                            Open a chat or give us call at <br>
+                            <a href="tel:310 841 5500" class="font-bold text-interface-100">3108415500</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 
     <div class="relative z-30 bg-white mt-0 xl:mt-[150px] mb-[150px]">
         <div class="group relative xl:absolute top-0 right-0 bottom-0 xl:w-1/2 hway overflow-hidden hway-active">
@@ -21,9 +60,9 @@
         <div class="max-w-screen-xl mx-auto px-4">
             <div class="grid grid-cols-1 xl:grid-cols-2 xl:gap-[100px] mt-[100px] xl:mt-0">
                 <div class="">
-                    <div class="mb-[10px] flex items-center">
+                    <div class="mb-[10px] flex items-center pt-12">
                         <div class="w-[10px] h-[10px] bg-devanga-secondary rounded-[10px] me-[10px]"></div>
-                        <div class="">Contact Us</div>
+                        <div class="text-devanga-secondary text-2xl">Contact Us</div>
                     </div>
                     <div class="text-[55px] leading-[65px] font-['Inter_Tight'] font-black mb-[50px]">
                         <div class="">Get in Touch</div>
@@ -90,7 +129,7 @@
                                 <span
                                     class="absolute top-0 bottom-0 left-0 my-auto w-[65px] h-[65px] group-hover:left-[75%] group-hover:w-[20px] group-hover:h-[20px] rounded-[65px] bg-devanga-secondary transition-all duration-[.5s]"></span>
                                 <span
-                                    class="relative ms-[32px] me-[10px] group-hover:ms-0 group-hover:me-[20px] transition-all duration-[.5s]">Send
+                                    class="relative ms-[32px] me-[10px] group-hover:ms-0 group-hover:me-[20px] transition-all duration-[.5s] text-devanga-primary">Send
                                     Now</span>
                                 <span class="relative"><i class="fas fa-long-arrow-right"></i></span>
                             </button>
@@ -103,19 +142,29 @@
 </template>
 
 <script setup>
-import Breadcrum from '@/components/Breadcrum.vue';
-import Breadcrumb from 'primevue/breadcrumb';
-import { ref } from "vue";
+    import Breadcrum from '@/components/Breadcrum.vue';
+    import Breadcrumb from 'primevue/breadcrumb';
+    import {
+        ref
+    } from "vue";
 
-const home = ref({
-    icon: 'pi pi-home'
-});
-const items = ref([
-    { label: 'Electronics' }, 
-    { label: 'Computer' }, 
-    { label: 'Accessories' }, 
-    { label: 'Keyboard' }, 
-    { label: 'Wireless' }
-]);
-
+    const home = ref({
+        icon: 'pi pi-home'
+    });
+    const items = ref([{
+            label: 'Electronics'
+        },
+        {
+            label: 'Computer'
+        },
+        {
+            label: 'Accessories'
+        },
+        {
+            label: 'Keyboard'
+        },
+        {
+            label: 'Wireless'
+        }
+    ]);
 </script>
