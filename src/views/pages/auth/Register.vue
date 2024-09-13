@@ -1,8 +1,8 @@
 <template>
-  <div class="pt-12">
+  <div class="py-12 font-raleway">
     <div class="bg-gray-100 w-1/2 py-16 px-24 mx-auto text-gray-800 shadow-md rounded-lg">
       <img src="@/assets/images/logo/devangwa-logo.svg" alt="Devangwa Logo">
-      <h2 class="text-center py-4">Welcome to PAT Learning Management System. <br> Already have an account? <router-link
+      <h2 class="text-center py-8">Sign up to start transforming your relationship with personalized coaching and proven principles. Register now and begin your journey to lasting love.<br> Already have an account? <router-link
           :to="{ name: 'login' }" class="text-sky-600">Login</router-link>
       </h2>
       <form @submit.prevent="registerUser">

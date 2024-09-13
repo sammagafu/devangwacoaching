@@ -1,5 +1,5 @@
+// src/store/auth.js
 import { defineStore } from 'pinia';
-import { useRouter } from 'vue-router';
 import apiService from '@/service/apiService';
 
 export const useAuthStore = defineStore({
@@ -12,52 +12,33 @@ export const useAuthStore = defineStore({
   }),
 
   getters: {
-    isAuthenticated() {
-      return !!this.accessToken;
-    },
-    getAccessToken() {
-      return this.accessToken;
-    },
-    getRefreshToken() {
-      return this.refreshToken;
-    },
-    getUser() {
-      return this.user;
-    }
+    isAuthenticated: (state) => !!state.accessToken,
+    getAccessToken: (state) => state.accessToken,
+    getRefreshToken: (state) => state.refreshToken,
+    getUser: (state) => state.user,
   },
 
   actions: {
-    async login(email, password, rememberMe) {
-      const router = useRouter();
+    async login(email, password, rememberMe, router) {
       try {
-        const response = await apiService.post('auth/jwt/create/', {
-          email,
-          password,
-        });
+        const response = await apiService.post('auth/jwt/create/', { email, password });
         this.setTokens(response.data.access, response.data.refresh, rememberMe);
         apiService.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
+
         const userResponse = await apiService.get('auth/users/me/');
         this.setUser(userResponse.data);
-        router.push({ name: 'dashboard' });
+
+        router.push({ name: 'admin-dashboard' }); // Adjust the route name to match your admin dashboard
       } catch (error) {
         console.error('Login error:', error);
-        throw error;
+        throw error; // Let the component handle the error display
       }
     },
 
-    logout() {
-      const router = useRouter();
-      this.accessToken = '';
-      this.refreshToken = '';
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('rememberMe');
-      localStorage.removeItem('user');
-      sessionStorage.removeItem('accessToken');
-      sessionStorage.removeItem('refreshToken');
-      sessionStorage.removeItem('user');
+    logout(router) {
+      this.clearTokens();
+      this.clearUser();
       delete apiService.defaults.headers.common['Authorization'];
-      this.user = null;
       router.push({ name: 'login' });
     },
 
@@ -84,6 +65,15 @@ export const useAuthStore = defineStore({
       } else {
         sessionStorage.setItem('user', JSON.stringify(userData));
       }
+    },
+
+    clearTokens() {
+      this.accessToken = '';
+      this.refreshToken = '';
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('refreshToken');
     },
 
     clearUser() {
