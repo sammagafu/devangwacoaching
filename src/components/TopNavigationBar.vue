@@ -59,7 +59,7 @@
     <!-- Dropdown Menu -->
     <div
       v-if="isOpen"
-      class="fixed top-0 left-0 w-full h-screen bg-white shadow-md z-50 overflow-auto"
+      class="fixed top-0 left-0 w-full h-screen bg-devanga-ken shadow-md z-50 overflow-auto"
     >
       <button
         @click="toggleMenu"
