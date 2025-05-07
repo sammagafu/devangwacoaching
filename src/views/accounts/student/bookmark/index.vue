@@ -3,7 +3,7 @@
 		<b-col xl="9">
 			<b-card no-body class="bg-transparent border rounded-3">
 				<b-card-header class="bg-transparent border-bottom">
-					<h3 class="mb-0">WishList</h3>
+					<h3 class="mb-0">Courses</h3>
 				</b-card-header>
 				<b-card-body class="p-3 p-md-4">
 					<b-row class="g-4">

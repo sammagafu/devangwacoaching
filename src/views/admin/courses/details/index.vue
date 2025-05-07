@@ -4,7 +4,7 @@
       <b-row class="mb-3">
         <b-col cols="12" class="d-sm-flex justify-content-between align-items-center">
           <h1 class="h3 mb-2 mb-sm-0">Course Details</h1>
-          <router-link v-if="course" :to="{ name: 'admin.course.edit', params: { slug: course.slug } }" class="btn btn-sm btn-primary mb-0">Edit Course</router-link>
+          <router-link v-if="course" :to="{ name: 'admin.course.list' }" class="btn btn-sm btn-primary mb-0">Back to courses</router-link>
         </b-col>
       </b-row>
 

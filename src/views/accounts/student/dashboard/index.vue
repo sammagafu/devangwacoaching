@@ -185,8 +185,8 @@
   // Fetch user data from API
   onMounted(async () => {
 	try {
-	  const response = await api.get('/users/me/'); // Adjust endpoint as needed
-	  authStore.setUser(response.data); // Update store with user data
+	  const response = await api.get('auth/users/me/'); // Adjust endpoint as needed
+	  authStore.updateUser(response.data); // Update store with user data
 	} catch (error) {
 	  console.error('Failed to fetch user data:', error);
 	}

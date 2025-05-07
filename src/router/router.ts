@@ -46,10 +46,12 @@ const demoRoutes = [
     path: '/demos/university',
     name: 'demos.university',
     meta: {
+ Eletype: {
       title: setTitle('University')
     },
     component: () => import('@/views/demos/university/index.vue')
-  },
+  }
+},
   {
     path: '/demos/kindergarten',
     name: 'demos.kindergarten',
@@ -101,8 +103,14 @@ const demoRoutes = [
 ];
 
 const pagesRoutes = [
-
-  // Course
+  {
+    path: '/forbidden',
+    name: 'specialty.forbidden',
+    meta: {
+      title: setTitle('Forbidden')
+    },
+    component: () => import('@/views/Forbiden.vue')
+  },
   {
     path: '/course/categories',
     name: 'course.categories',
@@ -179,12 +187,12 @@ const pagesRoutes = [
     path: '/course/video-player',
     name: 'course.video.player',
     meta: {
-      title: setTitle('Course Video')
+      title: setTitle('Course Video'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
     component: () => import('@/views/pages/course/coursevideo/index.vue')
   },
-
-  // About
   {
     path: '/about/about-us',
     name: 'about',
@@ -233,8 +241,6 @@ const pagesRoutes = [
     },
     component: () => import('@/views/pages/about/pricing/index.vue')
   },
-
-  // Hero
   {
     path: '/hero/form',
     name: 'hero.form',
@@ -251,8 +257,6 @@ const pagesRoutes = [
     },
     component: () => import('@/views/pages/heroBanner/vector/index.vue')
   },
-
-  // Shop
   {
     path: '/shop',
     name: 'shop.grid',
@@ -262,19 +266,21 @@ const pagesRoutes = [
     component: () => import('@/views/pages/shop/shop/index.vue')
   },
   {
-    path: "/shop/:id",
-    name: "shop.product.detail",
-    params: { id: "3001" },
+    path: '/shop/:id',
+    name: 'shop.product.detail',
+    params: { id: '3001' },
     meta: {
-      title: setTitle("Shop Details")
+      title: setTitle('Shop Details')
     },
-    component: () => import("@/views/pages/shop/shop/[id]/index.vue"),
+    component: () => import('@/views/pages/shop/shop/[id]/index.vue')
   },
   {
     path: '/shop/cart',
     name: 'shop.cart',
     meta: {
-      title: setTitle('Cart')
+      title: setTitle('Cart'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
     component: () => import('@/views/pages/shop/cart/index.vue')
   },
@@ -282,7 +288,9 @@ const pagesRoutes = [
     path: '/shop/checkout',
     name: 'shop.checkout',
     meta: {
-      title: setTitle('Checkout')
+      title: setTitle('Checkout'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
     component: () => import('@/views/pages/shop/checkout/index.vue')
   },
@@ -290,7 +298,9 @@ const pagesRoutes = [
     path: '/shop/empty-cart',
     name: 'shop.empty-cart',
     meta: {
-      title: setTitle('Empty Cart')
+      title: setTitle('Empty Cart'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
     component: () => import('@/views/pages/shop/empty-cart/index.vue')
   },
@@ -298,12 +308,12 @@ const pagesRoutes = [
     path: '/shop/wishlist',
     name: 'shop.wishlist',
     meta: {
-      title: setTitle('Wishlist')
+      title: setTitle('Wishlist'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
     component: () => import('@/views/pages/shop/wishlist/index.vue')
   },
-
-  // Help
   {
     path: '/help-center',
     name: 'help.center',
@@ -313,476 +323,550 @@ const pagesRoutes = [
     component: () => import('@/views/pages/help/help-center/index.vue')
   },
   {
-    path: "/help-center/:id",
-    name: "help.center.single",
-    params: { id: "3001" },
+    path: '/help-center/:id',
+    name: 'help.center.single',
+    params: { id: '3001' },
     meta: {
-      title: setTitle("Help Center Details")
+      title: setTitle('Help Center Details')
     },
-    component: () => import("@/views/pages/help/help-center/[id]/index.vue"),
+    component: () => import('@/views/pages/help/help-center/[id]/index.vue')
   },
   {
-    path: "/faq",
-    name: "help.faq",
+    path: '/faq',
+    name: 'help.faq',
     meta: {
-      title: setTitle("FAQs")
+      title: setTitle('FAQs')
     },
-    component: () => import("@/views/pages/help/faqs/index.vue"),
-  },
-
-  // Authentication
-  {
-    path: "/auth/sign-in",
-    name: "auth.sign-in",
-    meta: {
-      title: setTitle("Sign In")
-    },
-    component: () => import("@/views/pages/auth/sign-In.vue"),
+    component: () => import('@/views/pages/help/faqs/index.vue')
   },
   {
-    path: "/auth/sign-up",
-    name: "auth.sign-up",
+    path: '/auth/sign-in',
+    name: 'auth.sign-in',
     meta: {
-      title: setTitle("Sign Up")
+      title: setTitle('Sign In')
     },
-    component: () => import("@/views/pages/auth/sign-up.vue"),
+    component: () => import('@/views/pages/auth/sign-In.vue')
   },
   {
-    path: "/auth/forgot-password",
-    name: "auth.forgot-password",
+    path: '/auth/sign-up',
+    name: 'auth.sign-up',
     meta: {
-      title: setTitle("Forgot Password")
+      title: setTitle('Sign Up')
     },
-    component: () => import("@/views/pages/auth/forgot-password.vue"),
-  },
-
-  // Form
-  {
-    path: "/form/request-demo",
-    name: "form.request.demo",
-    meta: {
-      title: setTitle("Request Demo")
-    },
-    component: () => import("@/views/pages/form/request-demo.vue"),
+    component: () => import('@/views/pages/auth/sign-up.vue')
   },
   {
-    path: "/form/book-class",
-    name: "form.book.class",
+    path: '/auth/forgot-password',
+    name: 'auth.forgot-password',
     meta: {
-      title: setTitle("Book Class")
+      title: setTitle('Forgot Password')
     },
-    component: () => import("@/views/pages/form/book-class.vue"),
+    component: () => import('@/views/pages/auth/forgot-password.vue')
   },
   {
-    path: "/form/request-access",
-    name: "form.request.access",
+    path: '/form/request-demo',
+    name: 'form.request.demo',
     meta: {
-      title: setTitle("Request Access")
+      title: setTitle('Request Demo')
     },
-    component: () => import("@/views/pages/form/request-access/index.vue"),
+    component: () => import('@/views/pages/form/request-demo.vue')
   },
   {
-    path: "/form/admission-form",
-    name: "form.admission.form",
+    path: '/form/book-class',
+    name: 'form.book.class',
     meta: {
-      title: setTitle("Admission Form")
+      title: setTitle('Book Class')
     },
-    component: () => import("@/views/pages/form/admission-form.vue"),
-  },
-
-  // Specialty
-  {
-    path: "/error-404",
-    name: "specialty.error-404",
-    meta: {
-      title: setTitle("Error 404")
-    },
-    component: () => import("@/views/pages/specialty/error-404.vue"),
+    component: () => import('@/views/pages/form/book-class.vue')
   },
   {
-    path: "/coming-soon",
-    name: "specialty.coming.soon",
+    path: '/form/request-access',
+    name: 'form.request.access',
     meta: {
-      title: setTitle("Coming Soon")
+      title: setTitle('Request Access')
     },
-    component: () => import("@/views/pages/specialty/coming-soon.vue"),
-  },
-
-  {
-    path: "/instructor-list",
-    name: "instructor.list",
-    meta: {
-      title: setTitle("Instructor List")
-    },
-    component: () => import("@/views/pages/instructors/index.vue"),
+    component: () => import('@/views/pages/form/request-access/index.vue')
   },
   {
-    path: "/instructor/:id",
-    name: "instructor.single",
-    params: { id: "3001" },
+    path: '/form/admission-form',
+    name: 'form.admission.form',
     meta: {
-      title: setTitle("Instructor Details")
+      title: setTitle('Admission Form')
     },
-    component: () => import("@/views/pages/instructors/[id]/index.vue"),
+    component: () => import('@/views/pages/form/admission-form.vue')
   },
   {
-    path: "/become-instructor",
-    name: "become.instructor",
+    path: '/error-404',
+    name: 'specialty.error-404',
     meta: {
-      title: setTitle("Become an Instructor")
+      title: setTitle('Error 404')
     },
-    component: () => import("@/views/pages/become-instructor/index.vue"),
+    component: () => import('@/views/pages/specialty/error-404.vue')
   },
   {
-    path: "/abroad-single",
-    name: "abroad.single",
+    path: '/coming-soon',
+    name: 'specialty.coming.soon',
     meta: {
-      title: setTitle("Abroad Single")
+      title: setTitle('Coming Soon')
     },
-    component: () => import("@/views/pages/abroad-single/index.vue"),
+    component: () => import('@/views/pages/specialty/coming-soon.vue')
   },
   {
-    path: "/workshop-detail",
-    name: "workshop.detail",
+    path: '/instructor-list',
+    name: 'instructor.list',
     meta: {
-      title: setTitle("Abroad Single")
+      title: setTitle('Instructor List')
     },
-    component: () => import("@/views/pages/workshop-detail/index.vue"),
+    component: () => import('@/views/pages/instructors/index.vue')
   },
   {
-    path: "/event-detail",
-    name: "event.detail",
+    path: '/instructor/:id',
+    name: 'instructor.single',
+    params: { id: '3001' },
     meta: {
-      title: setTitle("Abroad Single")
+      title: setTitle('Instructor Details')
     },
-    component: () => import("@/views/pages/event-detail/index.vue"),
+    component: () => import('@/views/pages/instructors/[id]/index.vue')
+  },
+  {
+    path: '/become-instructor',
+    name: 'become.instructor',
+    meta: {
+      title: setTitle('Become an Instructor'),
+      authRequired: true,
+      roles: ['normal', 'admin']
+    },
+    component: () => import('@/views/pages/become-instructor/index.vue')
+  },
+  {
+    path: '/abroad-single',
+    name: 'abroad.single',
+    meta: {
+      title: setTitle('Abroad Single')
+    },
+    component: () => import('@/views/pages/abroad-single/index.vue')
+  },
+  {
+    path: '/workshop-detail',
+    name: 'workshop.detail',
+    meta: {
+      title: setTitle('Workshop Detail')
+    },
+    component: () => import('@/views/pages/workshop-detail/index.vue')
+  },
+  {
+    path: '/event-detail',
+    name: 'event.detail',
+    meta: {
+      title: setTitle('Event Detail')
+    },
+    component: () => import('@/views/pages/event-detail/index.vue')
   }
 ];
 
 const adminRoutes = [
   {
-    path: "/admin/dashboard",
-    name: "admin.dashboard",
+    path: '/admin/dashboard',
+    name: 'admin.dashboard',
     meta: {
-      title: setTitle("Dashboard"),
-      authRequired: true
+      title: setTitle('Dashboard'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/dashboard/index.vue"),
+    component: () => import('@/views/admin/dashboard/index.vue')
   },
   {
-    path: "/admin/course-list",
-    name: "admin.course-list",
+    path: '/admin/course-list',
+    name: 'admin.course-list',
     meta: {
-      title: setTitle("Course List"),
-      authRequired: true
+      title: setTitle('Course List'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/courses/list/index.vue"),
+    component: () => import('@/views/admin/courses/list/index.vue')
   },
   {
-    path: "/admin/course-category",
-    name: "admin.course.category",
+    path: '/admin/course-category',
+    name: 'admin.course.category',
     meta: {
-      title: setTitle("Course Category"),
-      authRequired: true
+      title: setTitle('Course Category'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/courses/category/index.vue"),
+    component: () => import('@/views/admin/courses/category/index.vue')
   },
   {
-    path: "/admin/course-detail/:slug",
-    name: "admin.course.detail",
+    path: '/admin/course-detail/:slug',
+    name: 'admin.course.detail',
     meta: {
-      title: setTitle("Course detail"),
-      authRequired: true
+      title: setTitle('Course Detail'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/courses/details/index.vue"),
+    component: () => import('@/views/admin/courses/details/index.vue')
   },
   {
-    path: "/admin/course-detail/:slug/edit",
-    name: "admin.course.edit",
+    path: '/admin/course-detail/:slug/edit',
+    name: 'admin.course.edit',
     meta: {
-      title: setTitle("Course Edits"),
-      authRequired: true
+      title: setTitle('Course Edits'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/courses/details/index.vue"),
+    component: () => import('@/views/admin/courses/edit/index.vue')
   },
   {
-    path: "/admin/student-list",
-    name: "admin.student.list",
+    path: '/admin/student-list',
+    name: 'admin.student.list',
     meta: {
-      title: setTitle("Student List"),
-      authRequired: true
+      title: setTitle('Student List'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/studentList/index.vue"),
+    component: () => import('@/views/admin/studentList/index.vue')
   },
   {
-    path: "/admin/instructor-list",
-    name: "admin.instructor.list",
+    path: '/admin/instructor-list',
+    name: 'admin.instructor.list',
     meta: {
-      title: setTitle("Instructor List"),
-      authRequired: true
+      title: setTitle('Instructor List'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/instructors/list/index.vue"),
+    component: () => import('@/views/admin/instructors/list/index.vue')
   },
   {
-    path: "/admin/instructor-detail",
-    name: "admin.instructor.detail",
+    path: '/admin/instructor-detail',
+    name: 'admin.instructor.detail',
     meta: {
-      title: setTitle("Instructor Detail"),
-      authRequired: true
+      title: setTitle('Instructor Detail'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/instructors/details/index.vue"),
+    component: () => import('@/views/admin/instructors/details/index.vue')
   },
   {
-    path: "/admin/instructor-request",
-    name: "admin.instructor.request",
+    path: '/admin/instructor-request',
+    name: 'admin.instructor.request',
     meta: {
-      title: setTitle("Instructor Request"),
-      authRequired: true
+      title: setTitle('Instructor Request'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/instructors/request/index.vue"),
+    component: () => import('@/views/admin/instructors/request/index.vue')
   },
   {
-    path: "/admin/review",
-    name: "admin.review",
+    path: '/admin/review',
+    name: 'admin.review',
     meta: {
-      title: setTitle("Review"),
-      authRequired: true
+      title: setTitle('Review'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/reviews/index.vue"),
+    component: () => import('@/views/admin/reviews/index.vue')
   },
   {
-    path: "/admin/earning",
-    name: "admin.earning",
+    path: '/admin/earning',
+    name: 'admin.earning',
     meta: {
-      title: setTitle("earning"),
-      authRequired: true
+      title: setTitle('Earning'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/earning/index.vue"),
+    component: () => import('@/views/admin/earning/index.vue')
   },
   {
-    path: "/admin/setting",
-    name: "admin.setting",
+    path: '/admin/setting',
+    name: 'admin.setting',
     meta: {
-      title: setTitle("setting"),
-      authRequired: true
+      title: setTitle('Setting'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/setting/index.vue"),
+    component: () => import('@/views/admin/setting/index.vue')
   },
   {
-    path: "/admin/create-course",
-    name: "admin.create.course",
+    path: '/admin/create-course',
+    name: 'admin.create.course',
     meta: {
-      title: setTitle("Create Course")
+      title: setTitle('Create Course'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/courses/create-course/index.vue"),
+    component: () => import('@/views/admin/courses/create-course/index.vue')
   },
   {
-    path: "/admin/manage-events/",
-    name: "admin.manage.event",
+    path: '/admin/manage-events/',
+    name: 'admin.manage.event',
     meta: {
-      title: setTitle("Manage Events")
+      title: setTitle('Manage Events'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/events/index.vue"),
+    component: () => import('@/views/admin/events/index.vue')
   },
   {
-    path: "/admin/manage-events/:slug",
-    name: "admin.manage.event-details",
+    path: '/admin/manage-events/:slug',
+    name: 'admin.manage.event-details',
     meta: {
-      title: setTitle("Manage Events")
+      title: setTitle('Manage Events'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/events/components/EventDetails.vue"),
+    component: () => import('@/views/admin/events/components/EventDetails.vue')
   },
   {
-    path: "/admin/manage-events/create-event",
-    name: "admin.manage.event-create",
+    path: '/admin/manage-events/create-event',
+    name: 'admin.manage.event-create',
     meta: {
-      title: setTitle("Create Event")
-  },
-    component: () => import("@/views/admin/events/create-events/index.vue"),
-  },
-
-  {
-    path: "/admin/error-404",
-    name: "admin.error-404",
-    meta: {
-      title: setTitle("Error 404"),
-      authRequired: true
+      title: setTitle('Create Event'),
+      authRequired: true,
+      roles: ['admin']
     },
-    component: () => import("@/views/admin/Error-404.vue"),
+    component: () => import('@/views/admin/events/create-events/index.vue')
+  },
+  {
+    path: '/admin/manage-community',
+    name: 'admin.manage.community',
+    meta: {
+      title: setTitle('Manage Community'),
+      authRequired: true,
+      roles: ['admin']
+    },
+    component: () => import('@/views/admin/community/index.vue')
+  },
+  {
+    path: '/admin/error-404',
+    name: 'admin.error-404',
+    meta: {
+      title: setTitle('Error 404'),
+      authRequired: true,
+      roles: ['admin']
+    },
+    component: () => import('@/views/admin/Error-404.vue')
   },
 ];
 
 const accountsRoutes = [
-  // Instructor
   {
-    path: "/instructor/dashboard",
-    name: "instructor.dashboard",
+    path: '/instructor/dashboard',
+    name: 'instructor.dashboard',
     meta: {
-      title: setTitle("Dashboard")
+      title: setTitle('Dashboard'),
+      authRequired: true,
+      roles: ['staff', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/dashboard/index.vue"),
+    component: () => import('@/views/accounts/instructor/dashboard/index.vue')
   },
   {
-    path: "/instructor/course",
-    name: "instructor.course",
+    path: '/instructor/course',
+    name: 'instructor.course',
     meta: {
-      title: setTitle("Course")
+      title: setTitle('Course'),
+      authRequired: true,
+      roles: ['staff', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/course/index.vue"),
+    component: () => import('@/views/accounts/instructor/course/index.vue')
   },
   {
-    path: "/instructor/create-course",
-    name: "instructor.create.course",
+    path: '/instructor/course-added',
+    name: 'instructor.course.added',
     meta: {
-      title: setTitle("Create Course")
+      title: setTitle('Course Added'),
+      authRequired: true,
+      roles: ['staff', 'admin']
     },
-    // component: () => import("@/views/accounts/instructor/create-course/index.vue"),
+    component: () => import('@/views/accounts/instructor/course-added.vue')
   },
   {
-    path: "/instructor/course-added",
-    name: "instructor.course.added",
+    path: '/instructor/quiz',
+    name: 'instructor.quiz',
     meta: {
-      title: setTitle("Course Added")
+      title: setTitle('Quiz'),
+      authRequired: true,
+      roles: ['staff', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/course-added.vue"),
+    component: () => import('@/views/accounts/instructor/quiz/index.vue')
   },
   {
-    path: "/instructor/quiz",
-    name: "instructor.quiz",
+    path: '/instructor/earning',
+    name: 'instructor.earning',
     meta: {
-      title: setTitle("Quiz")
+      title: setTitle('Earning'),
+      authRequired: true,
+      roles: ['staff', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/quiz/index.vue"),
+    component: () => import('@/views/accounts/instructor/earning/index.vue')
   },
   {
-    path: "/instructor/earning",
-    name: "instructor.earning",
+    path: '/instructor/student',
+    name: 'instructor.student',
     meta: {
-      title: setTitle("Earning")
+      title: setTitle('Student List'),
+      authRequired: true,
+      roles: ['staff', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/earning/index.vue"),
+    component: () => import('@/views/accounts/instructor/students/index.vue')
   },
   {
-    path: "/instructor/student",
-    name: "instructor.student",
+    path: '/instructor/order',
+    name: 'instructor.order',
     meta: {
-      title: setTitle("Student List")
+      title: setTitle('Orders'),
+      authRequired: true,
+      roles: ['staff', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/students/index.vue"),
+    component: () => import('@/views/accounts/instructor/orders/index.vue')
   },
   {
-    path: "/instructor/order",
-    name: "instructor.order",
+    path: '/instructor/review',
+    name: 'instructor.review',
     meta: {
-      title: setTitle("Orders")
+      title: setTitle('Reviews'),
+      authRequired: true,
+      roles: ['staff', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/orders/index.vue"),
+    component: () => import('@/views/accounts/instructor/reviews/index.vue')
   },
   {
-    path: "/instructor/review",
-    name: "instructor.review",
+    path: '/instructor/settings',
+    name: 'instructor.settings',
     meta: {
-      title: setTitle("Reviews")
+      title: setTitle('Settings'),
+      authRequired: true,
+      roles: ['staff', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/reviews/index.vue"),
+    component: () => import('@/views/accounts/instructor/settings.vue')
   },
   {
-    path: "/instructor/edit-profile",
-    name: "instructor.edit.profile",
+    path: '/instructor/payout',
+    name: 'instructor.payout',
     meta: {
-      title: setTitle("Edit Profile")
+      title: setTitle('Payouts'),
+      authRequired: true,
+      roles: ['staff', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/edit-profile/index.vue"),
+    component: () => import('@/views/accounts/instructor/payout/index.vue')
   },
   {
-    path: "/instructor/settings",
-    name: "instructor.settings",
+    path: '/instructor/delete-account',
+    name: 'instructor.delete.account',
     meta: {
-      title: setTitle("Settings")
+      title: setTitle('Delete Account'),
+      authRequired: true,
+      roles: ['staff', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/settings.vue"),
+    component: () => import('@/views/accounts/instructor/delete-account.vue')
   },
   {
-    path: "/instructor/payout",
-    name: "instructor.payout",
+    path: '/student/dashboard',
+    name: 'student.dashboard',
     meta: {
-      title: setTitle("Payouts")
+      title: setTitle('Dashboard'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/payout/index.vue"),
+    component: () => import('@/views/accounts/student/dashboard/index.vue')
   },
   {
-    path: "/instructor/delete-account",
-    name: "instructor.delete.account",
+    path: '/student/profile',
+    name: 'student.profile',
     meta: {
-      title: setTitle("Delete Accounts")
+      title: setTitle('Profile'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
-    component: () => import("@/views/accounts/instructor/delete-account.vue"),
-  },
-
-  // Student
-  {
-    path: "/student/dashboard",
-    name: "student.dashboard",
-    meta: {
-      title: setTitle("Dashboard")
-    },
-    component: () => import("@/views/accounts/student/dashboard/index.vue"),
+    component: () => import('@/views/accounts/student/dashboard/index.vue')
   },
   {
-    path: "/student/profile",
-    name: "student.profile",
+    path: '/student/edit-profile',
+    name: 'student.edit.profile',
     meta: {
-      title: setTitle("Dashboard")
+      title: setTitle('Edit Profile'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
-    component: () => import("@/views/accounts/student/dashboard/index.vue"),
+    component: () => import('@/views/accounts/student/edit-profile/index.vue')
   },
   {
-    path: "/student/subscription",
-    name: "student.subscription",
+    path: '/student/subscription',
+    name: 'student.subscription',
     meta: {
-      title: setTitle("Subscription")
+      title: setTitle('Subscription'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
-    component: () => import("@/views/accounts/student/subscription/index.vue"),
+    component: () => import('@/views/accounts/student/subscription/index.vue')
   },
   {
-    path: "/student/course",
-    name: "student.course",
+    path: '/student/course',
+    name: 'student.course',
     meta: {
-      title: setTitle("Courses")
+      title: setTitle('Courses'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
-    component: () => import("@/views/accounts/student/courses/index.vue"),
+    component: () => import('@/views/accounts/student/courses/index.vue')
   },
   {
-    path: "/student/course/:slug",
-    name: "student.course.details",
+    path: '/student/course/:slug',
+    name: 'student.course.details',
     meta: {
-      title: setTitle("Course Details")
+      title: setTitle('Course Details'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
-    component: () => import("@/views/accounts/student/course-resume/index.vue"),
+    component: () => import('@/views/accounts/student/course-resume/index.vue')
   },
   {
-    path: "/student/quiz",
-    name: "student.quiz",
+    path: '/student/quiz',
+    name: 'student.quiz',
     meta: {
-      title: setTitle("Quiz")
+      title: setTitle('Quiz'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
-    component: () => import("@/views/accounts/student/quiz/index.vue"),
+    component: () => import('@/views/accounts/student/quiz/index.vue')
   },
   {
-    path: "/student/payment",
-    name: "student.payment",
+    path: '/student/payment',
+    name: 'student.payment',
     meta: {
-      title: setTitle("Payment Info")
+      title: setTitle('Payment Info'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
-    component: () => import("@/views/accounts/student/payment/index.vue"),
+    component: () => import('@/views/accounts/student/payment/index.vue')
   },
   {
-    path: "/student/bookmark",
-    name: "student.bookmark",
+    path: '/student/bookmark',
+    name: 'student.bookmark',
     meta: {
-      title: setTitle("Bookmark")
+      title: setTitle('Bookmark'),
+      authRequired: true,
+      roles: ['normal', 'admin']
     },
-    component: () => import("@/views/accounts/student/bookmark/index.vue"),
+    component: () => import('@/views/accounts/student/bookmark/index.vue')
+  },
+  {
+    path: '/student/community',
+    name: 'student.community',
+    meta: {
+      title: setTitle('Community'),
+      authRequired: true,
+      roles: ['normal', 'admin']
+    },
+    component: () => import('@/views/accounts/student/community/index.vue')
+  },
+  {
+    path: '/student/community/:slug',
+    name: 'student.community.threads',
+    meta: {
+      title: setTitle('Community Threads'),
+      authRequired: true,
+      roles: ['normal', 'admin']
+    },
+    component: () => import('@/views/accounts/student/community/CommunityThreads.vue')
   }
 ];
 

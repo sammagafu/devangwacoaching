@@ -1,6 +1,6 @@
 import type { MenuItemType } from '@/helpers/menu';
-import { BIconGridFill, BIconBasketFill, BIconFileEarmarkPlusFill, BIconFileCheckFill, BIconQuestionDiamond, BIconCartCheckFill, BIconStarFill, BIconCardChecklist, BIconCreditCard2FrontFill, BIconHouse, BIconBasket, BIconUiChecksGrid, BIconGraphUp, BIconPeople, BIconFolderCheck, BIconStar, BIconPencilSquare, BIconWallet2, BIconGear, BIconTrash, BIconCreditCard2Front, BIconCartCheck, BIconJournals, BIconSpeedometer2, BIconWallet, BIconMortarboardFill, BIconFileEarmarkText, BIconPersonFillGear, BIconGearFill, BIconTrashFill, BIconPersonFill, BIconBoxArrowRight } from 'bootstrap-icons-vue';
-import { faUserGraduate, faUserCog, faUserTie, faLock, faHouse, faBasketShopping,faCalendar,faUsers, faU } from '@fortawesome/free-solid-svg-icons';
+import { BIconGridFill, BIconBasketFill, BIconFileEarmarkPlusFill, BIconFileCheckFill, BIconQuestionDiamond, BIconCartCheckFill, BIconStarFill, BIconCardChecklist, BIconCreditCard2FrontFill, BIconHouse, BIconBasket, BIconUiChecksGrid, BIconGraphUp, BIconPeople, BIconFolderCheck, BIconStar, BIconPencilSquare, BIconWallet2, BIconGear, BIconTrash, BIconCreditCard2Front, BIconCartCheck, BIconJournals, BIconSpeedometer2, BIconWallet, BIconMortarboardFill, BIconFileEarmarkText, BIconPersonFillGear, BIconGearFill, BIconTrashFill, BIconPersonFill, BIconBoxArrowRight} from 'bootstrap-icons-vue';
+import { faUserGraduate, faUserCog, faUserTie, faLock, faHouse, faBasketShopping,faCalendar,faUsers } from '@fortawesome/free-solid-svg-icons';
 import { faCommentDots, faChartBar } from '@fortawesome/free-regular-svg-icons';
 
 export const APP_MENU_ITEMS: MenuItemType[] = [
@@ -71,7 +71,7 @@ export const ADMIN_MENU_ITEMS: MenuItemType[] = [
     key: "community",
     icon: faUsers,
     label: "Community",
-    route: { name: "admin.student.list" },
+    route: { name: "admin.manage.community" },
   },
   {
     key: "reviews",
@@ -84,44 +84,7 @@ export const ADMIN_MENU_ITEMS: MenuItemType[] = [
     icon: faChartBar,
     label: "Earnings",
     route: { name: "admin.earning" },
-  },
-  {
-    key: "settings",
-    icon: faUserCog,
-    label: "Admin Settings",
-    route: { name: "admin.setting" },
-  },
-  {
-    key: "auth",
-    icon: faLock,
-    label: "Authentication",
-    children: [
-      {
-        key: "auth-sign-up",
-        label: "Sign Up",
-        route: { name: "auth.sign-up" },
-        parentKey: "auth",
-      },
-      {
-        key: "auth-sign-in",
-        label: "Sign In",
-        route: { name: "auth.sign-in" },
-        parentKey: "auth",
-      },
-      {
-        key: "auth-forgot-password",
-        label: "Forgot Password",
-        route: { name: "auth.forgot-password" },
-        parentKey: "auth",
-      },
-      {
-        key: "auth-error-404",
-        label: "Error 404",
-        route: { name: "admin.error-404" },
-        parentKey: "auth",
-      },
-    ],
-  }
+  },  
 ];
 
 
@@ -162,11 +125,6 @@ export const INSTRUCTOR_MENU_ITEMS = [
     icon: BIconStar
   },
   {
-    title: 'Edit Profile',
-    route: { name: 'instructor.edit.profile' },
-    icon: BIconPencilSquare
-  },
-  {
     title: 'Payouts',
     route: { name: 'instructor.payout' },
     icon: BIconWallet2
@@ -205,9 +163,9 @@ export const STUDENT_MENU_ITEMS = [
     icon: BIconBasket
   },
   {
-    title: 'Quiz',
-    route: { name: 'student.quiz' },
-    icon: BIconQuestionDiamond
+    title: 'My Communities',
+    route: { name: 'student.community' },
+    icon: BIconPeople,
   },
   {
     title: 'Payment Info',
@@ -221,7 +179,7 @@ export const STUDENT_MENU_ITEMS = [
   },
   {
     title: 'Edit Profile',
-    route: { name: 'instructor.edit.profile' },
+    route: { name: 'student.edit.profile' },
     icon: BIconPencilSquare
   },
   {

@@ -7,7 +7,7 @@ const router = createRouter({
   routes: allRoutes
 })
 
-// Before each route evaluates...
+// Set document title
 router.beforeEach((to, from, next) => {
   const title = to.meta.title
   if (title) {
@@ -16,27 +16,50 @@ router.beforeEach((to, from, next) => {
   next()
 })
 
-router.beforeEach((routeTo, routeFrom, next) => {
-  // Check if auth is required on this route
-  // (including nested routes).
-  const authRequired = routeTo.matched.some((route) => route.meta.authRequired)
+// Role-based access control
+router.beforeEach((to, from, next) => {
+  const auth = useAuthStore();
+  const authRequired = to.matched.some((route) => route.meta.authRequired);
 
-  // If auth isn't required for the route, just continue.
-  if (!authRequired) return next()
-
-  // If auth is required and the user is logged in...
-  const useAuth = useAuthStore()
-  if (useAuth.isAuthenticated) {
-    return next()
+  // Allow access to routes that don't require authentication
+  if (!authRequired) {
+    return next();
   }
 
-  // If auth is required and the user is NOT currently logged in,
-  // redirect to login.
-  redirectToLogin()
-
-  function redirectToLogin() {
-    // Pass the original route to the login component
-    next({ name: 'auth.sign-in', query: { redirectedFrom: routeTo.fullPath } })
+  // Redirect unauthenticated users to login
+  if (!auth.isAuthenticated) {
+    return redirectToLogin(to);
   }
-})
+
+  // Collect required roles from the route and its parents
+  const requiredRoles = to.matched.reduce((roles, route) => {
+    return route.meta.roles ? [...roles, ...route.meta.roles] : roles;
+  }, []);
+
+  // If no specific roles are required, allow access (for authenticated users)
+  if (requiredRoles.length === 0) {
+    return next();
+  }
+
+  // Check if the user has at least one of the required roles
+  const hasAccess = requiredRoles.some(role => {
+    if (role === 'normal') return auth.isNormalUser;
+    if (role === 'staff') return auth.isStaff;
+    if (role === 'admin') return auth.isAdmin;
+    return false;
+  });
+
+  if (!hasAccess) {
+    return next({ name: 'specialty.forbidden' });
+  }
+
+  // Allow access if all checks pass
+  next();
+});
+
+// Redirect to login with the original route as a query parameter
+function redirectToLogin(to) {
+  return { name: 'auth.sign-in', query: { redirectedFrom: to.fullPath } };
+}
+
 export default router

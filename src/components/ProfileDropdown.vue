@@ -76,7 +76,7 @@ const userAvatar = computed(() => authStore.user?.user_details?.avatar || avatar
 
 // Logout handler
 const logout = () => {
-  authStore.clearUser(); // Clear user data
+  authStore.logout(); // Clear user data
   localStorage.removeItem('access_token'); // Remove JWT token
   router.push({ name: 'auth.sign-in' }); // Redirect to login
 };

@@ -1,3 +1,4 @@
+<!-- src/views/admin/courses/create-course/index.vue -->
 <template>
   <AdminLayout>
     <main>
@@ -29,7 +30,7 @@
                 <b-form-group label="Load Draft">
                   <b-form-select v-model="selectedDraft" @change="loadDraft">
                     <option value="">Select a draft</option>
-                    <option v-for="draft in drafts" :key="draft.id" :value="draft.id">
+                    <option v-for="draft in drafts" :key="draft.slug" :value="draft.slug">
                       {{ draft.title || 'Untitled Draft' }}
                     </option>
                   </b-form-select>
@@ -86,7 +87,7 @@
                   <b-form @submit.prevent="publishCourse">
                     <Step1 :form-data="formData" :next-page="nextPage" :errors="errors" :save-draft="saveDraft" />
                     <Step2 :form-data="formData" :next-page="nextPage" :previous-page="previousPage" :errors="errors" :save-draft="saveDraft" />
-                    <Step3 :form-data="formData" :next-page="nextPage" :previous-page="previousPage" :errors="errors" :save-draft="saveDraft" />
+                    <Step3 :form-data="formData" :next-page="nextPage" :previous-page="previousPage" :errors="errors" :save-draft="saveDraft" :course-id="courseId" @update:formData="updateFormData" />
                     <Step4 :form-data="formData" :previous-page="previousPage" :errors="errors" :save-draft="saveDraft" />
                   </b-form>
                 </div>
@@ -104,26 +105,27 @@ import { ref, onMounted } from 'vue';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import { useRouter } from 'vue-router';
-import TopBar8 from '@/views/admin/courses/create-course/components/TopBar8.vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
 import Step1 from '@/views/admin/courses/create-course/components/Step1.vue';
 import Step2 from '@/views/admin/courses/create-course/components/Step2.vue';
 import Step3 from '@/views/admin/courses/create-course/components/Step3.vue';
 import Step4 from '@/views/admin/courses/create-course/components/Step4.vue';
-import Footer7 from '@/views/admin/courses/create-course/components/Footer7.vue';
 import pattern04 from '@/assets/images/pattern/04.png';
 import { api } from '@/services/authService';
 import Stepper from 'bs-stepper';
+import { debounce } from 'lodash';
 
 const toast = useToast();
 const router = useRouter();
 const stepperRef = ref<HTMLElement | null>(null);
-const stepperInstance = ref<any>(null); // Use any type since bs-stepper types are unreliable
-const currentStep = ref(0); // Track current step manually
+const stepperInstance = ref<any>(null);
+const currentStep = ref(0);
 const submitted = ref(false);
 const drafts = ref([]);
 const selectedDraft = ref('');
 const draftId = ref(null as number | null);
+const draftSlug = ref(null as string | null);
+const courseId = ref(null as number | null);
 
 const formData = ref({
   title: '',
@@ -133,7 +135,7 @@ const formData = ref({
   discount_percentage: null as number | null,
   discount_deadline: null as string | null,
   is_featured: false,
-  modules: [] as { title: string; description: string; order: number }[],
+  modules: [] as { id?: number; title: string; description: string; order: number; videos: { id?: number; tempId?: string; title: string; video_url: string }[]; documents: { id?: number; tempId?: string; title: string; document_file?: File | string }[] }[],
   faqs: [] as { question: string; answer: string }[],
   tags: [] as string[],
 });
@@ -151,6 +153,60 @@ const errors = ref({
   tags: '',
 });
 
+// Debounced save to localStorage
+const saveToLocalStorage = debounce(() => {
+  const formDataCopy = JSON.parse(JSON.stringify(formData.value));
+  // Remove File objects to avoid serialization issues
+  formDataCopy.cover = null;
+  formDataCopy.modules.forEach((module: any) => {
+    module.documents.forEach((doc: any) => {
+      if (doc.document_file instanceof File) {
+        doc.document_file = null;
+      }
+    });
+  });
+  localStorage.setItem('courseFormData', JSON.stringify(formDataCopy));
+  localStorage.setItem('courseFormStep', currentStep.value.toString());
+}, 300);
+
+// Load formData and currentStep from localStorage
+const loadFromLocalStorage = () => {
+  const savedFormData = localStorage.getItem('courseFormData');
+  const savedStep = localStorage.getItem('courseFormStep');
+  if (savedFormData) {
+    const parsedData = JSON.parse(savedFormData);
+    // Ensure File objects are not restored
+    parsedData.cover = null;
+    parsedData.modules.forEach((module: any) => {
+      module.documents.forEach((doc: any) => {
+        if (doc.document_file && typeof doc.document_file !== 'string') {
+          doc.document_file = null;
+        }
+      });
+    });
+    formData.value = parsedData;
+  }
+  if (savedStep) {
+    currentStep.value = parseInt(savedStep);
+    if (stepperInstance.value && currentStep.value >= 0 && currentStep.value <= 3) {
+      stepperInstance.value.to(currentStep.value + 1); // Stepper uses 1-based indexing
+    }
+  }
+};
+
+// Clear localStorage
+const clearLocalStorage = () => {
+  localStorage.removeItem('courseFormData');
+  localStorage.removeItem('courseFormStep');
+  localStorage.removeItem('courseFormStep3');
+};
+
+// Update formData and save to localStorage
+const updateFormData = (newFormData: any) => {
+  formData.value = { ...formData.value, ...newFormData };
+  saveToLocalStorage();
+};
+
 onMounted(async () => {
   if (stepperRef.value) {
     try {
@@ -158,15 +214,16 @@ onMounted(async () => {
         linear: false,
         animation: true,
       });
-      // Listen for step changes to update currentStep
       stepperRef.value.addEventListener('show.bs-stepper', (event: any) => {
         currentStep.value = event.detail.indexStep;
+        saveToLocalStorage();
       });
     } catch (error) {
       console.error('Failed to initialize stepper:', error);
       toast.error('Failed to initialize form stepper');
     }
   }
+  loadFromLocalStorage();
   await fetchDrafts();
 });
 
@@ -174,6 +231,7 @@ const fetchDrafts = async () => {
   try {
     const response = await api.get('course/courses/drafts/');
     drafts.value = response.data;
+    console.log('Drafts fetched:', response.data);
   } catch (error) {
     console.error('Error fetching drafts:', error);
     toast.error('Failed to fetch drafts');
@@ -184,44 +242,67 @@ const loadDraft = async () => {
   if (!selectedDraft.value) {
     resetForm();
     draftId.value = null;
+    draftSlug.value = null;
     return;
   }
   try {
     const response = await api.get(`course/courses/${selectedDraft.value}/`);
-    const draft = response.data;
+    const courseData = response.data;
+    console.log('Course data received:', courseData);
     formData.value = {
-      title: draft.title || '',
-      description: draft.description || '',
-      price: draft.price || null,
-      cover: null, // File cannot be loaded; user must re-upload
-      discount_percentage: draft.discount_percentage || null,
-      discount_deadline: draft.discount_deadline || null,
-      is_featured: draft.is_featured || false,
-      modules: draft.modules?.map((module: any, index: number) => ({
+      title: courseData.title || '',
+      description: courseData.description || '',
+      price: parseFloat(courseData.price) || null,
+      cover: null,
+      discount_percentage: parseFloat(courseData.discount_percentage) || null,
+      discount_deadline: courseData.discount_deadline ? new Date(courseData.discount_deadline).toISOString().slice(0, 16) : null,
+      is_featured: courseData.is_featured || false,
+      modules: courseData.modules?.map((module: any, index: number) => ({
+        id: module.id,
         title: module.title || '',
         description: module.description || '',
         order: module.order || index + 1,
+        videos: module.videos?.map((video: any) => ({
+          id: video.id,
+          tempId: `temp-video-${Date.now()}-${video.id}`,
+          title: video.title,
+          video_url: video.video_url,
+        })) || [],
+        documents: module.documents?.map((document: any) => ({
+          id: document.id,
+          tempId: `temp-document-${Date.now()}-${document.id}`,
+          title: document.title,
+          document_file: document.document_file,
+        })) || [],
       })) || [],
-      faqs: draft.faqs?.map((faq: any) => ({
+      faqs: courseData.faqs?.map((faq: any) => ({
         question: faq.question || '',
         answer: faq.answer || '',
       })) || [],
-      tags: draft.tags?.map((tag: any) => tag.tag) || [],
+      tags: courseData.tags?.map((tag: any) => tag.tag) || [],
     };
-    draftId.value = draft.id;
+    draftId.value = courseData.id;
+    draftSlug.value = courseData.slug;
+    courseId.value = courseData.id;
+    saveToLocalStorage();
     toast.success('Draft loaded successfully');
   } catch (error) {
-    console.error('Error loading draft:', error);
-    toast.error('Failed to load draft');
+    console.error('Error loading draft:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    toast.error('Failed to load draft: ' + (error.response?.data?.message || error.message || 'Unknown error'));
   }
 };
 
 const nextPage = () => {
   if (validateStep(currentStep.value, false)) {
     try {
-      if (stepperInstance.value && currentStep.value < 3) { // 4 steps total (0 to 3)
+      if (stepperInstance.value && currentStep.value < 3) {
         stepperInstance.value.next();
         currentStep.value += 1;
+        saveToLocalStorage();
       }
     } catch (error) {
       console.error('Error navigating to next step:', error);
@@ -235,6 +316,7 @@ const previousPage = () => {
     if (stepperInstance.value && currentStep.value > 0) {
       stepperInstance.value.previous();
       currentStep.value -= 1;
+      saveToLocalStorage();
     }
   } catch (error) {
     console.error('Error navigating to previous step:', error);
@@ -267,8 +349,8 @@ const validateStep = (step: number, strict: boolean = true): boolean => {
       errors.value.description = 'Description is required';
       isValid = false;
     }
-    if (!formData.value.price) {
-      errors.value.price = 'Price is required';
+    if (formData.value.price === null || formData.value.price <= 0) {
+      errors.value.price = 'Valid price is required';
       isValid = false;
     }
   } else if (step === 1 && strict) {
@@ -316,24 +398,35 @@ const validateStep = (step: number, strict: boolean = true): boolean => {
 
 const saveDraft = async () => {
   submitted.value = true;
+
+  if (!formData.value.title) {
+    toast.error('Please provide a title before saving as draft');
+    return;
+  }
+
   const formPayload = new FormData();
-  if (formData.value.title) formPayload.append('title', formData.value.title);
+  formPayload.append('title', formData.value.title);
   if (formData.value.description) formPayload.append('description', formData.value.description);
-  if (formData.value.price !== null) formPayload.append('price', formData.value.price.toFixed(2));
+  if (formData.value.price !== null && formData.value.price > 0) {
+    formPayload.append('price', formData.value.price.toFixed(2));
+  }
   if (formData.value.cover) formPayload.append('cover', formData.value.cover);
   if (formData.value.discount_percentage !== null) {
     formPayload.append('discount_percentage', formData.value.discount_percentage.toFixed(2));
   }
-  if (formData.value.discount_deadline) formPayload.append('discount_deadline', formData.value.discount_deadline);
+  if (formData.value.discount_deadline) {
+    formPayload.append('discount_deadline', new Date(formData.value.discount_deadline).toISOString());
+  }
   formPayload.append('is_featured', formData.value.is_featured.toString());
   if (formData.value.faqs.length) formPayload.append('faqs', JSON.stringify(formData.value.faqs));
   if (formData.value.tags.length) formPayload.append('tags', JSON.stringify(formData.value.tags.map(tag => ({ tag }))));
   formPayload.append('ispublished', 'false');
 
   try {
+    console.log('Saving draft with payload:', [...formPayload.entries()]);
     let response;
-    if (draftId.value) {
-      response = await api.put(`course/courses/${draftId.value}/`, formPayload, {
+    if (draftId.value && draftSlug.value) {
+      response = await api.put(`course/courses/${draftSlug.value}/`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     } else {
@@ -341,20 +434,83 @@ const saveDraft = async () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       draftId.value = response.data.id;
+      draftSlug.value = response.data.slug;
+      courseId.value = response.data.id;
     }
+    console.log('Draft save response:', response.data);
 
-    // Handle modules
     if (formData.value.modules.length) {
       const modulePayload = {
         course: response.data.id,
-        modules: formData.value.modules,
+        modules: formData.value.modules.map(module => ({
+          id: module.id,
+          title: module.title,
+          description: module.description,
+          order: module.order,
+        })),
       };
-      await api.post('course/modules/bulk_create/', modulePayload);
+      console.log('Module payload:', modulePayload);
+      const moduleResponse = await api.post('course/modules/bulk_create/', modulePayload);
+      console.log('Module creation response:', moduleResponse.data);
+
+      // Update module IDs from response
+      moduleResponse.data.forEach((savedModule: any, index: number) => {
+        formData.value.modules[index].id = savedModule.id;
+      });
+
+      // Save videos
+      for (const module of formData.value.modules) {
+        for (const video of module.videos) {
+          const videoPayload = {
+            module: module.id,
+            title: video.title,
+            video_url: video.video_url,
+          };
+          if (video.id) {
+            await api.put(`course/videos/${video.id}/`, videoPayload);
+          } else {
+            const videoResponse = await api.post('course/videos/', videoPayload);
+            video.id = videoResponse.data.id;
+          }
+        }
+      }
+
+      // Save documents
+      for (const module of formData.value.modules) {
+        for (const document of module.documents) {
+          if (document.document_file instanceof File || (document.document_file && typeof document.document_file === 'string')) {
+            const documentFormData = new FormData();
+            documentFormData.append('module', module.id!.toString());
+            documentFormData.append('title', document.title);
+            if (document.document_file instanceof File) {
+              documentFormData.append('document_file', document.document_file);
+            }
+            if (document.id) {
+              await api.put(`course/documents/${document.id}/`, documentFormData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+              });
+            } else {
+              const documentResponse = await api.post('course/documents/', documentFormData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+              });
+              document.id = documentResponse.data.id;
+              document.document_file = documentResponse.data.document_file;
+            }
+          }
+        }
+      }
     }
 
     toast.success('Draft saved successfully!');
     await fetchDrafts();
+    resetForm();
   } catch (error: any) {
+    console.error('Error saving draft:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    let errorMessage = 'Failed to save draft';
     if (error.response && error.response.data) {
       const backendErrors = error.response.data;
       for (const [key, value] of Object.entries(backendErrors)) {
@@ -372,13 +528,11 @@ const saveDraft = async () => {
           }));
         } else if (key in errors.value) {
           errors.value[key as keyof typeof errors.value] = Array.isArray(value) ? value[0] : value;
+          errorMessage += `: ${key} - ${Array.isArray(value) ? value[0] : value}`;
         }
       }
-      toast.error('Failed to save draft. Please correct the errors.');
-    } else {
-      console.error('Error saving draft:', error);
-      toast.error('Failed to save draft');
     }
+    toast.error(errorMessage);
   }
 };
 
@@ -388,22 +542,27 @@ const publishCourse = async () => {
 
   const formPayload = new FormData();
   formPayload.append('title', formData.value.title);
-  formPayload.append('description', formData.value.description);
-  if (formData.value.price !== null) formPayload.append('price', formData.value.price.toFixed(2));
+  if (formData.value.description) formPayload.append('description', formData.value.description);
+  if (formData.value.price !== null && formData.value.price > 0) {
+    formPayload.append('price', formData.value.price.toFixed(2));
+  }
   if (formData.value.cover) formPayload.append('cover', formData.value.cover);
   if (formData.value.discount_percentage !== null) {
     formPayload.append('discount_percentage', formData.value.discount_percentage.toFixed(2));
   }
-  if (formData.value.discount_deadline) formPayload.append('discount_deadline', formData.value.discount_deadline);
+  if (formData.value.discount_deadline) {
+    formPayload.append('discount_deadline', new Date(formData.value.discount_deadline).toISOString());
+  }
   formPayload.append('is_featured', formData.value.is_featured.toString());
-  formPayload.append('faqs', JSON.stringify(formData.value.faqs));
-  formPayload.append('tags', JSON.stringify(formData.value.tags.map(tag => ({ tag }))));
+  if (formData.value.faqs.length) formPayload.append('faqs', JSON.stringify(formData.value.faqs));
+  if (formData.value.tags.length) formPayload.append('tags', JSON.stringify(formData.value.tags.map(tag => ({ tag }))));
   formPayload.append('ispublished', 'true');
 
   try {
+    console.log('Publishing course with payload:', [...formPayload.entries()]);
     let response;
-    if (draftId.value) {
-      response = await api.put(`course/courses/${draftId.value}/`, formPayload, {
+    if (draftId.value && draftSlug.value) {
+      response = await api.put(`course/courses/${draftSlug.value}/`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     } else {
@@ -411,18 +570,81 @@ const publishCourse = async () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     }
+    console.log('Publish response:', response.data);
 
-    // Handle modules
-    const modulePayload = {
-      course: response.data.id,
-      modules: formData.value.modules,
-    };
-    await api.post('course/modules/bulk_create/', modulePayload);
+    if (formData.value.modules.length) {
+      const modulePayload = {
+        course: response.data.id,
+        modules: formData.value.modules.map(module => ({
+          id: module.id,
+          title: module.title,
+          description: module.description,
+          order: module.order,
+        })),
+      };
+      console.log('Module payload:', modulePayload);
+      const moduleResponse = await api.post('course/modules/bulk_create/', modulePayload);
+      console.log('Module creation response:', moduleResponse.data);
+
+      // Update module IDs
+      moduleResponse.data.forEach((savedModule: any, index: number) => {
+        formData.value.modules[index].id = savedModule.id;
+      });
+
+      // Save videos
+      for (const module of formData.value.modules) {
+        for (const video of module.videos) {
+          const videoPayload = {
+            module: module.id,
+            title: video.title,
+            video_url: video.video_url,
+          };
+          if (video.id) {
+            await api.put(`course/videos/${video.id}/`, videoPayload);
+          } else {
+            const videoResponse = await api.post('course/videos/', videoPayload);
+            video.id = videoResponse.data.id;
+          }
+        }
+      }
+
+      // Save documents
+      for (const module of formData.value.modules) {
+        for (const document of module.documents) {
+          if (document.document_file instanceof File || (document.document_file && typeof document.document_file === 'string')) {
+            const documentFormData = new FormData();
+            documentFormData.append('module', module.id!.toString());
+            documentFormData.append('title', document.title);
+            if (document.document_file instanceof File) {
+              documentFormData.append('document_file', document.document_file);
+            }
+            if (document.id) {
+              await api.put(`course/documents/${document.id}/`, documentFormData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+              });
+            } else {
+              const documentResponse = await api.post('course/documents/', documentFormData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+              });
+              document.id = documentResponse.data.id;
+              document.document_file = documentResponse.data.document_file;
+            }
+          }
+        }
+      }
+    }
 
     toast.success('Course published successfully!');
+    clearLocalStorage();
     router.push({ name: 'instructor.course.added' });
     resetForm();
   } catch (error: any) {
+    console.error('Error publishing course:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    let errorMessage = 'Failed to publish course';
     if (error.response && error.response.data) {
       const backendErrors = error.response.data;
       for (const [key, value] of Object.entries(backendErrors)) {
@@ -440,13 +662,11 @@ const publishCourse = async () => {
           }));
         } else if (key in errors.value) {
           errors.value[key as keyof typeof errors.value] = Array.isArray(value) ? value[0] : value;
+          errorMessage += `: ${key} - ${Array.isArray(value) ? value[0] : value}`;
         }
       }
-      toast.error('Failed to publish course. Please correct the errors.');
-    } else {
-      console.error('Error publishing course:', error);
-      toast.error('Failed to publish course');
     }
+    toast.error(errorMessage);
   }
 };
 
@@ -465,7 +685,9 @@ const resetForm = () => {
   };
   submitted.value = false;
   draftId.value = null;
+  draftSlug.value = null;
   selectedDraft.value = '';
+  courseId.value = null;
   errors.value = {
     title: '',
     description: '',
@@ -478,10 +700,11 @@ const resetForm = () => {
     faqs: [],
     tags: '',
   };
-  currentStep.value = 0; // Reset to first step
+  currentStep.value = 0;
+  clearLocalStorage();
   if (stepperInstance.value) {
     try {
-      stepperInstance.value.to(1); // Reset stepper to first step (1-based index in bs-stepper)
+      stepperInstance.value.to(1);
     } catch (error) {
       console.error('Error resetting stepper:', error);
     }

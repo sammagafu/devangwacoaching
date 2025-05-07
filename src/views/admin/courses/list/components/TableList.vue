@@ -115,8 +115,8 @@
               <td>
                 <router-link v-if="isAdmin" :to="{ name: 'admin.course.edit', params: { slug: item.slug } }" class="btn btn-sm btn-dark me-1 mb-1 mb-md-0">Edit</router-link>
                 <template v-if="!item.ispublished">
-                  <a href="#" class="btn btn-sm btn-success-soft me-1 mb-1 mb-md-0" @click="approveCourse(item.id)">Approve</a>
-                  <button class="btn btn-sm btn-secondary-soft mb-0" @click="rejectCourse(item.id)">Reject</button>
+                  <a href="#" class="btn btn-sm btn-success-soft me-1 mb-1 mb-md-0" @click="approveCourse(item.slug)">Approve</a>
+                  <button class="btn btn-sm btn-secondary-soft mb-0" @click="rejectCourse(item.slug)">Reject</button>
                 </template>
               </td>
             </tr>
