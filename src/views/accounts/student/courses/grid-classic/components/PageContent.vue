@@ -84,8 +84,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { productList } from '@/views/accounts/student/courses-all/components/data';
-import CourseCard from '@/views/accounts/student/courses-all/components/CourseCard.vue';
-import Filter from '@/views/accounts/student/courses-all/components/Filter.vue';
+import CourseCard from '@/views/pages/course/grid-classic/components/CourseCard.vue';
+import Filter from '@/views/pages/course/grid-classic/components/Filter.vue';
 import { faSearch, faSlidersH, faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 const offcanvas = ref(false);
 </script>

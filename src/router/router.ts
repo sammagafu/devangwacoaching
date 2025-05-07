@@ -125,7 +125,7 @@ const pagesRoutes = [
     meta: {
       title: setTitle('Grid Classic')
     },
-    component: () => import('@/views/pages/course/grid-classic/index.vue')
+    component: () => import('@/views/accounts/student/courses-all/index.vue')
   },
   {
     path: '/course/grid-2',
@@ -856,7 +856,8 @@ const accountsRoutes = [
       authRequired: true,
       roles: ['normal', 'admin']
     },
-    component: () => import('@/views/accounts/student/community/index.vue')
+    // src/views/accounts/student/community/Index.vue
+    component: () => import('@/views/accounts/student/community/Index.vue')
   },
   {
     path: '/student/community/:slug',
@@ -867,7 +868,20 @@ const accountsRoutes = [
       roles: ['normal', 'admin']
     },
     component: () => import('@/views/accounts/student/community/CommunityThreads.vue')
-  }
+  },
+  {
+    path:'/courses',
+    name: 'courses',
+    meta: {
+      title: setTitle('Courses'),},
+    component: () => import('@/views/accounts/student/courses-all/index.vue')
+  },
+  {
+    path:'/courses/:slug',
+    name: 'courses.details',
+    meta: { title:setTitle('Course Details'),},
+    component: () => import('@/views/accounts/student/courses-detail/index.vue')
+  },
 ];
 
 export const allRoutes = [

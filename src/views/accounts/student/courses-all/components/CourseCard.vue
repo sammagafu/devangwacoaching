@@ -1,6 +1,6 @@
 <template>
   <b-card no-body class="shadow h-100">
-    <img :src="item.image" class="card-img-top" alt="course img">
+    <img :src="item.image || defaultAvatar" class="card-img-top" alt="course img">
     <b-card-body class="pb-0">
       <div class="d-flex justify-content-between mb-2">
         <a href="#" :class="`badge bg-${item.badge?.class} bg-opacity-10 text-${item.badge?.class}`">
@@ -9,17 +9,26 @@
         <a href="#" class="h6 text-danger mb-0" v-if="item.isLike"><font-awesome-icon :icon="faHeart" /></a>
         <a href="#" class="h6 fw-light mb-0" v-else><font-awesome-icon :icon="faHeartR" /></a>
       </div>
-      <b-card-title tag="h5"><a href="#">{{ item.title }}</a></b-card-title>
+      <b-card-title tag="h5">
+        <router-link :to="{ name: 'courses.details', params: { slug: item.slug } }">{{ item.title }}</router-link>
+      </b-card-title>
       <p class="mb-2 text-truncate-2">{{ item.description }}</p>
+      <p class="mb-2 small" v-if="item.instructor">Instructor: {{ item.instructor.full_name }}</p>
+      <p class="mb-2 small" v-if="item.price !== undefined">
+        Price: TZS {{ item.final_price || item.price }}
+        <span v-if="item.discount_percentage > 0" class="text-success">
+          ({{ item.discount_percentage }}% off)
+        </span>
+      </p>
       <ul class="list-inline mb-0 hstack gap-1">
-        <li className="list-inline-item me-0 small" v-for="(_star, idx) in Array(Math.floor(item.rating)).fill(0)"
+        <li class="list-inline-item me-0 small" v-for="(_star, idx) in Array(Math.floor(item.rating)).fill(0)"
           :key="idx">
           <font-awesome-icon :icon="faStar" class="text-warning" />
         </li>
-        <li className="list-inline-item me-0 small" v-if="!Number.isInteger(item.rating)">
+        <li class="list-inline-item me-0 small" v-if="!Number.isInteger(item.rating)">
           <font-awesome-icon :icon="faStarHalfAlt" class="text-warning" />
         </li>
-        <li className="list-inline-item me-0 small"
+        <li class="list-inline-item me-0 small"
           v-for="(_star, idx) in item.rating < 5 && Array(5 - Math.ceil(item.rating)).fill(0)" :key="idx">
           <font-awesome-icon :icon="faStarR" class="text-warning" />
         </li>
@@ -37,16 +46,43 @@
     </b-card-footer>
   </b-card>
 </template>
+
 <script setup lang="ts">
 import type { PropType } from 'vue';
-import type { ProductType } from '@/types';
 import { faStar, faStarHalfAlt, faTable, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faHeart as faHeartR, faStar as faStarR } from '@fortawesome/free-regular-svg-icons';
+import avatar01 from '@/assets/images/avatar/01.jpg';
+
+const defaultAvatar = avatar01;
 
 defineProps({
   item: {
     type: Object as PropType<ProductType>,
-    required: true
-  }
+    required: true,
+  },
 });
+
+// Updated ProductType interface to match API response
+interface ProductType {
+  id: number;
+  title: string;
+  description: string;
+  image?: string;
+  ispublished: boolean;
+  created_at: string;
+  instructor?: { id: number; email: string; full_name: string };
+  price?: number;
+  final_price?: number;
+  discount_percentage?: number;
+  is_featured?: boolean;
+  total_modules?: number;
+  tags?: string[];
+  category?: string;
+  level?: string;
+  badge?: { class: string; text: string };
+  isLike?: boolean;
+  rating: number;
+  duration?: string;
+  lectures?: number;
+}
 </script>
