@@ -168,7 +168,7 @@ const pagesRoutes = [
     component: () => import('@/views/pages/course/detail-minimal/index.vue')
   },
   {
-    path: '/course/detail-adv',
+    path: '/course/:slug',
     name: 'course.detail.advance',
     meta: {
       title: setTitle('Detail Advance')

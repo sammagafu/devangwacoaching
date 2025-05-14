@@ -5,7 +5,7 @@
         <h3 class="mb-0">Frequently Asked Questions</h3>
       </b-card-header>
       <b-card-body>
-        <template v-for="(item, idx) in faqsData" :key="idx">
+        <template v-for="(item, idx) in faqs" :key="idx">
           <div :class="idx && 'mt-4'">
             <h6>{{ item.question }}</h6>
             <p class="mb-0">{{ item.answer }}</p>
@@ -15,6 +15,13 @@
     </b-card>
   </b-col>
 </template>
+
 <script setup lang="ts">
-import { faqsData } from '@/views/pages/course/detail-advance/components/data';
+defineProps({
+  faqs: {
+    type: Array,
+    required: true,
+    default: () => []
+  }
+});
 </script>

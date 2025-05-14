@@ -20,7 +20,7 @@
         <hr class="dropdown-divider">
       </li>
       <li>
-        <router-link class="dropdown-item" :to="{ name: 'student.profile' }">
+        <router-link class="dropdown-item" :to="profileRoute">
           <BIconPerson class="fa-fw me-2" />Profile
         </router-link>
       </li>
@@ -73,6 +73,14 @@ const router = useRouter();
 
 // User avatar (use user_details.avatar or keep avatar01 as default)
 const userAvatar = computed(() => authStore.user?.user_details?.avatar || avatar01);
+
+// Computed property to determine the profile route based on user role
+const profileRoute = computed(() => {
+  if (authStore.isAdmin) {
+    return { name: 'admin.dashboard' };
+  }
+  return { name: 'student.profile' };
+});
 
 // Logout handler
 const logout = () => {
