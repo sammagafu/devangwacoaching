@@ -173,7 +173,7 @@ export const STUDENT_MENU_ITEMS = [
     icon: BIconCreditCard2Front
   },
   {
-    title: 'Wishlist',
+    title: 'Browse Courses',
     route: { name: 'student.bookmark' },
     icon: BIconCartCheck
   },

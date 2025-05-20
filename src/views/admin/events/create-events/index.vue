@@ -93,11 +93,14 @@ const formData = ref({
   description: '',
   event_type: '',
   cover: null as File | null,
-  start_date: '',
-  end_date: '',
+  start_time: '',
+  end_time: '',
+  registration_deadline: '',
+  discount_deadline: '',
   location: '',
+  link: '',
   price: null as number | null,
-  discount_price: null as number | null,
+  discount_percentage: null as number | null,
   enable_discount: false,
   tags: [] as string[],
 });
@@ -107,9 +110,12 @@ const errors = ref({
   description: '',
   event_type: '',
   cover: '',
-  start_date: '',
-  end_date: '',
+  start_time: '',
+  end_time: '',
+  registration_deadline: '',
+  discount_deadline: '',
   location: '',
+  link: '',
   price: '',
   tags: '',
 });
@@ -120,17 +126,22 @@ onMounted(() => {
       linear: false,
       animation: true,
     });
+    console.log('Stepper initialized');
+  } else {
+    console.error('Stepper ref not found');
   }
 });
 
 const nextPage = () => {
   const currentStep = stepperInstance.value?.getCurrentStep?.() ?? 0;
+  console.log('Next button clicked, current step:', currentStep, 'formData:', formData.value);
   if (validateStep(currentStep)) {
     stepperInstance.value?.next();
   }
 };
 
 const previousPage = () => {
+  console.log('Previous button clicked');
   stepperInstance.value?.previous();
 };
 
@@ -142,57 +153,85 @@ const validateStep = (step: number): boolean => {
     description: '',
     event_type: '',
     cover: '',
-    start_date: '',
-    end_date: '',
+    start_time: '',
+    end_time: '',
+    registration_deadline: '',
+    discount_deadline: '',
     location: '',
+    link: '',
     price: '',
     tags: '',
   };
 
+  const errorMessages: string[] = [];
+
   if (step === 0) {
     if (!formData.value.title) {
       errors.value.title = 'Event title is required';
+      errorMessages.push('Event title');
       isValid = false;
     }
     if (!formData.value.description) {
       errors.value.description = 'Description is required';
+      errorMessages.push('Description');
       isValid = false;
     }
     if (!formData.value.event_type) {
       errors.value.event_type = 'Event type is required';
-      isValid = false;
-    }
-    if (!formData.value.location) {
-      errors.value.location = 'Location is required';
+      errorMessages.push('Event type');
       isValid = false;
     }
   } else if (step === 1) {
     if (!formData.value.cover) {
       errors.value.cover = 'Event image is required';
+      errorMessages.push('Event image');
       isValid = false;
     }
   } else if (step === 2) {
-    if (!formData.value.start_date) {
-      errors.value.start_date = 'Start date is required';
+    if (!formData.value.start_time) {
+      errors.value.start_time = 'Start time is required';
+      errorMessages.push('Start time');
       isValid = false;
     }
-    if (!formData.value.end_date) {
-      errors.value.end_date = 'End date is required';
+    if (!formData.value.end_time) {
+      errors.value.end_time = 'End time is required';
+      errorMessages.push('End time');
+      isValid = false;
+    }
+    if (!formData.value.registration_deadline) {
+      errors.value.registration_deadline = 'Registration deadline is required';
+      errorMessages.push('Registration deadline');
+      isValid = false;
+    }
+    if (formData.value.event_type === 'on_premises' && !formData.value.location) {
+      errors.value.location = 'Location is required for on-premises events';
+      errorMessages.push('Location');
+      isValid = false;
+    }
+    if (formData.value.event_type === 'online' && !formData.value.link) {
+      errors.value.link = 'Link is required for online events';
+      errorMessages.push('Link');
       isValid = false;
     }
     if (formData.value.price === null || formData.value.price < 0) {
       errors.value.price = 'Valid price is required';
+      errorMessages.push('Price');
       isValid = false;
     }
   }
 
   if (!isValid) {
-    toast.error('Please fill in all required fields');
+    console.log('Validation failed for step', step, 'Missing fields:', errorMessages);
+    toast.error(`Please fill in all required fields: ${errorMessages.join(', ')}`);
+  } else {
+    console.log('Validation passed for step', step);
   }
+
   return isValid;
 };
 
 const submitEvent = async () => {
+  console.log('Submitting event, formData:', formData.value);
   submitted.value = true;
   if (!validateStep(2)) return;
 
@@ -201,21 +240,27 @@ const submitEvent = async () => {
   formPayload.append('description', formData.value.description);
   formPayload.append('event_type', formData.value.event_type);
   if (formData.value.cover) formPayload.append('cover', formData.value.cover);
-  formPayload.append('start_date', formData.value.start_date);
-  formPayload.append('end_date', formData.value.end_date);
-  formPayload.append('location', formData.value.location);
+  formPayload.append('start_time', formData.value.start_time);
+  formPayload.append('end_time', formData.value.end_time);
+  formPayload.append('registration_deadline', formData.value.registration_deadline);
+  if (formData.value.discount_deadline) formPayload.append('discount_deadline', formData.value.discount_deadline);
+  if (formData.value.event_type === 'on_premises') {
+    formPayload.append('location', formData.value.location);
+  } else if (formData.value.event_type === 'online') {
+    formPayload.append('link', formData.value.link);
+  }
   if (formData.value.price !== null) formPayload.append('price', formData.value.price.toFixed(2));
-  if (formData.value.enable_discount && formData.value.discount_price !== null) {
-    formPayload.append('discount_price', formData.value.discount_price.toFixed(2));
+  if (formData.value.enable_discount && formData.value.discount_percentage !== null) {
+    formPayload.append('discount_percentage', formData.value.discount_percentage.toString());
   }
   formPayload.append('tags', JSON.stringify(formData.value.tags));
 
   try {
-    const response = await api.post('events/', formPayload, {
+    const response = await api.post('coaching/events/', formPayload, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     toast.success('Event created successfully!');
-    router.push({ name: 'admin.events.list' });
+    router.push({ name: 'admin.manage.event' });
     resetForm();
   } catch (error: any) {
     if (error.response && error.response.data) {
@@ -225,6 +270,7 @@ const submitEvent = async () => {
           errors.value[key as keyof typeof errors.value] = Array.isArray(value) ? value[0] : value;
         }
       }
+      console.log('Backend errors:', backendErrors);
       toast.error('Please correct the errors and try again');
     } else {
       console.error('Error submitting event:', error);
@@ -239,11 +285,14 @@ const resetForm = () => {
     description: '',
     event_type: '',
     cover: null,
-    start_date: '',
-    end_date: '',
+    start_time: '',
+    end_time: '',
+    registration_deadline: '',
+    discount_deadline: '',
     location: '',
+    link: '',
     price: null,
-    discount_price: null,
+    discount_percentage: null,
     enable_discount: false,
     tags: [],
   };
@@ -253,9 +302,12 @@ const resetForm = () => {
     description: '',
     event_type: '',
     cover: '',
-    start_date: '',
-    end_date: '',
+    start_time: '',
+    end_time: '',
+    registration_deadline: '',
+    discount_deadline: '',
     location: '',
+    link: '',
     price: '',
     tags: '',
   };

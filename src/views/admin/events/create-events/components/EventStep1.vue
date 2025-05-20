@@ -51,9 +51,10 @@
 </template>
 
 <script setup lang="ts">
+import { watch } from 'vue';
 import ChoicesSelect from '@/components/ChoicesSelect.vue';
 
-defineProps<{
+const props = defineProps<{
   formData: {
     title: string;
     description: string;
@@ -66,4 +67,9 @@ defineProps<{
     event_type: string;
   };
 }>();
+
+// Debug form data changes
+watch(() => props.formData, (newValue) => {
+  console.log('EventStep1 formData changed:', newValue);
+}, { deep: true });
 </script>

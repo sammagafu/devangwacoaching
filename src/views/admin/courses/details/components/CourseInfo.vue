@@ -1,3 +1,4 @@
+
 <template>
   <b-col xxl="6">
     <b-card no-body class="bg-transparent border rounded-3 h-100">
@@ -7,14 +8,25 @@
       <b-card-body>
         <b-row class="g-4">
           <b-col md="6">
-            <img :src="course.cover ? `${apiBaseUrl}${course.cover}` : defaultImage" class="rounded" alt="Course cover">
+            <img
+              :src="imageSrc"
+              class="rounded"
+              alt="Course cover"
+              @error="handleImageError"
+              @load="handleImageLoad"
+            >
+            <p v-if="imageError" class="text-danger small mt-1">Failed to load cover image.</p>
           </b-col>
           <b-col md="6">
-            <p class="mb-3">{{ course.description || 'No description available.' }}</p>
+            <p class="mb-3" v-html=" course.description || 'No description available.' "></p>
             <h5 class="mb-3">{{ currency }}{{ course.final_price || '0.00' }}</h5>
             <div class="d-sm-flex align-items-center">
               <div class="avatar avatar-md">
-                <img class="avatar-img rounded-circle" :src="course.instructor?.avatar ? `${apiBaseUrl}${course.instructor.avatar}` : defaultAvatar" alt="Instructor avatar">
+                <img
+                  class="avatar-img rounded-circle"
+                  :src="course.instructor?.avatar ? `${apiBaseUrl}${course.instructor.avatar}` : defaultAvatar"
+                  alt="Instructor avatar"
+                >
               </div>
               <div class="ms-sm-3 mt-2 mt-sm-0">
                 <h6 class="mb-0"><a href="#">{{ course.instructor?.full_name || 'Unknown' }}</a></h6>
@@ -73,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { currency } from '@/helpers/constants';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import avatar01 from '@/assets/images/avatar/01.jpg';
@@ -89,6 +101,38 @@ const props = defineProps({
 });
 
 const defaultAvatar = avatar01;
+const imageError = ref(false);
+
+// Compute image source with debugging
+const imageSrc = computed(() => {
+  const cover = props.course.cover;
+  console.log('Course cover:', cover); // Debug cover value
+  if (!cover) {
+    console.log('Using default image:', defaultImage);
+    return defaultImage;
+  }
+  // Handle both relative and absolute URLs
+  const url = cover.startsWith('http') ? cover : `${apiBaseUrl}${cover.startsWith('/') ? '' : '/'}${cover}`;
+  console.log('Constructed image URL:', url);
+  imageError.value = false; // Reset error state
+  return url;
+});
+
+// Watch for changes in course.cover
+watch(() => props.course.cover, (newCover) => {
+  console.log('Cover changed:', newCover);
+  imageError.value = false; // Reset error on cover change
+});
+
+const handleImageError = () => {
+  console.error('Failed to load image:', imageSrc.value);
+  imageError.value = true;
+};
+
+const handleImageLoad = () => {
+  console.log('Image loaded successfully:', imageSrc.value);
+  imageError.value = false;
+};
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';

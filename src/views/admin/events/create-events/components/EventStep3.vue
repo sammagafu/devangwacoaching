@@ -57,6 +57,18 @@
         </b-form-group>
       </b-col>
 
+      <b-col md="6" v-if="formData.event_type === 'online'">
+        <b-form-group label="Event Link *">
+          <b-form-input
+            type="url"
+            placeholder="Enter event link (e.g., https://zoom.us/j/123456)"
+            v-model="formData.link"
+            :class="{ 'is-invalid': errors.link }"
+          />
+          <div v-if="errors.link" class="invalid-feedback">{{ errors.link }}</div>
+        </b-form-group>
+      </b-col>
+
       <b-col md="6">
         <b-form-group label="Price (TZS) *">
           <b-form-input
@@ -90,15 +102,18 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { watch } from 'vue';
+
+const props = defineProps<{
   formData: {
     start_time: string;
     end_time: string;
     registration_deadline: string;
     discount_deadline: string;
     location: string;
+    link: string;
     price: number | null;
-    discount_percentage: number;
+    discount_percentage: number | null;
     event_type: string;
   };
   previousPage: () => void;
@@ -108,7 +123,13 @@ defineProps<{
     registration_deadline: string;
     discount_deadline: string;
     location: string;
+    link: string;
     price: string;
   };
 }>();
+
+// Debug form data changes
+watch(() => props.formData, (newValue) => {
+  console.log('EventStep3 formData changed:', newValue);
+}, { deep: true });
 </script>

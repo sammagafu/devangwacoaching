@@ -31,8 +31,14 @@
             </div>
 
             <div class="mt-3 d-grid">
-              <a href="#" class="btn btn-outline-primary">Add to cart</a>
-              <a href="#" class="btn btn-success">Buy now</a>
+              <b-button
+                variant="primary"
+                :disabled="isEnrolled || loading"
+                @click="enrollCourse"
+              >
+                <b-spinner v-if="loading" small class="me-2" />
+                {{ isEnrolled ? 'Enrolled' : 'Enroll Now' }}
+              </b-button>
             </div>
             <hr>
 
@@ -125,13 +131,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toast-notification';
 import { currency } from '@/helpers/constants';
 import CustomStickyElement from '@/components/CustomStickyElement.vue';
+import { api } from '@/services/authService';
 import { faShareAlt, faCopy, faBookOpen, faClock, faSignal, faGlobe, faUserClock, faMedal, faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTwitterSquare, faFacebookSquare, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 
 const props = defineProps({
+  courseId: {
+    type: Number,
+    required: true
+  },
   price: {
     type: Number,
     required: true
@@ -178,9 +191,55 @@ const props = defineProps({
   }
 });
 
+const router = useRouter();
+const $toast = useToast();
+const isEnrolled = ref(false);
+const loading = ref(false);
+
 const getStarIcon = (starIndex: number, rating: number) => {
   if (starIndex <= Math.floor(rating)) return faStar;
   if (starIndex - 0.5 <= rating) return faStarHalfAlt;
   return faStar;
 };
+
+const checkEnrollment = async () => {
+  try {
+    const response = await api.get('course/enrollments/', {
+      params: { course_id: props.courseId }
+    });
+    isEnrolled.value = response.data.length > 0;
+  } catch (error) {
+    console.error('Failed to check enrollment:', error);
+    if (error.response?.status === 401) {
+      $toast.error('Please log in to check enrollment status.');
+      router.push('/login');
+    }
+  }
+};
+
+const enrollCourse = async () => {
+  loading.value = true;
+  try {
+    await api.post('course/enrollments/', { course_id: props.courseId });
+    isEnrolled.value = true;
+    $toast.success('Successfully enrolled in the course!');
+  } catch (error) {
+    console.error('Failed to enroll:', error);
+    if (error.response?.status === 401) {
+      $toast.error('Please log in to enroll.');
+      router.push('/login');
+    } else if (error.response?.status === 400 && error.response.data?.detail?.includes('already enrolled')) {
+      $toast.error('You are already enrolled in this course.');
+      isEnrolled.value = true;
+    } else {
+      $toast.error('Failed to enroll. Please try again.');
+    }
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  checkEnrollment();
+});
 </script>

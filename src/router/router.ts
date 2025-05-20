@@ -506,14 +506,14 @@ const adminRoutes = [
     component: () => import('@/views/admin/courses/details/index.vue')
   },
   {
-    path: '/admin/course-detail/:slug/edit',
+    path: '/admin/courses/edit/:slug',
     name: 'admin.course.edit',
     meta: {
       title: setTitle('Course Edits'),
       authRequired: true,
       roles: ['admin']
     },
-    component: () => import('@/views/admin/courses/edit/index.vue')
+    component: () => import('@/views/admin/courses/create-course/index.vue'),
   },
   {
     path: '/admin/student-list',

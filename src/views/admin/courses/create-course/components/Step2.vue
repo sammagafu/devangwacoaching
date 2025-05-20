@@ -1,6 +1,7 @@
+
 <template>
   <div id="step-2" role="tabpanel" class="content fade" aria-labelledby="steppertrigger2">
-    <h4>Course Media</h4>
+    <h4>Course media</h4>
     <hr>
     <b-row>
       <b-col cols="12">
@@ -18,11 +19,11 @@
               ref="fileInput"
               style="display: none"
               accept="image/gif, image/jpeg, image/png"
-              @change="onUpload"
+              @change="onImageUpload"
             />
             <p class="small mb-0 mt-2">
-              <b>Note:</b> Only JPG, JPEG, and PNG. Suggested dimensions are 600px * 450px. Larger images will be cropped
-              to 4:3.
+              <b>Note:</b>
+              Only JPG, JPEG, and PNG. Suggested dimensions are 1920px * 1080px.
             </p>
             <div v-if="formData.cover" class="mt-2">
               <span>Selected: {{ formData.cover.name }}</span>
@@ -37,11 +38,57 @@
             variant="danger-soft"
             size="sm"
             class="mb-3"
-            @click="formData.cover = null"
+            @click="emit('update:cover', null)"
             v-if="formData.cover"
           >
-            Remove Image
+            Remove image
           </b-button>
+        </div>
+      </b-col>
+
+      <b-col cols="12">
+        <h5>Upload video</h5>
+        <b-col cols="12" class="mt-4 mb-5">
+          <b-form-group label="Video URL">
+            <b-form-input
+              v-model="formData.video_url"
+              type="text"
+              placeholder="Enter video url"
+              :state="errors.video_url ? false : null"
+            />
+            <b-form-invalid-feedback>{{ errors.video_url }}</b-form-invalid-feedback>
+          </b-form-group>
+        </b-col>
+        <div class="position-relative my-4">
+          <hr>
+          <p class="small position-absolute top-50 start-50 translate-middle bg-body px-3 mb-0">Or</p>
+        </div>
+
+        <b-col cols="12">
+          <b-form-group label="Upload video file">
+            <b-input-group class="mb-3">
+              <b-form-file
+                v-model="formData.video_file"
+                accept=".mp4,.webm,.ogg"
+                placeholder="Choose video file..."
+              />
+              <b-input-group-text>.mp4, .webm, .ogg</b-input-group-text>
+            </b-input-group>
+            <div v-if="errors.video_file" class="text-danger">{{ errors.video_file }}</div>
+          </b-form-group>
+        </b-col>
+
+        <h5 class="mt-4">Video preview</h5>
+        <div class="position-relative">
+          <img :src="about04" class="rounded-4" alt="" />
+          <div class="position-absolute top-50 start-50 translate-middle">
+            <CustomGLightbox
+              :link="formData.video_url || 'https://www.youtube.com/embed/tXHviS-4ygo'"
+              class="btn btn-lg text-danger btn-round btn-white-shadow mb-0"
+            >
+              <font-awesome-icon :icon="faPlay" />
+            </CustomGLightbox>
+          </div>
         </div>
       </b-col>
 
@@ -58,26 +105,44 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
+import CustomGLightbox from '@/components/CustomGLightbox.vue';
 import gallery from '@/assets/images/element/gallery.svg';
+import about04 from '@/assets/images/about/04.jpg';
 
+const toast = useToast();
 const fileInput = ref<HTMLInputElement | null>(null);
 
-defineProps<{
+const props = defineProps<{
   formData: {
     cover: File | null;
+    video_url: string;
+    video_file: File | null;
   };
   nextPage: () => void;
   previousPage: () => void;
   errors: {
     cover: string;
+    video_url: string;
+    video_file: string;
   };
   saveDraft: () => void;
 }>();
 
-const onUpload = (event: Event) => {
+const emit = defineEmits(['update:cover']);
+
+const onImageUpload = (event: Event) => {
   const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
-    (formData as any).value.cover = input.files[0];
+    const file = input.files[0];
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      toast.error('Please upload a valid image file (JPG, JPEG, PNG).');
+      return;
+    }
+    emit('update:cover', file);
   }
 };
 </script>

@@ -53,12 +53,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import gallery from '@/assets/images/element/gallery.svg';
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
-defineProps<{
+const props = defineProps<{
   formData: {
     cover: File | null;
   };
@@ -72,7 +72,13 @@ defineProps<{
 const onUpload = (event: Event) => {
   const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
-    (formData as any).value.cover = input.files[0];
+    props.formData.cover = input.files[0];
+    console.log('Image uploaded:', props.formData.cover.name);
   }
 };
+
+// Debug cover changes
+watch(() => props.formData.cover, (newValue) => {
+  console.log('EventStep2 cover changed:', newValue ? newValue.name : null);
+});
 </script>
