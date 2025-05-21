@@ -2,6 +2,22 @@
   <section class="py-5">
     <b-container>
       <b-row>
+        <b-col lg="4" xl="3" class="d-lg-block" :class="{ 'd-none': !offcanvas }">
+          <b-offcanvas
+            :value="offcanvas"
+            @update:value="$emit('update:offcanvas', $event)"
+            placement="end"
+            class="w-auto"
+            :backdrop="true"
+            :no-header-close="true"
+            :no-close-on-esc="true"
+            :no-close-on-backdrop="true"
+            title="Filters"
+            responsive="lg"
+          >
+            <Filter @filter-applied="$emit('apply-filters', $event)" />
+          </b-offcanvas>
+        </b-col>
         <b-col lg="8" xl="9">
           <b-row class="mb-4 align-items-center">
             <b-col xl="6">
@@ -11,7 +27,8 @@
                     type="search"
                     class="me-1"
                     placeholder="Find your course"
-                    v-model="searchQuery"
+                    :value="searchQuery"
+                    @input="$emit('update:searchQuery', $event)"
                   />
                   <b-button type="button" variant="primary" class="mb-0 rounded z-index-1">
                     <font-awesome-icon :icon="faSearch" />
@@ -19,58 +36,61 @@
                 </div>
               </b-form>
             </b-col>
-
             <b-col xl="3" class="mt-3 mt-xl-0">
               <b-form class="border rounded p-2 input-borderless">
-                <select v-model="sortValue" class="form-select-sm border-0">
+                <select
+                  :value="sortValue"
+                  @input="$emit('update:sortValue', $event.target.value)"
+                  class="form-select-sm border-0"
+                >
                   <option v-for="option in sortOptions" :key="option.value" :value="option.value">
                     {{ option.label }}
                   </option>
                 </select>
               </b-form>
             </b-col>
-
             <b-col cols="12" xl="3" class="d-flex justify-content-between align-items-center mt-3 mt-xl-0">
               <b-button
                 variant="primary"
                 class="mb-0 d-lg-none"
                 type="button"
-                @click="offcanvas = !offcanvas"
+                @click="$emit('update:offcanvas', !offcanvas)"
               >
                 <font-awesome-icon :icon="faSlidersH" class="me-1" />
                 Show filter
               </b-button>
-              <p class="mb-0 text-end">
-                Showing {{ filteredCourses.length }} of {{ coursesList.length }} result
+              <p v-if="coursesList" class="mb-0 text-end">
+                Showing {{ filteredCourses.length }} of {{ coursesList.length }} results
+              </p>
+              <p v-else class="mb-0 text-end">
+                No courses available
               </p>
             </b-col>
           </b-row>
-
           <b-row v-if="loading" class="g-4">
             <b-col cols="12" class="text-center">
               <b-spinner variant="primary" />
             </b-col>
           </b-row>
-          <b-row v-else class="g-4">
+          <b-row v-else-if="coursesList && coursesList.length" class="g-4">
             <b-col sm="6" xl="4" v-for="(item, idx) in filteredCourses" :key="idx">
-              <CourseCard
-                :item="item"
-                :isAdmin="isAdmin"
-                @approve="approveCourse(item.id)"
-                @reject="rejectCourse(item.id)"
-              />
+              <CourseCard :item="item" />
             </b-col>
           </b-row>
-
-          <b-col cols="12">
+          <b-row v-else class="g-4">
+            <b-col cols="12" class="text-center">
+              <p>No courses found</p>
+            </b-col>
+          </b-row>
+          <b-col v-if="coursesList && coursesList.length" cols="12">
             <nav class="mt-4 d-flex justify-content-center" aria-label="navigation">
               <ul class="pagination pagination-primary-soft d-inline-block d-md-flex rounded mb-0">
                 <li class="page-item mb-0">
                   <a
                     class="page-link"
                     href="#"
-                    @click.prevent="currentPage--"
-                    :disabled="currentPage === 1"
+                    @click.prevent="$emit('update:currentPage', currentPage - 1)"
+                    :class="{ disabled: currentPage === 1 }"
                   >
                     <font-awesome-icon :icon="faAngleLeft" />
                   </a>
@@ -81,7 +101,7 @@
                   :key="page"
                   :class="{ active: page === currentPage }"
                 >
-                  <a class="page-link" href="#" @click.prevent="currentPage = page">
+                  <a class="page-link" href="#" @click.prevent="$emit('update:currentPage', page)">
                     {{ page }}
                   </a>
                 </li>
@@ -89,8 +109,8 @@
                   <a
                     class="page-link"
                     href="#"
-                    @click.prevent="currentPage++"
-                    :disabled="currentPage === totalPages"
+                    @click.prevent="$emit('update:currentPage', currentPage + 1)"
+                    :class="{ disabled: currentPage === totalPages }"
                   >
                     <font-awesome-icon :icon="faAngleRight" />
                   </a>
@@ -105,173 +125,141 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
+import { computed, defineProps, defineEmits, onMounted } from 'vue';
 import {
   faSearch,
   faSlidersH,
   faAngleLeft,
   faAngleRight,
-  faAngleDoubleLeft,
-  faAngleDoubleRight,
 } from '@fortawesome/free-solid-svg-icons';
-import { api } from '@/services/authService';
-import { useAuthStore } from '@/stores/auth';
-import { storeToRefs } from 'pinia';
-import avatar01 from '@/assets/images/avatar/01.jpg';
 import CourseCard from '@/views/accounts/student/courses-all/components/CourseCard.vue';
 import Filter from '@/views/accounts/student/courses-all/components/Filter.vue';
 
-const $toast = useToast();
-const coursesList = ref([]);
-const loading = ref(false);
-const searchQuery = ref('');
-const sortValue = ref('');
-const currentPage = ref(1);
-const itemsPerPage = ref(10);
-const offcanvas = ref(false);
-const filters = ref({});
+const props = defineProps({
+  coursesList: { type: Array, required: true, default: () => [] },
+  loading: { type: Boolean, required: true },
+  searchQuery: { type: String, required: true },
+  sortValue: { type: String, required: true },
+  currentPage: { type: Number, required: true },
+  itemsPerPage: { type: Number, required: true },
+  offcanvas: { type: Boolean, required: true },
+  filters: { type: Object, required: true },
+  sortOptions: { type: Array, required: true },
+});
 
-const authStore = useAuthStore();
-const { user } = storeToRefs(authStore);
-const isAdmin = computed(() => user.value?.is_admin || user.value?.is_staff || false);
+defineEmits(['apply-filters', 'update:offcanvas', 'update:searchQuery', 'update:sortValue', 'update:currentPage']);
 
-const defaultAvatar = avatar01;
+// Debug logging to verify props
+onMounted(() => {
+  console.log('PageContent props:', {
+    coursesList: props.coursesList,
+    loading: props.loading,
+    searchQuery: props.searchQuery,
+    sortValue: props.sortValue,
+    currentPage: props.currentPage,
+    itemsPerPage: props.itemsPerPage,
+    offcanvas: props.offcanvas,
+    filters: props.filters,
+    sortOptions: props.sortOptions,
+  });
+});
 
-const sortOptions = ref([
-  { value: '', label: 'Sort by' },
-  { value: 'newest', label: 'Newest' },
-  { value: 'oldest', label: 'Oldest' },
-  { value: 'accepted', label: 'Accepted' },
-  { value: 'rejected', label: 'Rejected' },
-]);
+interface ProductType {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  image?: string;
+  ispublished: boolean;
+  created_at: string;
+  instructor?: { id: number; email: string; full_name: string };
+  price?: number;
+  final_price?: number;
+  discount_percentage?: number;
+  is_featured?: boolean;
+  total_modules?: number;
+  total_videos?: number;
+  tags?: string[];
+  rating: number;
+  duration?: string;
+  lectures?: number;
+  category?: string;
+  level?: string;
+  language?: string;
+  badge?: { class: string; text: string };
+  isLike?: boolean;
+}
 
-const totalPages = computed(() =>
-  Math.ceil(coursesList.value.length / itemsPerPage.value)
-);
+const totalPages = computed(() => {
+  return props.coursesList ? Math.ceil(props.coursesList.length / props.itemsPerPage) : 1;
+});
 
 const filteredCourses = computed(() => {
-  let filtered = [...coursesList.value].map((course) => ({
+  if (!props.coursesList) return [];
+
+  let filtered = [...props.coursesList].map((course) => ({
     ...course,
-    image: course.cover, // Map cover to image
+    image: course.cover || '',
     instructor: course.instructor,
-    price: parseFloat(course.price),
-    final_price: course.final_price,
-    discount_percentage: parseFloat(course.discount_percentage),
-    is_featured: course.is_featured,
-    total_modules: course.total_modules,
+    price: parseFloat(course.price) || 0,
+    final_price: parseFloat(course.final_price) || parseFloat(course.price) || 0,
+    discount_percentage: parseFloat(course.discount_percentage) || 0,
+    is_featured: course.is_featured || false,
+    total_modules: course.total_modules || 10,
+    total_videos: course.total_videos || 10,
+    tags: course.tags || [],
+    rating: parseFloat(course.rating) || 4.5,
+    duration: course.duration || `${course.total_videos || 10}h 0m`,
+    lectures: course.total_modules || 10,
+    category: course.tags?.length > 0 ? course.tags[0] : 'general',
+    level: course.level || 'beginner',
+    language: course.language || 'english',
     badge: course.is_featured
       ? { class: 'success', text: 'Featured' }
-      : course.tags.length > 0
+      : course.tags?.length > 0
       ? { class: 'primary', text: course.tags[0] }
       : { class: 'info', text: 'General' },
-    isLike: false, // Mock; integrate with user favorites if available
-    rating: course.rating || 4.5, // Mock; replace with API field if available
-    duration: course.duration || `${course.total_videos || 10}h 0m`, // Mock or derive
-    lectures: course.total_modules || 10, // Use total_modules or mock
-    category: course.tags.length > 0 ? course.tags[0] : 'general', // Mock or derive
-    level: course.level || 'beginner', // Mock; replace with API field
+    isLike: false,
   }));
 
   // Apply search
-  if (searchQuery.value) {
+  if (props.searchQuery) {
     filtered = filtered.filter((course) =>
-      course.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+      course.title.toLowerCase().includes(props.searchQuery.toLowerCase())
     );
   }
 
-  // Apply filters from Filter component
-  if (filters.value.category) {
-    filtered = filtered.filter(
-      (course) => course.category === filters.value.category
-    );
+  // Apply filters
+  if (props.filters.category) {
+    filtered = filtered.filter((course) => course.category === props.filters.category);
   }
-  if (filters.value.level) {
-    filtered = filtered.filter((course) => course.level === filters.value.level);
+  if (props.filters.level) {
+    filtered = filtered.filter((course) => course.level === props.filters.level);
   }
-  if (filters.value.price) {
+  if (props.filters.price) {
     filtered = filtered.filter((course) => {
-      if (filters.value.price === 'free') return course.price === 0;
-      if (filters.value.price === 'paid') return course.price > 0;
+      if (props.filters.price === 'free') return course.price === 0;
+      if (props.filters.price === 'paid') return course.price > 0;
       return true;
     });
   }
-  if (filters.value.language) {
-    filtered = filtered.filter(
-      (course) => course.language === filters.value.language
-    );
+  if (props.filters.language) {
+    filtered = filtered.filter((course) => course.language === props.filters.language);
   }
 
   // Apply sorting
-  switch (sortValue.value) {
+  switch (props.sortValue) {
     case 'newest':
       filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       break;
     case 'oldest':
       filtered.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
       break;
-    case 'accepted':
-      filtered = filtered.filter((course) => course.ispublished);
-      break;
-    case 'rejected':
-      filtered = filtered.filter((course) => !course.ispublished);
-      break;
     default:
       break;
   }
 
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  return filtered.slice(start, start + itemsPerPage.value);
-});
-
-const fetchCourses = async () => {
-  try {
-    loading.value = true;
-    const response = await api.get('course/courses/', {
-      params: filters.value,
-    });
-    coursesList.value = response.data;
-    console.log('Courses fetched:', response.data);
-  } catch (error) {
-    console.error('Failed to fetch courses:', error);
-    $toast.error('Failed to fetch courses');
-  } finally {
-    loading.value = false;
-  }
-};
-
-const approveCourse = async (courseId) => {
-  try {
-    await api.patch(`course/courses/${courseId}/`, { ispublished: true });
-    const course = coursesList.value.find((item) => item.id === courseId);
-    if (course) course.ispublished = true;
-    $toast.success('Course approved successfully!');
-  } catch (error) {
-    console.error('Failed to approve course:', error);
-    $toast.error('Failed to approve course');
-  }
-};
-
-const rejectCourse = async (courseId) => {
-  try {
-    await api.patch(`course/courses/${courseId}/`, { ispublished: false });
-    const course = coursesList.value.find((item) => item.id === courseId);
-    if (course) course.ispublished = false;
-    $toast.success('Course rejected successfully!');
-  } catch (error) {
-    console.error('Failed to reject course:', error);
-    $toast.error('Failed to reject course');
-  }
-};
-
-const applyFilters = (newFilters) => {
-  filters.value = newFilters;
-  currentPage.value = 1;
-  fetchCourses();
-};
-
-onMounted(() => {
-  fetchCourses();
+  const start = (props.currentPage - 1) * props.itemsPerPage;
+  return filtered.slice(start, start + props.itemsPerPage);
 });
 </script>

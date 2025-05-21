@@ -4,12 +4,12 @@
     <b-container>
       <b-row>
         <b-col cols="12" class="text-center">
-          <h1 class="text-white">Course Grid Classic</h1>
+          <h1 class="text-white">All Courses</h1>
           <div class="d-flex justify-content-center">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb breadcrumb-dark breadcrumb-dots mb-0">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Courses classic</li>
+                <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
+                <li class="breadcrumb-item active" aria-current="page">Courses</li>
               </ol>
             </nav>
           </div>

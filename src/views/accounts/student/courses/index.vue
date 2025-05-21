@@ -56,7 +56,7 @@
 						</div>
 						<div class="mb-0 ms-2">
 						  <h6>
-							<router-link :to="{ name: 'student.course.details', params: { slug: item.slug } }">
+							<router-link :to="{ name: 'course.detail', params: { slug: item.slug } }">
 							  {{ item.title }}
 							</router-link>
 						  </h6>

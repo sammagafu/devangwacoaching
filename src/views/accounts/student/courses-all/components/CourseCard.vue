@@ -10,7 +10,7 @@
         <a href="#" class="h6 fw-light mb-0" v-else><font-awesome-icon :icon="faHeartR" /></a>
       </div>
       <b-card-title tag="h5">
-        <router-link :to="{ name: 'courses.details', params: { slug: item.slug } }">{{ item.title }}</router-link>
+        <router-link :to="{ name: 'course.detail', params: { slug: item.slug } }">{{ item.title }}</router-link>
       </b-card-title>
       <p class="mb-2 text-truncate-2">{{ item.description }}</p>
       <p class="mb-2 small" v-if="item.instructor">Instructor: {{ item.instructor.full_name }}</p>
@@ -21,15 +21,13 @@
         </span>
       </p>
       <ul class="list-inline mb-0 hstack gap-1">
-        <li class="list-inline-item me-0 small" v-for="(_star, idx) in Array(Math.floor(item.rating)).fill(0)"
-          :key="idx">
+        <li class="list-inline-item me-0 small" v-for="(_star, idx) in Array(Math.floor(item.rating)).fill(0)" :key="idx">
           <font-awesome-icon :icon="faStar" class="text-warning" />
         </li>
         <li class="list-inline-item me-0 small" v-if="!Number.isInteger(item.rating)">
           <font-awesome-icon :icon="faStarHalfAlt" class="text-warning" />
         </li>
-        <li class="list-inline-item me-0 small"
-          v-for="(_star, idx) in item.rating < 5 && Array(5 - Math.ceil(item.rating)).fill(0)" :key="idx">
+        <li class="list-inline-item me-0 small" v-for="(_star, idx) in item.rating < 5 && Array(5 - Math.ceil(item.rating)).fill(0)" :key="idx">
           <font-awesome-icon :icon="faStarR" class="text-warning" />
         </li>
         <li class="list-inline-item ms-2 h6 fw-light mb-0">{{ item.rating }}/5.0</li>
@@ -38,10 +36,8 @@
     <b-card-footer class="pt-0 pb-3">
       <hr>
       <div class="d-flex justify-content-between">
-        <span class="h6 fw-light mb-0"><font-awesome-icon :icon="faClock" class="text-danger me-2" />{{ item.duration
-          }}</span>
-        <span class="h6 fw-light mb-0"><font-awesome-icon :icon="faTable" class="text-orange me-2" />{{ item.lectures }}
-          lectures</span>
+        <span class="h6 fw-light mb-0"><font-awesome-icon :icon="faClock" class="text-danger me-2" />{{ item.duration }}</span>
+        <span class="h6 fw-light mb-0"><font-awesome-icon :icon="faTable" class="text-orange me-2" />{{ item.lectures }} lectures</span>
       </div>
     </b-card-footer>
   </b-card>
@@ -62,10 +58,10 @@ defineProps({
   },
 });
 
-// Updated ProductType interface to match API response
 interface ProductType {
   id: number;
   title: string;
+  slug: string;
   description: string;
   image?: string;
   ispublished: boolean;
@@ -76,13 +72,15 @@ interface ProductType {
   discount_percentage?: number;
   is_featured?: boolean;
   total_modules?: number;
+  total_videos?: number;
   tags?: string[];
-  category?: string;
-  level?: string;
-  badge?: { class: string; text: string };
-  isLike?: boolean;
   rating: number;
   duration?: string;
   lectures?: number;
+  category?: string;
+  level?: string;
+  language?: string;
+  badge?: { class: string; text: string };
+  isLike?: boolean;
 }
 </script>

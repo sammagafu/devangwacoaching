@@ -151,14 +151,7 @@ const pagesRoutes = [
     },
     component: () => import('@/views/pages/course/list-minimal/index.vue')
   },
-  {
-    path: '/course/detail',
-    name: 'course.detail',
-    meta: {
-      title: setTitle('Detail Classic')
-    },
-    component: () => import('@/views/pages/course/detail-classic/index.vue')
-  },
+ 
   {
     path: '/course/detail-min',
     name: 'course.detail.minimal',
@@ -166,14 +159,6 @@ const pagesRoutes = [
       title: setTitle('Detail Minimal')
     },
     component: () => import('@/views/pages/course/detail-minimal/index.vue')
-  },
-  {
-    path: '/course/:slug',
-    name: 'course.detail.advance',
-    meta: {
-      title: setTitle('Detail Advance')
-    },
-    component: () => import('@/views/pages/course/detail-advance/index.vue')
   },
   {
     path: '/course/detail-module',
@@ -876,11 +861,13 @@ const accountsRoutes = [
       title: setTitle('Courses'),},
     component: () => import('@/views/accounts/student/courses-all/index.vue')
   },
-  {
-    path:'/courses/:slug',
-    name: 'courses.details',
-    meta: { title:setTitle('Course Details'),},
-    component: () => import('@/views/accounts/student/courses-detail/index.vue')
+ {
+    path: '/course/:slug',
+    name: 'course.detail',
+    meta: {
+      title: setTitle('Course Detail')
+    },
+    component: () => import('@/views/pages/course/detail-classic/index.vue')
   },
 ];
 
