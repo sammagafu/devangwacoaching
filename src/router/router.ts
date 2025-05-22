@@ -270,7 +270,7 @@ const pagesRoutes = [
     component: () => import('@/views/pages/shop/cart/index.vue')
   },
   {
-    path: '/shop/checkout',
+    path: '/checkout',
     name: 'shop.checkout',
     meta: {
       title: setTitle('Checkout'),

@@ -7,11 +7,11 @@
           <div
             class="alert alert-danger alert-dismissible d-flex justify-content-between align-items-center fade show py-2 pe-2"
             role="alert"
-            v-if="!isLoggedIn"
+            v-if="!authStore.isAuthenticated"
           >
             <div>
               <BIconExclamationOctagonFill class="me-2" />
-              Already have an account? <router-link to="/login" class="text-reset btn-link mb-0 fw-bold">Log in</router-link>
+              Already have an account? <router-link to="/auth/sign-in" class="text-reset btn-link mb-0 fw-bold">Log in</router-link>
             </div>
             <button type="button" class="btn btn-link mb-0 text-primary-hover text-end" data-bs-dismiss="alert" aria-label="Close">
               <BIconXLg />
@@ -20,23 +20,22 @@
           <b-card no-body class="card-body shadow p-4">
             <h5 class="mb-4">Checkout Details</h5>
             <PaymentForm
-              :cart-items="cartItems"
+              :cart-items="cartStore.cartItems"
               :total-amount="totalAmount"
               @success="handleCheckoutSuccess"
               @error="handleCheckoutError"
-              @initiate="initiatePayment"
-              @confirm="confirmPayment"
+              @confirm="handleCheckout"
             />
           </b-card>
         </b-col>
-        <OrderSummary :cart-items="cartItems" :is-free="isFree" @place-order="handlePlaceOrder" />
+        <OrderSummary />
       </b-row>
     </b-container>
   </section>
 </template>
 
-<script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toast-notification';
 import { api } from '@/services/authService';
@@ -44,26 +43,18 @@ import PaymentForm from '@/components/PaymentForm.vue';
 import OrderSummary from '@/views/pages/shop/checkout/components/OrderSummary.vue';
 import { BIconExclamationOctagonFill, BIconXLg } from 'bootstrap-icons-vue';
 import { useCartStore } from '@/stores/cart';
+import { useAuthStore } from '@/stores/auth';
 
-defineProps({
-  cartItems: {
-    type: Array,
-    required: true,
-    default: () => [],
-  },
-});
-
-const emit = defineEmits(['clear-cart', 'place-order']);
+const emit = defineEmits(['clear-cart']);
 
 const router = useRouter();
 const $toast = useToast();
 const cartStore = useCartStore();
-const isLoggedIn = ref(false); // Replace with actual auth check
-const isFree = computed(() => cartItems.every((item) => item.final_price <= 0));
-const totalAmount = computed(() => cartItems.reduce((sum, item) => sum + (item.final_price || 0), 0));
-const paymentInitiated = ref(false);
-const orderTrackingIds = ref({});
+const authStore = useAuthStore();
 const isProcessing = ref(false);
+
+const isFree = computed(() => cartStore.cartItems.every((item) => item.final_price <= 0));
+const totalAmount = computed(() => cartStore.cartItems.reduce((sum, item) => sum + (item.final_price || 0), 0));
 
 const checkEnrollmentStatus = async (items) => {
   try {
@@ -102,64 +93,61 @@ const checkEnrollmentStatus = async (items) => {
   }
 };
 
+// Run enrollment check on mount
+onMounted(async () => {
+  console.log('Checking initial cart items:', cartStore.cartItems);
+  if (!Array.isArray(cartStore.cartItems) || !cartStore.cartItems.length) {
+    console.log('Cart is empty or invalid, skipping check');
+    return;
+  }
+  const isValid = await checkEnrollmentStatus(cartStore.cartItems);
+  if (!isValid) {
+    emit('clear-cart');
+  }
+});
+
+// Watch Pinia store for cart changes
 watch(
-  () => cartItems,
+  () => cartStore.cartItems,
   async (newCartItems) => {
-    console.log('Watching cartItems:', newCartItems);
+    console.log('Cart items changed:', newCartItems);
     if (!Array.isArray(newCartItems) || !newCartItems.length) {
-      console.log('Cart is empty or invalid, skipping enrollment check');
+      console.log('Cart is empty or invalid, skipping check');
       return;
     }
     const isValid = await checkEnrollmentStatus(newCartItems);
     if (!isValid) {
       emit('clear-cart');
     }
-  },
-  { immediate: true }
+  }
 );
-
-const initiatePayment = (payload) => {
-  paymentInitiated.value = true;
-  orderTrackingIds.value = payload.orderTrackingIds;
-};
-
-const confirmPayment = () => {
-  handlePlaceOrder({ orderTrackingIds: orderTrackingIds.value });
-};
 
 const handleCheckoutSuccess = () => {
   cartStore.clearCart();
   $toast.success('Checkout successful!');
-  router.push('/dashboard');
+  router.push({ name: 'student.dashboard' });
 };
 
 const handleCheckoutError = (error) => {
   $toast.error(error);
 };
 
-const handlePlaceOrder = async (payload) => {
+const handleCheckout = async (payload) => {
   if (isProcessing.value) return;
   isProcessing.value = true;
 
   try {
-    if (isFree.value) {
-      for (const item of cartItems) {
-        const endpoint = item.type === 'course' ? `/course/courses/${item.slug}/enroll/` : `/events/${item.slug}/attend/`;
-        await api.post(endpoint, {});
+    for (const item of cartStore.cartItems) {
+      const endpoint = item.type === 'course' ? `/course/courses/${item.slug}/enroll/` : `/events/${item.slug}/attend/`;
+      const requestData = isFree.value || item.final_price <= 0 ? {} : {
+        order_tracking_id: payload.orderTrackingIds?.[`${item.type}-${item.slug}`],
+      };
+      if (!isFree.value && item.final_price > 0 && !requestData.order_tracking_id) {
+        throw new Error(`Missing order tracking ID for ${item.title}`);
       }
-      handleCheckoutSuccess();
-    } else if (paymentInitiated.value && payload.orderTrackingIds) {
-      for (const item of cartItems) {
-        if (item.final_price <= 0) continue;
-        const endpoint = item.type === 'course' ? `/course/courses/${item.slug}/enroll/` : `/events/${item.slug}/attend/`;
-        const orderTrackingId = payload.orderTrackingIds[item.type + '-' + item.slug];
-        if (!orderTrackingId) throw new Error(`Missing order tracking ID for ${item.title}`);
-        await api.post(endpoint, { order_tracking_id: orderTrackingId });
-      }
-      handleCheckoutSuccess();
-    } else {
-      $toast.error('Please initiate payment first.');
+      await api.post(endpoint, requestData);
     }
+    handleCheckoutSuccess();
   } catch (err) {
     handleCheckoutError(err.response?.data?.detail || 'Checkout failed. Please try again.');
   } finally {

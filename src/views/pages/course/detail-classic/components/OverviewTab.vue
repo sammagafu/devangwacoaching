@@ -1,42 +1,79 @@
 <template>
-  <h5 class="mb-3">Course Description</h5>
-  <p class="mb-3">
-    Welcome to the <strong> Digital Marketing Ultimate Course Bundle - 12 Courses in 1 (Over 36 hours of
-      content)</strong>
-  </p>
-  <p class="mb-3">
-    In this practical hands-on training, you’re going to learn to become a digital marketing expert with this <strong>
-      ultimate course bundle that includes 12 digital marketing courses in 1!</strong>
-  </p>
-  <p class="mb-3">
-    If you wish to find out the skills that should be covered in a basic digital marketing course syllabus in India or
-    anywhere around the world, then reading this blog will help. Before we delve into the advanced <strong><a href="#"
-        class="text-reset text-decoration-underline">digital marketing course</a></strong> syllabus, let’s look at the
-    scope of digital marketing and what the future holds.
-  </p>
-  <p class="mb-0">
-    We focus a great deal on the understanding of behavioral psychology and influence triggers which are crucial for
-    becoming a well rounded Digital Marketer. We understand that theory is important to build a solid foundation, we
-    understand that theory alone isn’t going to get the job done so that’s why this course is packed with practical
-    hands-on examples that you can follow step by step.
-  </p>
+  <div>
+    <h5 class="mb-3">Course Description</h5>
+    <p class="mb-3">
+      Welcome to <strong>{{ course.title || 'this course' }}</strong>
+    </p>
+    <p class="mb-3">
+      {{ course.description || 'No description available.' }}
+    </p>
+    <p class="mb-0">
+      This course focuses on practical, hands-on learning to help you master the skills needed. We combine theoretical foundations with real-world applications to ensure you can apply what you learn effectively.
+    </p>
 
-  <h5 class="mt-4">What you’ll learn</h5>
-  <ul class="list-group list-group-borderless mb-3">
-    <li class="list-group-item h6 fw-light d-flex mb-0" v-for="(topic, idx) in topics" :key="idx">
-      <font-awesome-icon :icon="faCheckCircle" class="text-success me-2" />
-      {{ topic }}
-    </li>
-  </ul>
+    <h5 class="mt-4">What you’ll learn</h5>
+    <ul class="list-group list-group-borderless mb-3">
+      <li class="list-group-item h6 fw-light d-flex mb-0" v-for="(objective, idx) in course.learning_objectives || defaultObjectives" :key="idx">
+        <font-awesome-icon :icon="faCheckCircle" class="text-success me-2" />
+        {{ objective }}
+      </li>
+    </ul>
 
-  <p class="mb-0">
-    As it so contrasted oh estimating instrument. Size like body someone had. Are conduct viewing boy minutes warrant
-    the expense? Tolerably behavior may admit daughters offending her ask own. Praise effect wishes change way and any
-    wanted. Lively use looked latter regard had. Do he it part more last in.
-  </p>
-
+    <p class="mb-0">
+      {{ course.summary || 'Join us to gain valuable skills and achieve your learning goals.' }}
+    </p>
+  </div>
 </template>
+
 <script setup lang="ts">
-import { topics } from '@/views/pages/course/detail-classic/components/data';
+import { defineProps } from 'vue';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+
+interface CourseType {
+  id?: number;
+  title?: string;
+  slug?: string;
+  description?: string;
+  image?: string;
+  ispublished?: boolean;
+  created_at?: string;
+  updated_at?: string;
+  instructor?: { id: number; email: string; full_name?: string };
+  price?: string;
+  final_price?: number;
+  discount_percentage?: string;
+  is_featured?: boolean;
+  total_modules?: number;
+  total_videos?: number;
+  total_documents?: number;
+  total_quizzes?: number;
+  tags?: string[];
+  category?: string;
+  level?: string;
+  language?: string;
+  certificate?: boolean;
+  rating?: number;
+  duration?: string;
+  student?: number;
+  modules?: { title: string; lectures: { title: string; time: string; isPremium: boolean }[] }[];
+  faqs?: { question: string; answer: string }[];
+  reviews?: number;
+  discount_deadline?: string;
+  video_url?: string;
+  learning_objectives?: string[];
+  summary?: string;
+}
+
+defineProps({
+  course: {
+    type: Object as PropType<CourseType>,
+    required: true,
+  },
+});
+
+const defaultObjectives = [
+  'Understand key concepts and techniques.',
+  'Apply skills in real-world scenarios.',
+  'Master practical tools and strategies.',
+];
 </script>

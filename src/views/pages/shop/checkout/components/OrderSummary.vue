@@ -16,17 +16,17 @@
             <b-form-text v-if="couponApplied" class="text-success">Coupon applied! Discount: {{ currency }}{{ couponDiscount }}</b-form-text>
           </div>
           <hr>
-          <div v-if="cartItems.length === 0" class="text-center">
+          <div v-if="cartStore.cartItems.length === 0" class="text-center">
             <p class="text-muted">Your cart is empty.</p>
           </div>
           <template v-else>
-            <b-row v-for="(item, index) in cartItems" :key="`${item.type}-${item.slug}`" class="g-3 mb-3">
+            <b-row v-for="(item, index) in cartStore.cartItems" :key="`${item.type}-${item.slug}`" class="g-3 mb-3">
               <b-col sm="4">
                 <img class="rounded" :src="item.image || defaultImage" alt="item image">
               </b-col>
               <b-col sm="8">
                 <h6 class="mb-0">
-                  <router-link :to="{ name: item.type === 'course' ? 'CourseDetail' : 'EventDetail', params: { slug: item.slug }}">{{ item.title }}</router-link>
+                  <router-link :to="{ name: item.type === 'course' ? 'course.detail' : 'event.detail', params: { slug: item.slug }}">{{ item.title }}</router-link>
                 </h6>
                 <div class="d-flex justify-content-between align-items-center mt-3">
                   <span class="text-success">{{ currency }}{{ item.final_price }}</span>
@@ -35,11 +35,11 @@
                       <BIconTrash class="me-1 mb-1" />Remove
                     </a>
                   </div>
-                </b-col>
-              </b-row>
-            </template>
-            <hr v-if="cartItems.length > 0">
-            <ul class="list-group list-group-borderless mb-2" v-if="cartItems.length > 0">
+                </div>
+              </b-col>
+            </b-row>
+            <hr v-if="cartStore.cartItems.length > 0">
+            <ul class="list-group list-group-borderless mb-2" v-if="cartStore.cartItems.length > 0">
               <li class="list-group-item px-0 d-flex justify-content-between">
                 <span class="h6 fw-light mb-0">Original Price</span>
                 <span class="h6 fw-light mb-0 fw-bold">{{ currency }}{{ originalPrice }}</span>
@@ -53,27 +53,18 @@
                 <span class="h5 mb-0">{{ currency }}{{ totalPrice }}</span>
               </li>
             </ul>
-            <div class="d-grid">
-              <b-button
-                variant="success"
-                class="btn-lg"
-                :disabled="isProcessing || !cartItems.length"
-                @click="placeOrder"
-              >
-                {{ isProcessing ? 'Processing...' : isFree ? 'Checkout for Free' : 'Place Order' }}
-              </b-button>
-            </div>
             <p class="small mb-0 mt-2 text-center">
               By completing your purchase, you agree to these
               <router-link to="/terms" class="text-primary"><strong>Terms of Service</strong></router-link>
             </p>
-          </b-card>
-        </b-col>
-      </b-row>
-    </b-col>
-  </template>
+          </template>
+        </b-card>
+      </b-col>
+    </b-row>
+  </b-col>
+</template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, computed } from 'vue';
 import { useToast } from 'vue-toast-notification';
 import { BIconTrash } from 'bootstrap-icons-vue';
@@ -81,18 +72,6 @@ import { currency } from '@/helpers/constants';
 import { useCartStore } from '@/stores/cart';
 import avatar01 from '@/assets/images/avatar/01.jpg';
 
-defineProps({
-  cartItems: {
-    type: Array,
-    required: true,
-  },
-  isFree: {
-    type: Boolean,
-    default: false,
-  },
-});
-
-const emit = defineEmits(['place-order']);
 const $toast = useToast();
 const cartStore = useCartStore();
 const couponCode = ref('');
@@ -100,15 +79,14 @@ const couponError = ref('');
 const couponApplied = ref(false);
 const couponDiscount = ref(0);
 const applyingCoupon = ref(false);
-const isProcessing = ref(false);
 const defaultImage = avatar01;
 
 const originalPrice = computed(() => {
-  return cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
+  return cartStore.cartItems.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
 });
 
 const totalPrice = computed(() => {
-  return cartItems.reduce((sum, item) => sum + (item.final_price || 0), 0) - couponDiscount.value;
+  return cartStore.cartItems.reduce((sum, item) => sum + (item.final_price || 0), 0) - couponDiscount.value;
 });
 
 const discount = computed(() => {
@@ -135,11 +113,7 @@ const applyCoupon = async () => {
 };
 
 const removeItem = (slug, type) => {
+  console.log('Removing item:', { slug, type });
   cartStore.removeFromCart(slug, type);
-};
-
-const placeOrder = () => {
-  if (isProcessing.value) return;
-  emit('place-order', { orderTrackingIds: orderTrackingIds.value });
 };
 </script>
