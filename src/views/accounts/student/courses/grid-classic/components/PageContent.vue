@@ -38,7 +38,7 @@
 
           <b-row class="g-4">
             <b-col sm="6" xl="4" v-for="(item, idx) in productList" :key="idx">
-              <CourseCard :item="item" />
+              <!-- <CourseCard :item="item" /> -->
             </b-col>
           </b-row>
 

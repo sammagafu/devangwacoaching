@@ -15,7 +15,7 @@
   </PagesLayout>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toast-notification';
@@ -27,39 +27,9 @@ import { api } from '@/services/authService';
 
 const $toast = useToast();
 const route = useRoute();
-const course = ref<CourseType>({});
+const course = ref({});
 const loading = ref(false);
-const error = ref<string | null>(null);
-
-interface CourseType {
-  id?: number;
-  title?: string;
-  slug?: string;
-  description?: string;
-  image?: string;
-  ispublished?: boolean;
-  created_at?: string;
-  instructor?: { id: number; email: string; full_name?: string };
-  price?: string;
-  final_price?: number;
-  discount_percentage?: string;
-  is_featured?: boolean;
-  total_modules?: number;
-  total_videos?: number;
-  total_documents?: number;
-  total_quizzes?: number;
-  tags?: string[];
-  category?: string;
-  level?: string;
-  language?: string;
-  certificate?: boolean;
-  rating?: number;
-  duration?: string;
-  student?: number;
-  modules?: { title: string; lectures: { title: string; time: string; isPremium: boolean }[] }[];
-  faqs?: { question: string; answer: string }[];
-  reviews?: number;
-}
+const error = ref(null);
 
 const fetchCourse = async () => {
   try {
@@ -81,7 +51,7 @@ const fetchCourse = async () => {
       reviews: response.data.reviews || 0,
     };
     console.log('Course fetched:', course.value);
-  } catch (err: any) {
+  } catch (err) {
     console.error('Failed to fetch course:', err);
     error.value = err.response?.status === 404
       ? `Course with slug "${route.params.slug}" not found.`

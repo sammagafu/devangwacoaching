@@ -1,4 +1,3 @@
-
 <template>
   <AdminLayout>
     <main>
@@ -261,7 +260,7 @@ onMounted(async () => {
         linear: false,
         animation: true,
       });
-      stepperRef.value.addEventListener('show.bs-stepper', (event: any) => {
+      stepperRef.value.addEventListener('show.bs.stepper', (event: any) => {
         currentStep.value = event.detail.indexStep;
         saveToLocalStorage();
       });
@@ -280,7 +279,7 @@ onMounted(async () => {
 
 const fetchDrafts = async () => {
   try {
-    const response = await api.get('course/courses/drafts/');
+    const response = await api.get('/course/courses/drafts/'); // Updated to intended nested endpoint
     drafts.value = response.data;
     console.log('Drafts fetched:', response.data);
   } catch (error) {
@@ -312,9 +311,9 @@ const loadCourse = async (slug: string) => {
       is_featured: courseData.is_featured || false,
       course_time: courseTimeMatch ? courseTimeMatch[1] : '',
       total_lecture: totalLectureMatch ? totalLectureMatch[1] : '',
-      price: parseFloat(courseData.price) || null,
+      price: parseFloat(courseData.final_price) || null,
       discount_price: courseData.discount_percentage
-        ? Number((parseFloat(courseData.price) * (1 - parseFloat(courseData.discount_percentage) / 100)).toFixed(2))
+        ? Number((parseFloat(courseData.final_price) * (1 - parseFloat(courseData.discount_percentage) / 100)).toFixed(2))
         : null,
       enable_discount: !!courseData.discount_percentage,
       description: description.split('\n\n').filter((part: string) => !part.match(/^(Short Description|Category|Level|Languages|Course Time|Total Lectures|Reviewer Message):/)).join('\n\n'),
@@ -523,7 +522,7 @@ const saveDraft = async () => {
   if (formData.value.reviewer_message) descriptionParts.push(`Reviewer Message: ${formData.value.reviewer_message}`);
   formPayload.append('description', descriptionParts.join('\n\n'));
   if (formData.value.price !== null && formData.value.price > 0) {
-    formPayload.append('price', formData.value.price.toFixed(2));
+    formPayload.append('final_price', formData.value.price.toFixed(2));
   }
   if (formData.value.cover) formPayload.append('cover', formData.value.cover);
   if (formData.value.enable_discount && formData.value.discount_price && formData.value.price) {
@@ -567,7 +566,7 @@ const saveDraft = async () => {
           })),
         };
         console.log('New module payload:', newModulePayload);
-        const newModuleResponse = await api.post('course/modules/bulk_create/', newModulePayload);
+        const newModuleResponse = await api.post('modules/bulk_create/', newModulePayload);
         console.log('New module creation response:', newModuleResponse.data);
 
         newModuleResponse.data.forEach((savedModule: any, index: number) => {
@@ -581,7 +580,7 @@ const saveDraft = async () => {
           description: module.description,
           order: module.order,
         };
-        await api.put(`course/modules/${module.id}/`, updateModulePayload);
+        await api.put(`modules/${module.id}/`, updateModulePayload);
       }
 
       for (const module of formData.value.modules) {
@@ -593,9 +592,9 @@ const saveDraft = async () => {
             video_url: video.video_url,
           };
           if (video.id) {
-            await api.put(`course/videos/${video.id}/`, videoPayload);
+            await api.put(`videos/${video.id}/`, videoPayload);
           } else {
-            const videoResponse = await api.post('course/videos/', videoPayload);
+            const videoResponse = await api.post('videos/', videoPayload);
             video.id = videoResponse.data.id;
           }
         }
@@ -609,7 +608,7 @@ const saveDraft = async () => {
           course: response.data.id,
           modules: [{ title: defaultModule.title, order: defaultModule.order, description: defaultModule.description }],
         };
-        const moduleResponse = await api.post('course/modules/bulk_create/', modulePayload);
+        const moduleResponse = await api.post('modules/bulk_create/', modulePayload);
         defaultModule.id = moduleResponse.data[0].id;
         formData.value.modules.push(defaultModule);
       }
@@ -618,7 +617,7 @@ const saveDraft = async () => {
         title: 'Course Intro Video',
         video_url: formData.value.video_url,
       };
-      const videoResponse = await api.post('course/videos/', videoPayload);
+      const videoResponse = await api.post('videos/', videoPayload);
       console.log('Video creation response:', videoResponse.data);
     }
 
@@ -629,7 +628,7 @@ const saveDraft = async () => {
           course: response.data.id,
           modules: [{ title: defaultModule.title, order: defaultModule.order, description: defaultModule.description }],
         };
-        const moduleResponse = await api.post('course/modules/bulk_create/', modulePayload);
+        const moduleResponse = await api.post('modules/bulk_create/', modulePayload);
         defaultModule.id = moduleResponse.data[0].id;
         formData.value.modules.push(defaultModule);
       }
@@ -637,7 +636,7 @@ const saveDraft = async () => {
       documentFormData.append('module', defaultModule.id!.toString());
       documentFormData.append('title', 'Course Video');
       documentFormData.append('document_file', formData.value.video_file);
-      const documentResponse = await api.post('course/documents/', documentFormData, {
+      const documentResponse = await api.post('documents/', documentFormData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Document creation response:', documentResponse.data);
@@ -698,7 +697,7 @@ const publishCourse = async () => {
   if (formData.value.reviewer_message) descriptionParts.push(`Reviewer Message: ${formData.value.reviewer_message}`);
   formPayload.append('description', descriptionParts.join('\n\n'));
   if (formData.value.price !== null && formData.value.price > 0) {
-    formPayload.append('price', formData.value.price.toFixed(2));
+    formPayload.append('final_price', formData.value.price.toFixed(2));
   }
   if (formData.value.cover) formPayload.append('cover', formData.value.cover);
   if (formData.value.enable_discount && formData.value.discount_price && formData.value.price) {
@@ -739,7 +738,7 @@ const publishCourse = async () => {
           })),
         };
         console.log('New module payload:', newModulePayload);
-        const newModuleResponse = await api.post('course/modules/bulk_create/', newModulePayload);
+        const newModuleResponse = await api.post('modules/bulk_create/', newModulePayload);
         console.log('New module creation response:', newModuleResponse.data);
 
         newModuleResponse.data.forEach((savedModule: any, index: number) => {
@@ -753,7 +752,7 @@ const publishCourse = async () => {
           description: module.description,
           order: module.order,
         };
-        await api.put(`course/modules/${module.id}/`, updateModulePayload);
+        await api.put(`modules/${module.id}/`, updateModulePayload);
       }
 
       for (const module of formData.value.modules) {
@@ -765,9 +764,9 @@ const publishCourse = async () => {
             video_url: video.video_url,
           };
           if (video.id) {
-            await api.put(`course/videos/${video.id}/`, videoPayload);
+            await api.put(`videos/${video.id}/`, videoPayload);
           } else {
-            const videoResponse = await api.post('course/videos/', videoPayload);
+            const videoResponse = await api.post('videos/', videoPayload);
             video.id = videoResponse.data.id;
           }
         }
@@ -781,7 +780,7 @@ const publishCourse = async () => {
           course: response.data.id,
           modules: [{ title: defaultModule.title, order: defaultModule.order, description: defaultModule.description }],
         };
-        const moduleResponse = await api.post('course/modules/bulk_create/', modulePayload);
+        const moduleResponse = await api.post('modules/bulk_create/', modulePayload);
         defaultModule.id = moduleResponse.data[0].id;
         formData.value.modules.push(defaultModule);
       }
@@ -790,7 +789,7 @@ const publishCourse = async () => {
         title: 'Course Intro Video',
         video_url: formData.value.video_url,
       };
-      const videoResponse = await api.post('course/videos/', videoPayload);
+      const videoResponse = await api.post('videos/', videoPayload);
       console.log('Video creation response:', videoResponse.data);
     }
 
@@ -801,7 +800,7 @@ const publishCourse = async () => {
           course: response.data.id,
           modules: [{ title: defaultModule.title, order: defaultModule.order, description: defaultModule.description }],
         };
-        const moduleResponse = await api.post('course/modules/bulk_create/', modulePayload);
+        const moduleResponse = await api.post('modules/bulk_create/', modulePayload);
         defaultModule.id = moduleResponse.data[0].id;
         formData.value.modules.push(defaultModule);
       }
@@ -809,7 +808,7 @@ const publishCourse = async () => {
       documentFormData.append('module', defaultModule.id!.toString());
       documentFormData.append('title', 'Course Video');
       documentFormData.append('document_file', formData.value.video_file);
-      const documentResponse = await api.post('course/documents/', documentFormData, {
+      const documentResponse = await api.post('documents/', documentFormData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Document creation response:', documentResponse.data);
@@ -869,7 +868,7 @@ const updateCourse = async () => {
   if (formData.value.reviewer_message) descriptionParts.push(`Reviewer Message: ${formData.value.reviewer_message}`);
   formPayload.append('description', descriptionParts.join('\n\n'));
   if (formData.value.price !== null && formData.value.price > 0) {
-    formPayload.append('price', formData.value.price.toFixed(2));
+    formPayload.append('final_price', formData.value.price.toFixed(2));
   }
   if (formData.value.cover) formPayload.append('cover', formData.value.cover);
   if (formData.value.enable_discount && formData.value.discount_price && formData.value.price) {
@@ -903,7 +902,7 @@ const updateCourse = async () => {
           })),
         };
         console.log('New module payload:', newModulePayload);
-        const newModuleResponse = await api.post('course/modules/bulk_create/', newModulePayload);
+        const newModuleResponse = await api.post('modules/bulk_create/', newModulePayload);
         console.log('New module creation response:', newModuleResponse.data);
 
         newModuleResponse.data.forEach((savedModule: any, index: number) => {
@@ -917,7 +916,7 @@ const updateCourse = async () => {
           description: module.description,
           order: module.order,
         };
-        await api.put(`course/modules/${module.id}/`, updateModulePayload);
+        await api.put(`modules/${module.id}/`, updateModulePayload);
       }
 
       for (const module of formData.value.modules) {
@@ -929,9 +928,9 @@ const updateCourse = async () => {
             video_url: video.video_url,
           };
           if (video.id) {
-            await api.put(`course/videos/${video.id}/`, videoPayload);
+            await api.put(`videos/${video.id}/`, videoPayload);
           } else {
-            const videoResponse = await api.post('course/videos/', videoPayload);
+            const videoResponse = await api.post('videos/', videoPayload);
             video.id = videoResponse.data.id;
           }
         }
@@ -945,7 +944,7 @@ const updateCourse = async () => {
           course: response.data.id,
           modules: [{ title: defaultModule.title, order: defaultModule.order, description: defaultModule.description }],
         };
-        const moduleResponse = await api.post('course/modules/bulk_create/', modulePayload);
+        const moduleResponse = await api.post('modules/bulk_create/', modulePayload);
         defaultModule.id = moduleResponse.data[0].id;
         formData.value.modules.push(defaultModule);
       }
@@ -954,7 +953,7 @@ const updateCourse = async () => {
         title: 'Course Intro Video',
         video_url: formData.value.video_url,
       };
-      const videoResponse = await api.post('course/videos/', videoPayload);
+      const videoResponse = await api.post('videos/', videoPayload);
       console.log('Video creation response:', videoResponse.data);
     }
 
@@ -965,7 +964,7 @@ const updateCourse = async () => {
           course: response.data.id,
           modules: [{ title: defaultModule.title, order: defaultModule.order, description: defaultModule.description }],
         };
-        const moduleResponse = await api.post('course/modules/bulk_create/', modulePayload);
+        const moduleResponse = await api.post('modules/bulk_create/', modulePayload);
         defaultModule.id = moduleResponse.data[0].id;
         formData.value.modules.push(defaultModule);
       }
@@ -973,7 +972,7 @@ const updateCourse = async () => {
       documentFormData.append('module', defaultModule.id!.toString());
       documentFormData.append('title', 'Course Video');
       documentFormData.append('document_file', formData.value.video_file);
-      const documentResponse = await api.post('course/documents/', documentFormData, {
+      const documentResponse = await api.post('documents/', documentFormData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Document creation response:', documentResponse.data);

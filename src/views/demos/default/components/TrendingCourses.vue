@@ -60,7 +60,7 @@ const settings = {
 
 const fetchTrendingCourses = async () => {
   try {
-    const response = await api.get('/course/courses/');
+    const response = await api.get('course/courses/');
     courses.value = response.data.map(course => ({
       slug: course.slug || '',
       title: course.title || 'Untitled Course',
@@ -70,11 +70,11 @@ const fetchTrendingCourses = async () => {
       category: course.category || 'Unknown',
       ribbon: course.ribbon || '',
       badges: course.categories?.map(cat => ({ text: cat.name, class: 'primary' })) || [{ text: course.category || 'General', class: 'primary' }],
-      rating: course.rating || 0,
+      rating: course.rating || 4.5,
       reviews: course.reviews || 0,
       students: course.students || 0,
       time: course.duration || 'N/A',
-      lectures: course.lectures || 0,
+      lectures: course.total_modules || 0,
       instructor: {
         name: course.instructor?.full_name || course.instructor?.email || 'Unknown Instructor',
         avatar: course.instructor?.avatar || 'https://placehold.co/50?text=Avatar',

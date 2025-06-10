@@ -1,4 +1,3 @@
-<!-- src/views/pages/shop/checkout/components/PageContent.vue -->
 <template>
   <section class="pt-5">
     <b-container>
@@ -67,7 +66,7 @@ const checkEnrollmentStatus = async (items) => {
     const eventSlugs = items.filter((item) => item.type === 'event').map((item) => item.slug);
 
     if (courseSlugs.length) {
-      const courseResponse = await api.get('/course/courses/enrolled/');
+      const courseResponse = await api.get('/courses/enrolled/');
       const enrolledCourses = courseResponse.data.map((enrollment) => enrollment.course?.slug).filter(Boolean);
       if (courseSlugs.some((slug) => enrolledCourses.includes(slug))) {
         $toast.error('One or more courses are already enrolled.');
@@ -93,7 +92,6 @@ const checkEnrollmentStatus = async (items) => {
   }
 };
 
-// Run enrollment check on mount
 onMounted(async () => {
   console.log('Checking initial cart items:', cartStore.cartItems);
   if (!Array.isArray(cartStore.cartItems) || !cartStore.cartItems.length) {
@@ -106,7 +104,6 @@ onMounted(async () => {
   }
 });
 
-// Watch Pinia store for cart changes
 watch(
   () => cartStore.cartItems,
   async (newCartItems) => {
@@ -132,23 +129,28 @@ const handleCheckoutError = (error) => {
   $toast.error(error);
 };
 
-const handleCheckout = async (payload) => {
+const handleCheckout = async (paymentData) => {
   if (isProcessing.value) return;
   isProcessing.value = true;
 
   try {
     for (const item of cartStore.cartItems) {
-      const endpoint = item.type === 'course' ? `/course/courses/${item.slug}/enroll/` : `/events/${item.slug}/attend/`;
-      const requestData = isFree.value || item.final_price <= 0 ? {} : {
-        order_tracking_id: payload.orderTrackingIds?.[`${item.type}-${item.slug}`],
+      const endpoint = item.type === 'course' ? `/courses/${item.slug}/enroll/` : `/events/${item.slug}/attend/`;
+      const requestData = item.final_price <= 0 ? {} : {
+        payment_method: paymentData.payment_method,
+        phone_number: paymentData.phone_number,
+        card_number: paymentData.card_number
       };
-      if (!isFree.value && item.final_price > 0 && !requestData.order_tracking_id) {
-        throw new Error(`Missing order tracking ID for ${item.title}`);
+
+      if (item.final_price > 0 && !requestData.payment_method) {
+        throw new Error(`Missing payment method for ${item.title}`);
       }
+
       await api.post(endpoint, requestData);
     }
     handleCheckoutSuccess();
   } catch (err) {
+    console.error('Checkout error:', err);
     handleCheckoutError(err.response?.data?.detail || 'Checkout failed. Please try again.');
   } finally {
     isProcessing.value = false;

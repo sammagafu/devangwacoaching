@@ -2,7 +2,7 @@
   <b-card no-body class="p-2 border">
     <div class="rounded-top overflow-hidden">
       <div class="card-overlay-hover">
-        <img :src="item.image || defaultAvatar" class="card-img-top" alt="course img">
+        <img :src="item.cover || defaultAvatar" class="card-img-top" alt="course img">
       </div>
       <div class="card-img-overlay">
         <div class="card-element-hover d-flex justify-content-end">
@@ -74,7 +74,7 @@ interface CourseType {
   title: string;
   slug?: string;
   description: string;
-  image?: string;
+  cover?: string;
   ispublished: boolean;
   created_at: string;
   instructor?: { id: number; email: string; full_name?: string };
@@ -117,7 +117,9 @@ const enrollCourse = async () => {
       final_price: item.final_price ?? parseFloat(item.price || '0'),
     });
     await cartStore.fetchCartItems();
-    router.push('/checkout');
+    router.push({
+      name: 'shop.checkout',
+    });
   } catch (error) {
     console.error('Failed to add course to cart:', error);
     $toast.error('Failed to add course to cart.');

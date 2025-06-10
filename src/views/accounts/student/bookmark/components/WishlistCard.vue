@@ -1,5 +1,6 @@
 <template>
   <b-card no-body class="border rounded-3">
+    <router-link :to="{ name: 'course.detail', params: { slug: item.slug }}"><img :src="item.cover" class="card-img-top" alt="course img"></router-link>
     <b-card-body>
       <router-link
         v-if="item.slug"
@@ -61,7 +62,7 @@ interface CourseType {
   title: string;
   slug?: string;
   description: string;
-  image?: string;
+  cover?: string;
   ispublished?: boolean;
   created_at?: string;
   instructor?: { id: number; email: string; full_name?: string; avatar?: string };
@@ -99,13 +100,13 @@ const enrollCourse = async () => {
       title: item.title,
       slug: item.slug,
       type: 'course',
-      image: item.image,
+      image: item.cover,
       price: item.price || '0',
       final_price: item.final_price ?? parseFloat(item.price || '0'),
     });
     await cartStore.fetchCartItems();
     $toast.success('Course added to cart.');
-    router.push('/checkout');
+    router.push({name: 'shop.checkout'});
   } catch (error) {
     console.error('Failed to add course to cart:', error);
     $toast.error(error.message || 'Failed to add course to cart.');
