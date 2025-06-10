@@ -14,12 +14,12 @@
             </span>
             <font-awesome-icon :icon="faAngleDown" class="fa-sm ms-1" />
           </a>
-          <ul class="dropdown-menu">
+          <!-- <ul class="dropdown-menu">
             <template v-for="(subItem, idx) in item.children" :key="subItem.key + idx">
               <MenuItemWithChildren v-if="subItem.children" :item="subItem" :menu="menuItems" />
               <MenuItem v-else :item="subItem" />
             </template>
-          </ul>
+          </ul> -->
         </DropDown>
       </template>
       <slot />

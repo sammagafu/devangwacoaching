@@ -74,12 +74,6 @@ export const ADMIN_MENU_ITEMS: MenuItemType[] = [
     route: { name: "admin.manage.community" },
   },
   {
-    key: "reviews",
-    icon: faCommentDots,
-    label: "Reviews",
-    route: { name: "admin.review" },
-  },
-  {
     key: "earnings",
     icon: faChartBar,
     label: "Earnings",
@@ -167,11 +161,7 @@ export const STUDENT_MENU_ITEMS = [
     route: { name: 'student.community' },
     icon: BIconPeople,
   },
-  {
-    title: 'Payment Info',
-    route: { name: 'student.payment' },
-    icon: BIconCreditCard2Front
-  },
+
   {
     title: 'Browse Courses',
     route: { name: 'student.bookmark' },
@@ -192,11 +182,6 @@ export const STUDENT_MENU_ITEMS = [
   //   route: { name: 'instructor.delete.account' },
   //   icon: BIconTrash
   // },
-  {
-    title: 'Sign Out',
-    route: { name: 'auth.sign-in' },
-    icon: BIconBoxArrowRight
-  }
 ];
 
 export const CATEGORY_MENU_ITEMS = [

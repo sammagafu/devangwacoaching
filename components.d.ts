@@ -57,6 +57,7 @@ declare module 'vue' {
     BTr: typeof import('bootstrap-vue-next')['BTr']
     CategoryMenu: typeof import('./src/components/CategoryMenu.vue')['default']
     ChoicesSelect: typeof import('./src/components/ChoicesSelect.vue')['default']
+    CountDown: typeof import('./src/components/CountDown.vue')['default']
     CustomGLightbox: typeof import('./src/components/CustomGLightbox.vue')['default']
     CustomStickyElement: typeof import('./src/components/CustomStickyElement.vue')['default']
     CustomTinySlider: typeof import('./src/components/CustomTinySlider.vue')['default']

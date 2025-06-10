@@ -13,6 +13,7 @@
     <ActionBox />
 
     <TrendingCourses />
+    <CountDown />
 
   </main>
   <Footer1 />
@@ -27,4 +28,5 @@ import ActionBox from '@/views/demos/default/components/ActionBox.vue';
 import TrendingCourses from '@/views/demos/default/components/TrendingCourses.vue';
 import Reviews from '@/views/demos/default/components/Reviews.vue';
 import Footer1 from '@/views/demos/default/components/Footer1.vue';
+import CountDown from '@/components/CountDown.vue';
 </script>
