@@ -1,0 +1,42 @@
+<template>
+  <li class="dropdown-submenu dropend">
+    <a
+      class="dropdown-item dropdown-toggle d-flex arrow-none flex-centered"
+      data-bs-toggle="dropdown"
+      href="#"
+      :class="menuItemActive(menuItems, item.key, currentRouteName) && 'active'"
+    >
+      <component :is="item.icon" class="fa-fw me-1" />
+      {{ item.label }}
+      <font-awesome-icon :icon="faEllipsis" class="ms-auto fa-sm" />
+    </a>
+    <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+      <template v-for="(child, idx) in item.children" :key="idx + child.key + idx">
+        <AppMenuItemWithChildren v-if="child.children" :item="child" :menu="menuItems" />
+        <AppMenuItem v-else :item="child" />
+      </template>
+    </ul>
+  </li>
+</template>
+
+<script lang="ts" setup>
+import router from '@/router';
+import AppMenuItem from '@/components/navbar/AppMenu/AppMenuItem.vue';
+import { menuItemActive } from '@/helpers/getActiveClass';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { getAppMenuItems, type MenuItemType } from '@/helpers/menu';
+
+// Get the current route name
+const currentRouteName = router.currentRoute.value.name;
+
+// Define props with TypeScript type
+type SubMenuType = {
+  item: MenuItemType;
+  itemClassName?: string;
+  menu: MenuItemType[];
+};
+defineProps<SubMenuType>();
+
+// Load menu items
+const menuItems: MenuItemType[] = getAppMenuItems();
+</script>

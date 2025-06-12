@@ -16,7 +16,7 @@
 </template>
 <script lang="ts" setup>
 import router from '@/router';
-import MenuItem from '@/components/navbar/AppMenu/MenuItem.vue';
+import MenuItem from '@/components/navbar/AppMenu/AppMenuItem.vue';
 import { menuItemActive } from '@/helpers/getActiveClass';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 

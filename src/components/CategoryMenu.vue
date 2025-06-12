@@ -111,8 +111,8 @@
   </ul>
 </template>
 <script setup lang="ts">
-import MenuItem from '@/components/navbar/AppMenu/MenuItem.vue';
-import MenuItemWithChildren from '@/components/navbar/AppMenu/MenuItemWithChildren.vue';
+import MenuItem from '@/components/navbar/AppMenu/AppMenuItem.vue';
+import MenuItemWithChildren from '@/components/navbar/AppMenu/AppMenuItemWithChildren.vue';
 import { CATEGORY_MENU_ITEMS } from '@/assets/data/menu-items';
 
 import { faGoogle, faLinkedinIn, faFacebook } from '@fortawesome/free-brands-svg-icons';

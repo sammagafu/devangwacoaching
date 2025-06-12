@@ -34,8 +34,8 @@ import DropDown from '@/components/DropDown.vue';
 import LogoBox from '@/components/LogoBox.vue';
 import MobileNavbarToggler from '@/components/MobileNavbarToggler.vue';
 
-import MenuItem from '@/components/navbar/AppMenu/MenuItem.vue';
-import MenuItemWithChildren from '@/components/navbar/AppMenu/MenuItemWithChildren.vue';
+import MenuItem from '@/components/navbar/AppMenu/AppMenuItem.vue';
+import MenuItemWithChildren from '@/components/navbar/AppMenu/AppMenuItemWithChildren.vue';
 import { menuItemActive } from '@/helpers/getActiveClass';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 

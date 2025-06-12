@@ -11,6 +11,8 @@ declare module 'vue' {
     AdvanceMenu: typeof import('./src/components/AdvanceMenu.vue')['default']
     ApexChart: typeof import('./src/components/ApexChart.vue')['default']
     AppMenu: typeof import('./src/components/navbar/AppMenu/index.vue')['default']
+    AppMenuItem: typeof import('./src/components/navbar/AppMenu/AppMenuItem.vue')['default']
+    AppMenuItemWithChildren: typeof import('./src/components/navbar/AppMenu/AppMenuItemWithChildren.vue')['default']
     BAccordion: typeof import('bootstrap-vue-next')['BAccordion']
     BAccordionItem: typeof import('bootstrap-vue-next')['BAccordionItem']
     BackToTop: typeof import('./src/components/BackToTop.vue')['default']
