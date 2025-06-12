@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 
-const API_URL = 'http://localhost:8000/api/v1/';
+const API_URL = 'https://devangwacoaching.com/api/v1/';
 const TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const USER_KEY = 'user_data';
