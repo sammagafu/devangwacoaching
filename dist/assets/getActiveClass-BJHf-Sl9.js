@@ -1,0 +1,1 @@
+let s={};const u=(t,c)=>{const n=[],a=e=>{e.children&&e.children.some(r=>r.route&&r.route.name===c)&&(n.push(e.key),e.parentKey&&n.push(e.parentKey)),e.children&&e.children.forEach(r=>a(r))};return t.forEach(a),n},o=(t,c,n)=>(s=u(t,n),s&&Object.values(s).includes(c));export{o as m};

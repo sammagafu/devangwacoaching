@@ -1,0 +1,1 @@
+import{d as e,E as a,c as o,o as t,a8 as n,b7 as r,w as i,b0 as c}from"./index-BKxaJmes.js";const p=e({__name:"CustomStickyElement",props:{customClass:{},id:{},is:{}},setup(d){return a(()=>{new Sticky("[data-sticky]")}),(s,l)=>(t(),o(n(s.is??"div"),r({id:s.id,class:s.customClass},s.$attrs),{default:i(()=>[c(s.$slots,"default")]),_:3},16,["id","class"]))}});export{p as _};
