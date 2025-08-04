@@ -13,7 +13,7 @@
       :sortOptions="sortOptions"
       @apply-filters="applyFilters"
     />
-    <Newsletter />
+
   </PagesLayout>
 </template>
 <script setup>

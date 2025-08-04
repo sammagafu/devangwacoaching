@@ -869,6 +869,22 @@ const accountsRoutes = [
     },
     component: () => import('@/views/pages/course/detail-classic/index.vue')
   },
+   {
+    path: '/terms-of-use',
+    name: 'TermsOfUse',
+    component: () => import('@/views/pages/terms/term-of-use.vue'),
+     meta: {
+      title: setTitle('Terms of Use')
+    },
+  },
+  {
+    path: '/privacy-policy',
+    name: 'PrivacyPolicy',
+    component:() => import('@/views/pages/terms/privacy-policy.vue'),
+     meta: {
+      title: setTitle('Privacy Policy')
+    },
+  },
 ];
 
 export const allRoutes = [
