@@ -58,7 +58,7 @@
           </b-col>
           <RightSidebar 
             v-if="course"
-            :price="parseFloat(course.price)"
+            :price="parseFloat(course.final_price)"
             :lectures-count="course.total_videos"
             :duration="'4h 50m'"
             :level="'All levels'"
