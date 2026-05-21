@@ -3,102 +3,79 @@
     <section class="p-0 d-flex align-items-center position-relative overflow-hidden">
       <b-container fluid>
         <b-row>
-          <b-col cols="12" lg="6"
-            class="d-md-flex align-items-center justify-content-center bg-primary bg-opacity-10 vh-lg-100">
-            <div class="p-3 p-lg-5">
-              <div class="text-center">
-                <h2 class="fw-bold">Welcome to our largest community</h2>
-                <p class="mb-0 h6 fw-light">Let's learn something new today!</p>
-              </div>
-              <img :src="element02" class="mt-5" alt="">  
+          <b-col
+            cols="12"
+            lg="6"
+            class="d-md-flex align-items-center justify-content-center bg-primary bg-opacity-10 vh-lg-100"
+          >
+            <div class="p-3 p-lg-5 text-center">
+              <h2 class="fw-bold">Welcome to Devangwa Coaching</h2>
+              <p class="mb-0 h6 fw-light">Learn new skills with expert-led courses.</p>
+              <img :src="element02" class="mt-5 img-fluid" alt="" />
             </div>
           </b-col>
 
           <b-col cols="12" lg="6" class="m-auto">
             <b-row class="my-5">
               <b-col sm="10" xl="8" class="m-auto">
-                <span class="mb-0 fs-1">👋</span>
-                <h1 class="fs-2">Login into Devangwa Coaching</h1>
-                <p class="lead mb-4">Nice to see you! Please log in with your account.</p>
+                <h1 class="fs-2">Sign in</h1>
+                <p class="lead mb-4">Use your email and password to access your account.</p>
+
+                <b-alert v-if="registeredBanner" variant="success" show class="mb-4">
+                  Account created. Sign in with your email and password.
+                </b-alert>
+                <b-alert v-if="error" variant="danger" show class="mb-4">{{ error }}</b-alert>
 
                 <b-form @submit.prevent="handleSignIn">
-                  <div v-if="error.length > 0" class="mb-4 text-danger">{{ error }}</div>
-                  <div class="mb-4">
-                    <b-form-group label="Email address *">
-                      <b-input-group size="lg">
-                        <template #prepend>
-                          <span class="input-group-text bg-light rounded-start border-0 text-secondary px-3">
-                            <BIconEnvelopeFill />
-                          </span>
-                        </template>
-                        <b-form-input type="email" class="border-0 bg-light rounded-end ps-1" placeholder="E-mail"
-                          v-model="credentials.email" id="username-input" />
-                      </b-input-group>
-                    </b-form-group>
+                  <b-form-group label="Email" label-for="email" class="mb-3">
+                    <b-form-input
+                      id="email"
+                      v-model="credentials.email"
+                      type="email"
+                      autocomplete="email"
+                      placeholder="you@example.com"
+                      size="lg"
+                      required
+                    />
+                  </b-form-group>
+
+                  <b-form-group label="Password" label-for="password" class="mb-3">
+                    <b-input-group size="lg">
+                      <b-form-input
+                        id="password"
+                        v-model="credentials.password"
+                        :type="showPassword ? 'text' : 'password'"
+                        autocomplete="current-password"
+                        placeholder="••••••••"
+                        required
+                      />
+                      <template #append>
+                        <b-button variant="light" @click="showPassword = !showPassword" :aria-label="showPassword ? 'Hide password' : 'Show password'">
+                          <font-awesome-icon :icon="showPassword ? faEyeSlash : faEye" />
+                        </b-button>
+                      </template>
+                    </b-input-group>
+                  </b-form-group>
+
+                  <div class="mb-4 d-flex justify-content-between align-items-center">
+                    <b-form-checkbox v-model="rememberMe">Remember me</b-form-checkbox>
+                    <router-link :to="{ name: 'auth.forgot-password' }" class="small text-primary">
+                      Forgot password?
+                    </router-link>
                   </div>
-                  <div class="mb-4">
-                    <b-form-group label="Password *">
-                      <b-input-group size="lg">
-                        <template #prepend>
-                          <span class="input-group-text bg-light rounded-start border-0 text-secondary px-3">
-                            <font-awesome-icon :icon="faLock" />
-                          </span>
-                        </template>
-                        <b-form-input :type="showPassword ? 'text' : 'password'" class="border-0 bg-light rounded-end ps-1" placeholder="*********"
-                          v-model="credentials.password" />
-                        <template #append>
-                          <span class="input-group-text bg-light rounded-end border-0 text-secondary px-3 cursor-pointer" @click="togglePassword">
-                            <font-awesome-icon :icon="showPassword ? faEyeSlash : faEye" />
-                          </span>
-                        </template>
-                      </b-input-group>
-                    </b-form-group>
-                    <div id="passwordHelpBlock" class="form-text">
-                      Your password must be 8 characters at least
-                    </div>
-                  </div>
-                  <div class="mb-4 d-flex justify-content-between">
-                    <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="checked">
-                      <label class="form-check-label" for="exampleCheck1">Remember me</label>
-                    </div>
-                    <div class="text-primary-hover">
-                      <router-link :to="{ name: 'auth.forgot-password' }" class="text-secondary">
-                        <u>Forgot password?</u>
-                      </router-link>
-                    </div>
-                  </div>
-                  <div class="align-items-center mt-0">
-                    <div class="d-grid">
-                      <b-button variant="primary" class="mb-0" type="submit" :disabled="loading">Login</b-button>
-                    </div>
+
+                  <div class="d-grid">
+                    <b-button variant="primary" type="submit" size="lg" :disabled="loading">
+                      <b-spinner v-if="loading" small class="me-2" />
+                      {{ loading ? 'Signing in…' : 'Sign in' }}
+                    </b-button>
                   </div>
                 </b-form>
 
-                <b-row>
-                  <div class="position-relative my-4">
-                    <hr>
-                    <p class="small position-absolute top-50 start-50 translate-middle bg-body px-5">Or</p>
-                  </div>
-
-                  <b-col xxl="6" class="d-grid">
-                    <a href="#" class="btn bg-google mb-2 mb-xxl-0 flex-centered">
-                      <font-awesome-icon :icon="faGoogle" class="fa-fw text-white me-2" />
-                      Login with Google
-                    </a>
-                  </b-col>
-                  <b-col xxl="6" class="d-grid">
-                    <a href="#" class="btn bg-facebook mb-0 flex-centered">
-                      <font-awesome-icon :icon="faFacebookF" class="fa-fw me-2" />
-                      Login with Facebook
-                    </a>
-                  </b-col>
-                </b-row>
-                <div class="mt-4 text-center">
-                  <span>Don't have an account? 
-                    <router-link :to="{ name: 'auth.sign-up' }">Signup here</router-link>
-                  </span>
-                </div>
+                <p class="mt-4 text-center mb-0">
+                  New here?
+                  <router-link :to="{ name: 'auth.sign-up' }">Create an account</router-link>
+                </p>
               </b-col>
             </b-row>
           </b-col>
@@ -109,110 +86,62 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
-import element02 from '@/assets/images/element/02.svg';
-import { faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { faGoogle, faFacebookF } from '@fortawesome/free-brands-svg-icons';
-import { BIconEnvelopeFill } from 'bootstrap-icons-vue';
+import { ref, reactive, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import element02 from '@/assets/images/element/02.svg'
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
-const router = useRouter();
-const authStore = useAuthStore();
+const router = useRouter()
+const route = useRoute()
+const authStore = useAuthStore()
 
-const credentials = reactive({
-  email: '',
-  password: '',
-});
-
-const error = ref('');
-const checked = ref(false);
-const loading = ref(false);
-const showPassword = ref(false);
-
-const togglePassword = () => {
-  showPassword.value = !showPassword.value;
-};
-
-const validateForm = () => {
-  if (!credentials.email) {
-    error.value = 'Email is required';
-    return false;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.email)) {
-    error.value = 'Please enter a valid email';
-    return false;
-  }
-  if (!credentials.password) {
-    error.value = 'Password is required';
-    return false;
-  }
-  if (credentials.password.length < 8) {
-    error.value = 'Password must be at least 8 characters';
-    return false;
-  }
-  return true;
-};
+const registeredBanner = computed(() => route.query.registered === '1')
+const credentials = reactive({ email: '', password: '' })
+const error = ref('')
+const rememberMe = ref(false)
+const loading = ref(false)
+const showPassword = ref(false)
 
 const handleSignIn = async () => {
+  error.value = ''
+  if (!credentials.email?.trim()) {
+    error.value = 'Email is required.'
+    return
+  }
+  if (!credentials.password || credentials.password.length < 8) {
+    error.value = 'Password must be at least 8 characters.'
+    return
+  }
+
+  loading.value = true
   try {
-    console.log('Form submitted, validating...');
-    if (!validateForm()) {
-      console.log('Validation failed:', error.value);
-      return;
-    }
-
-    console.log('Validation passed, proceeding with login...');
-    loading.value = true;
-    error.value = '';
-
     await authStore.login(
-      {
-        email: credentials.email,
-        password: credentials.password,
-      },
-      checked.value
-    );
+      { email: credentials.email.trim(), password: credentials.password },
+      rememberMe.value
+    )
 
-    console.log('Login successful, user stored in Pinia:', authStore.user);
-    console.log('Is Authenticated:', authStore.isAuthenticated);
-
-    // Add a slight delay to ensure state updates propagate
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    // Determine redirect based on user role
-    let redirect;
-    if (authStore.isStaff) {
-      redirect = { name: 'admin.dashboard' }; // Redirect staff to admin dashboard
-    } else {
-      redirect = { name: 'student.dashboard' }; // Redirect others to student dashboard
+    const redirectFrom = route.query.redirectedFrom
+    if (typeof redirectFrom === 'string' && redirectFrom.startsWith('/')) {
+      await router.push(redirectFrom)
+      return
     }
 
-    // Check if there's a redirect query parameter and override if present
-    const queryRedirect = router.currentRoute.value.query.redirectedFrom;
-    if (queryRedirect) {
-      redirect = queryRedirect;
-    }
-
-    console.log('Redirecting to:', redirect);
-
-    // Check if the redirect route exists
-    const resolvedRoute = router.resolve(redirect);
-    if (!resolvedRoute.matched.length) {
-      console.error('Redirect route not found, redirecting to a fallback route');
-      await router.push('/');
+    if (authStore.isStaff || authStore.isAdmin) {
+      await router.push({ name: 'admin.dashboard' })
     } else {
-      await router.push(redirect);
+      await router.push({ name: 'student.dashboard' })
     }
   } catch (err) {
-    console.error('Login error:', err);
-    if (err.message === 'Token refresh failed') {
-      error.value = 'Your session has expired. Please log in again.';
-    } else {
-      error.value = err.detail || err.message || 'Invalid credentials';
-    }
+    const detail = err?.detail
+    error.value =
+      typeof detail === 'string'
+        ? detail
+        : Array.isArray(detail)
+          ? detail[0]
+          : err?.message || 'Invalid email or password.'
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>

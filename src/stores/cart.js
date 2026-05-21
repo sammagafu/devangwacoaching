@@ -1,106 +1,81 @@
-// src/stores/cart.js
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import courseService, { normalizeCourse } from '@/services/courseService';
 import { api } from '@/services/authService';
 import { useToast } from 'vue-toast-notification';
 
-/**
- * @typedef {Object} CartItem
- * @property {string} slug - Unique identifier for the item
- * @property {'course' | 'event'} type - Type of item (course or event)
- * @property {string} title - Item title
- * @property {number} final_price - Price after discounts
- * @property {number} price - Original price
- * @property {string} [image] - Item image URL
- * @property {string} [category] - Item category
- * @property {*} [key: string] - Allow additional fields from API
- */
-
 export const useCartStore = defineStore('cart', () => {
   const $toast = useToast();
-  /** @type {import('vue').Ref<CartItem[]>} */
   const cartItems = ref([]);
-  /** @type {import('vue').Ref<boolean>} */
   const isLoading = ref(false);
 
-  // Load cart from local storage on initialization
   const initializeCart = () => {
     try {
       const savedCart = localStorage.getItem('cart');
       if (savedCart) {
         const parsed = JSON.parse(savedCart);
         if (Array.isArray(parsed)) {
-          cartItems.value = parsed.filter(item => item.slug && item.type);
+          cartItems.value = parsed.filter((item) => item.slug && item.type);
         }
       }
-    } catch (err) {
-      console.error('Failed to load cart from local storage:', err);
+    } catch {
+      cartItems.value = [];
     }
   };
 
-  // Save cart to local storage
   const saveCart = () => {
     try {
       localStorage.setItem('cart', JSON.stringify(cartItems.value));
-    } catch (err) {
-      console.error('Failed to save cart to local storage:', err);
+    } catch {
+      /* ignore storage errors */
     }
   };
 
   const fetchCartItems = async () => {
-    if (isLoading.value) return;
+    if (isLoading.value || !cartItems.value.length) return;
     isLoading.value = true;
 
     try {
-      if (!cartItems.value.length) {
-        cartItems.value = [];
-        saveCart();
-        return;
-      }
-
       const items = await Promise.all(
         cartItems.value.map(async (item) => {
-          const endpoint = item.type === 'course' ? `/course/courses/${item.slug}/` : `/events/${item.slug}/`;
           try {
-            const response = await api.get(endpoint);
-            const data = response.data;
-            if (!data.slug || !data.title) {
-              throw new Error('Invalid item data');
+            if (item.type === 'course') {
+              const course = await courseService.fetchCourse(item.slug);
+              return {
+                slug: course.slug,
+                type: 'course',
+                title: course.title,
+                image: course.image,
+                category: course.category,
+                final_price: Number(course.final_price) || 0,
+                price: Number(course.final_price) || 0,
+              };
             }
+            const response = await api.get(`coaching/events/${item.slug}/`);
+            const data = response.data;
             return {
               slug: data.slug,
-              type: item.type,
+              type: 'event',
               title: data.title,
-              image: data.image || (item.type === 'course' ? '/default-course-image.jpg' : '/default-event-image.jpg'),
-              category: item.type === 'course' && data.tags?.length > 0 ? data.tags[0].tag : 'general',
+              image: data.cover || data.image || '/default-event-image.jpg',
+              category: 'event',
               final_price: Number(data.final_price) || 0,
-              price: Number(data.price) || Number(data.final_price) || 0,
+              price: Number(data.final_price) || 0,
             };
-          } catch (err) {
-            console.error(`Failed to load ${item.type} ${item.slug}:`, err);
+          } catch {
             $toast.error(`Failed to load ${item.type} "${item.title || item.slug}".`);
             return null;
           }
         })
       );
 
-      cartItems.value = items.filter((item) => item !== null);
-      saveCart();
-
-      if (!cartItems.value.length) {
-        $toast.info('Your cart is empty or contains invalid items.');
-      }
-    } catch (err) {
-      console.error('Failed to fetch cart items:', err);
-      $toast.error('Failed to load cart items. Please try again.');
-      cartItems.value = [];
+      cartItems.value = items.filter(Boolean);
       saveCart();
     } finally {
       isLoading.value = false;
     }
   };
 
-  /** @param {CartItem} item */
   const addToCart = (item) => {
     if (!item.slug || !item.type || !item.title) {
       $toast.error('Invalid item. Cannot add to cart.');
@@ -108,38 +83,38 @@ export const useCartStore = defineStore('cart', () => {
     }
 
     if (!cartItems.value.some((i) => i.slug === item.slug && i.type === item.type)) {
+      const normalized = item.type === 'course' ? normalizeCourse(item) : item;
       cartItems.value.push({
-        ...item,
-        final_price: Number(item.final_price) || 0,
-        price: Number(item.price) || Number(item.final_price) || 0,
-        image: item.image || (item.type === 'course' ? '/default-course-image.jpg' : '/default-event-image.jpg'),
-        category: item.category || 'general',
+        slug: normalized.slug || item.slug,
+        type: item.type,
+        title: normalized.title || item.title,
+        image: normalized.image || item.image || '/default-course-image.jpg',
+        category: normalized.category || item.category || 'general',
+        final_price: Number(normalized.final_price ?? item.final_price) || 0,
+        price: Number(normalized.price ?? item.price ?? normalized.final_price) || 0,
       });
       saveCart();
-      $toast.success(`${item.type === 'course' ? 'Course' : 'Event'} "${item.title}" added to cart.`);
+      $toast.success(`Added to cart: ${item.title}`);
     } else {
-      $toast.info(`${item.type === 'course' ? 'Course' : 'Event'} "${item.title}" is already in cart.`);
+      $toast.info('Already in your cart.');
     }
   };
 
-  /** @param {string} slug @param {'course' | 'event'} type */
   const removeFromCart = (slug, type) => {
     const index = cartItems.value.findIndex((i) => i.slug === slug && i.type === type);
     if (index !== -1) {
-      const item = cartItems.value[index];
+      const removed = cartItems.value[index];
       cartItems.value.splice(index, 1);
       saveCart();
-      $toast.info(`${type === 'course' ? 'Course' : 'Event'} "${item.title || slug}" removed from cart.`);
+      $toast.info(`"${removed.title}" removed from cart.`);
     }
   };
 
   const clearCart = () => {
     cartItems.value = [];
     saveCart();
-    $toast.info('Cart cleared.');
   };
 
-  // Initialize cart on store creation
   initializeCart();
 
   return {

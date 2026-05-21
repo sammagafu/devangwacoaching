@@ -20,7 +20,13 @@
           <b-col lg="6">
             <h3>{{ service.title }}</h3>
             <p>{{ service.description }}</p>
-            <a v-if="service.hasButton" href="#" class="btn btn-primary">Get started</a>
+            <router-link
+              v-if="service.hasButton"
+              :to="service.ctaTo"
+              class="btn btn-primary"
+            >
+              Get started
+            </router-link>
           </b-col>
         </b-row>
       </div>
@@ -47,7 +53,8 @@ const services = ref([
     title: "From Tension to Teamwork: Mastering Conflict Resolution for a Stronger and Happier Marriage",
     description: "Every marriage faces challenges, but it doesn’t have to be destructive. How you handle those challenges determines the strength of your bond. \"From Tension to Teamwork\" is a self-paced, online course designed to help couples navigate conflict with confidence and compassion, turning conflict and moments of tension into powerful opportunities for growth, understanding, and deeper connection. In this course, you’ll learn powerful, practical tools to resolve disagreements without the emotional fallout in a way that strengthens your connection. Discover how to communicate with empathy, navigate tension with respect, and rebuild trust after conflict. Each module is filled with real-life strategies that will transform how you approach and resolve conflicts—turning those moments of tension into opportunities to grow stronger as a couple.",
     image: image2,
-    hasButton: true
+    hasButton: true,
+    ctaTo: { name: 'courses', query: { q: 'tension teamwork conflict' } },
   },
   {
     title: "Unified Hearts: The Art of Building a Deep Emotional Connection that Lasts",
@@ -59,7 +66,8 @@ const services = ref([
     title: "Trust: The Foundation of a Strong Marriage – Building Confidence, Security, and Lasting Love from Inside Out",
     description: "Trust is the bedrock of any successful marriage, and without it, relationships struggle to thrive. \"Trust: The Foundation of a Strong Marriage\" is an empowering online course designed to help you and your partner build an unshakable trust that creates confidence, security, and lasting love. In this course, you’ll explore how trust goes beyond mere honesty—it’s about creating a safe space where both partners feel valued, understood, and emotionally secure. You’ll learn practical techniques to nurture and rebuild trust, even after setbacks, and discover how this vital foundation strengthens every aspect of your relationship. By building trust from the inside out, you’ll unlock a love that is more resilient, confident, and deeply connected. This course isn’t just about avoiding betrayal; it’s about creating a lasting bond that thrives on mutual respect, reliability, and the shared commitment to growth.",
     image: image4,
-    hasButton: true
+    hasButton: true,
+    ctaTo: { name: 'courses', query: { q: 'trust marriage' } },
   },
   {
     title: "Communication: The Power of Words Spoken and Not Spoken: Mastering Communication for Deeper Intimacy and a Marriage that Lasts",

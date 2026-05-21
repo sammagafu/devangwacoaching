@@ -1,68 +1,68 @@
 <template>
-  <PagesLayout>
+  <PagesLayout :show-shop-cart="true">
     <div v-if="loading" class="text-center py-5">
       <b-spinner variant="primary" />
+      <p class="mt-3 text-muted">Loading course…</p>
     </div>
     <div v-else-if="error" class="text-center py-5">
-      <p class="text-danger">{{ error }}</p>
-      <b-button variant="primary" to="/courses">Back to Courses</b-button>
+      <h4 class="text-danger">{{ error }}</h4>
+      <router-link :to="{ name: 'courses' }" class="btn btn-primary mt-3">Back to courses</router-link>
     </div>
-    <div v-else>
+    <template v-else>
       <PageIntro :course="course" />
-      <PageContent :course="course" />
+      <PageContent :course="course" :is-enrolled="isEnrolled" @enrolled="checkEnrollment" />
       <ListedCourses :course="course" />
-    </div>
+    </template>
   </PagesLayout>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { useToast } from 'vue-toast-notification';
-import PagesLayout from '@/layouts/PagesLayout.vue';
-import PageIntro from '@/views/pages/course/detail-classic/components/PageIntro.vue';
-import PageContent from '@/views/pages/course/detail-classic/components/PageContent.vue';
-import ListedCourses from '@/views/pages/course/detail-classic/components/ListedCourses.vue';
-import { api } from '@/services/authService';
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
+import PagesLayout from '@/layouts/PagesLayout.vue'
+import PageIntro from '@/views/pages/course/detail-classic/components/PageIntro.vue'
+import PageContent from '@/views/pages/course/detail-classic/components/PageContent.vue'
+import ListedCourses from '@/views/pages/course/detail-classic/components/ListedCourses.vue'
+import courseService from '@/services/courseService'
+import { useAuthStore } from '@/stores/auth'
 
-const $toast = useToast();
-const route = useRoute();
-const course = ref({});
-const loading = ref(false);
-const error = ref(null);
+const $toast = useToast()
+const route = useRoute()
+const authStore = useAuthStore()
+const course = ref({})
+const loading = ref(true)
+const error = ref(null)
+const isEnrolled = ref(false)
+
+const checkEnrollment = async () => {
+  if (!authStore.isAuthenticated) {
+    isEnrolled.value = false
+    return
+  }
+  try {
+    isEnrolled.value = await courseService.isEnrolled(route.params.slug)
+  } catch {
+    isEnrolled.value = false
+  }
+}
 
 const fetchCourse = async () => {
   try {
-    loading.value = true;
-    console.log('Fetching course with slug:', route.params.slug);
-    const response = await api.get(`course/courses/${route.params.slug}/`);
-    course.value = {
-      ...response.data,
-      image: response.data.cover || '/default-course-image.jpg',
-      category: response.data.tags?.length > 0 ? response.data.tags[0] : 'General',
-      level: response.data.level || 'Beginner',
-      language: response.data.language || 'English',
-      certificate: response.data.certificate ?? false,
-      rating: response.data.rating || 4.5,
-      duration: response.data.duration || `${response.data.total_videos || 10}h 0m`,
-      student: response.data.student || 12,
-      modules: response.data.modules || [],
-      faqs: response.data.faqs || [],
-      reviews: response.data.reviews || 0,
-    };
-    console.log('Course fetched:', course.value);
+    loading.value = true
+    error.value = null
+    course.value = await courseService.fetchCourse(route.params.slug)
+    await checkEnrollment()
   } catch (err) {
-    console.error('Failed to fetch course:', err);
-    error.value = err.response?.status === 404
-      ? `Course with slug "${route.params.slug}" not found.`
-      : 'Failed to load course details. Please try again.';
-    $toast.error(error.value);
+    error.value =
+      err.response?.status === 404
+        ? 'This course could not be found.'
+        : 'Failed to load course. Please try again.'
+    $toast.error(error.value)
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
-onMounted(() => {
-  fetchCourse();
-});
+onMounted(fetchCourse)
 </script>

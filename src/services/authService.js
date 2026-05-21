@@ -5,8 +5,20 @@ const API_URL = import.meta.env.VITE_API_URL || '/api/v1/';
 const TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const USER_KEY = 'user_data';
+const IS_DEV = import.meta.env.DEV;
 
-// Create axios instance for API requests
+const debugLog = (...args) => {
+  if (IS_DEV) {
+    console.log(...args);
+  }
+};
+
+const debugError = (...args) => {
+  if (IS_DEV) {
+    console.error(...args);
+  }
+};
+
 export const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -14,140 +26,102 @@ export const api = axios.create({
   },
 });
 
-// State for managing token refresh
 let isRefreshing = false;
 let refreshPromise = null;
 let isRedirecting = false;
 
-// Request interceptor for debugging and token validation
 api.interceptors.request.use(
-  async (config) => {
-    // Skip adding Authorization header for registration endpoint
-    if (config.url.includes('auth/users/')) {
-      console.log('Skipping Authorization header for registration endpoint:', config.url);
-      return config;
-    }
+  (config) => {
+    const isPublicAuthRoute =
+      config.url?.includes('auth/users/') ||
+      config.url?.includes('auth/jwt/create/') ||
+      config.url?.includes('auth/jwt/refresh/') ||
+      config.url?.includes('auth/users/reset_password');
 
-    const token = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
-    if (token && !config.headers.Authorization) {
-      config.headers.Authorization = `Bearer ${token}`;
-      try {
-        await api.get('auth/users/me/', { headers: { Authorization: `Bearer ${token}` } });
-      } catch (error) {
-        console.warn('Token validation failed before request:', error.response?.data || error.message);
-        if (error.response?.status === 401) {
-          console.log('Access token invalid, clearing tokens');
-          await logoutAndRedirect();
-          throw error;
-        }
+    if (!isPublicAuthRoute) {
+      const token = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+      if (token && !config.headers.Authorization) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
     }
 
-    console.log('Request URL:', config.baseURL + config.url);
-    console.log('Request Method:', config.method);
-    console.log('Request Headers:', config.headers);
-    console.log('Request Data:', config.data);
+    debugLog('Request:', config.method?.toUpperCase(), config.url);
     return config;
   },
-  (error) => {
-    console.error('Request Interceptor Error:', error);
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor for handling 401 errors and token refresh
 api.interceptors.response.use(
-  (response) => {
-    console.log('Response Status:', response.status);
-    console.log('Response Data:', response.data);
-    return response;
-  },
+  (response) => response,
   async (error) => {
-    console.error('Response Error:', error.message);
-    if (error.response) {
-      console.error('Response Status:', error.response.status);
-      console.error('Response Data:', error.response.data);
-      console.error('Response Headers:', error.response.headers);
-    } else if (error.request) {
-      console.error('No response received:', error.request);
-    } else {
-      console.error('Error setting up request:', error.message);
+    const originalRequest = error.config;
+    if (!originalRequest || error.response?.status !== 401 || originalRequest._retry) {
+      return Promise.reject(error);
     }
 
-    const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      // Skip token refresh for login and registration requests
-      if (originalRequest.url.includes('auth/jwt/create/') || originalRequest.url.includes('auth/users/')) {
+    const isPublicAuthRoute =
+      originalRequest.url?.includes('auth/jwt/create/') ||
+      originalRequest.url?.includes('auth/users/');
+
+    if (isPublicAuthRoute) {
+      return Promise.reject(error);
+    }
+
+    originalRequest._retry = true;
+
+    if (!isRefreshing) {
+      isRefreshing = true;
+      const refreshToken =
+        localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
+
+      if (!refreshToken) {
+        await logoutAndRedirect();
         return Promise.reject(error);
       }
 
-      originalRequest._retry = true;
+      refreshPromise = api
+        .post('auth/jwt/refresh/', { refresh: refreshToken })
+        .then((response) => {
+          const { access } = response.data;
+          const storage = localStorage.getItem(TOKEN_KEY) ? localStorage : sessionStorage;
+          storage.setItem(TOKEN_KEY, access);
+          api.defaults.headers.common.Authorization = `Bearer ${access}`;
 
-      if (!isRefreshing) {
-        isRefreshing = true;
-        const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
-        if (!refreshToken) {
-          console.error('No refresh token available');
-          await logoutAndRedirect();
-          return Promise.reject(error);
-        }
-
-        console.log('Attempting to refresh token with:', refreshToken);
-        refreshPromise = api.post('auth/jwt/refresh/', { refresh: refreshToken })
-          .then((response) => {
-            const { access } = response.data;
-            const storage = localStorage.getItem(TOKEN_KEY) ? localStorage : sessionStorage;
-            storage.setItem(TOKEN_KEY, access);
-            api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-            console.log('Token refreshed successfully:', access);
-            // Update authStore with new token
-            const authStore = useAuthStore();
-            authStore.isAuthenticated = true;
-            authStore.updateRoles();
-            return access;
-          })
-          .catch(async (refreshError) => {
-            console.error('Token refresh failed:', refreshError.response?.data || refreshError.message);
-            console.log('Logging out and redirecting due to refresh failure');
-            await logoutAndRedirect();
-            throw refreshError;
-          })
-          .finally(() => {
-            isRefreshing = false;
-            refreshPromise = null;
-          });
-      }
-
-      return refreshPromise
-        .then((access) => {
-          originalRequest.headers['Authorization'] = `Bearer ${access}`;
-          console.log('Retrying original request with new token:', access);
-          return api(originalRequest);
+          const authStore = useAuthStore();
+          authStore.isAuthenticated = true;
+          authStore.updateRoles();
+          return access;
         })
-        .catch((refreshError) => {
-          console.error('Failed to retry request after refresh:', refreshError);
-          return Promise.reject(refreshError);
+        .catch(async (refreshError) => {
+          debugError('Token refresh failed:', refreshError.response?.data || refreshError.message);
+          await logoutAndRedirect();
+          throw refreshError;
+        })
+        .finally(() => {
+          isRefreshing = false;
+          refreshPromise = null;
         });
     }
-    return Promise.reject(error);
+
+    return refreshPromise
+      .then((access) => {
+        originalRequest.headers.Authorization = `Bearer ${access}`;
+        return api(originalRequest);
+      })
+      .catch((refreshError) => Promise.reject(refreshError));
   }
 );
 
-// Authentication service object
 const authService = {
   async login(credentials, rememberMe) {
     try {
-      console.log('Attempting login with:', credentials);
       const tokenResponse = await api.post('auth/jwt/create/', credentials);
       const { access, refresh } = tokenResponse.data;
 
-      api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-      console.log('Set Authorization header:', api.defaults.headers.common['Authorization']);
+      api.defaults.headers.common.Authorization = `Bearer ${access}`;
 
       const userResponse = await api.get('auth/users/me/');
       const user = userResponse.data;
-
-      console.log('Login successful:', { access, refresh, user });
 
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem(TOKEN_KEY, access);
@@ -161,7 +135,6 @@ const authService = {
 
       return { access, refresh, user };
     } catch (error) {
-      console.error('Login failed:', error.response?.data || error.message);
       if (error.response?.status === 401 && error.response?.data?.detail) {
         throw error.response.data;
       }
@@ -171,38 +144,40 @@ const authService = {
 
   async register(credentials) {
     try {
-      console.log('Attempting registration with:', credentials);
       const response = await api.post('auth/users/', credentials);
-      console.log('Registration successful:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Registration failed:', error.response?.data || error.message);
       throw error.response?.data || { message: 'Registration failed' };
     }
   },
 
-  async refreshToken() {
+  async requestPasswordReset(email) {
     try {
-      const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
-      if (!refreshToken) {
-        throw new Error('No refresh token available');
-      }
+      await api.post('auth/users/reset_password/', { email });
+    } catch (error) {
+      throw error.response?.data || { message: 'Could not send reset email' };
+    }
+  },
 
+  async refreshToken() {
+    const refreshToken =
+      localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    try {
       const response = await api.post('auth/jwt/refresh/', { refresh: refreshToken });
       const { access } = response.data;
-
       const storage = localStorage.getItem(TOKEN_KEY) ? localStorage : sessionStorage;
       storage.setItem(TOKEN_KEY, access);
-      api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-      console.log('Token refreshed successfully:', access);
+      api.defaults.headers.common.Authorization = `Bearer ${access}`;
 
       const authStore = useAuthStore();
       authStore.isAuthenticated = true;
       authStore.updateRoles();
-
       return access;
     } catch (error) {
-      console.error('Token refresh failed:', error.response?.data || error.message);
       await this.logout();
       const authStore = useAuthStore();
       authStore.logout();
@@ -212,21 +187,14 @@ const authService = {
   },
 
   async logout() {
-    try {
-      console.log('Logging out...');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    } finally {
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(REFRESH_TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
-      sessionStorage.removeItem(TOKEN_KEY);
-      sessionStorage.removeItem(REFRESH_TOKEN_KEY);
-      sessionStorage.removeItem(USER_KEY);
-      sessionStorage.removeItem('dismissedCompanyModal');
-      delete api.defaults.headers.common['Authorization'];
-      console.log('Logout completed, tokens and user data cleared');
-    }
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+    sessionStorage.removeItem(USER_KEY);
+    sessionStorage.removeItem('dismissedCompanyModal');
+    delete api.defaults.headers.common.Authorization;
   },
 
   getToken() {
@@ -249,8 +217,7 @@ const authService = {
     try {
       await api.get('auth/users/me/');
       return true;
-    } catch (error) {
-      console.warn('Token validation failed:', error.response?.data || error.message);
+    } catch {
       return false;
     }
   },
@@ -258,7 +225,7 @@ const authService = {
   initializeAuth() {
     const token = this.getToken();
     if (token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
       const authStore = useAuthStore();
       authStore.user = this.getUser();
       authStore.isAuthenticated = !!token && !!authStore.user;
@@ -267,7 +234,6 @@ const authService = {
   },
 };
 
-// Helper function to handle logout and redirect
 async function logoutAndRedirect() {
   if (isRedirecting) return;
   isRedirecting = true;
@@ -276,10 +242,8 @@ async function logoutAndRedirect() {
   await authService.logout();
   authStore.logout();
 
-  setTimeout(() => {
-    window.location.href = '/auth/sign-in';
-    isRedirecting = false;
-  }, 2000);
+  window.location.href = '/auth/sign-in';
+  isRedirecting = false;
 }
 
 export default authService;

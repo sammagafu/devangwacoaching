@@ -1,31 +1,34 @@
 <template>
   <section class="bg-light py-0 py-sm-5">
     <b-container>
-      <b-row class="py-5">
+      <nav aria-label="breadcrumb" class="pt-4">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item">
+            <router-link :to="{ name: 'courses' }">Courses</router-link>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">{{ course.title || 'Course' }}</li>
+        </ol>
+      </nav>
+      <b-row class="py-4 pb-5">
         <b-col lg="8">
-          <h6 class="mb-3 font-base bg-primary text-white py-2 px-4 rounded-2 d-inline-block">{{ course.category || 'General' }}</h6>
-          <h1>{{ course.title || 'Course Title' }}</h1>
-          <p v-html="course.description || 'No description available.'"></p>
+          <span class="mb-3 badge bg-primary bg-opacity-10 text-primary">{{ course.category || 'General' }}</span>
+          <h1 class="mb-3">{{ course.title || 'Course' }}</h1>
+          <p class="lead text-muted">{{ descriptionText }}</p>
           <ul class="list-inline mb-0">
-            <li class="list-inline-item h6 me-3 mb-1 mb-sm-0">
+            <li v-if="course.rating" class="list-inline-item me-3 mb-2">
               <font-awesome-icon :icon="faStar" class="text-warning me-1" />
-              {{ course.rating || 'N/A' }}/5.0
+              {{ course.rating }}/5
             </li>
-            <li class="list-inline-item h6 me-3 mb-1 mb-sm-0">
-              <font-awesome-icon :icon="faUserGraduate" class="text-orange me-1" />
-              {{ course.student || 0 }} Enrolled
+            <li class="list-inline-item me-3 mb-2 text-muted">
+              <font-awesome-icon :icon="faUserGraduate" class="me-1" />
+              {{ course.student || 0 }} enrolled
             </li>
-            <li class="list-inline-item h6 me-3 mb-1 mb-sm-0">
-              <font-awesome-icon :icon="faSignal" class="text-success me-1" />
-              {{ course.level || 'All levels' }}
+            <li class="list-inline-item me-3 mb-2 text-muted">
+              <font-awesome-icon :icon="faBookOpen" class="me-1" />
+              {{ course.total_videos || 0 }} lectures
             </li>
-            <li class="list-inline-item h6 me-3 mb-1 mb-sm-0">
-              <BIconPatchExclamationFill class="text-danger me-1" />
-              Last updated {{ course.updated_at ? formatDate(course.updated_at) : 'N/A' }}
-            </li>
-            <li class="list-inline-item h6 mb-0">
-              <font-awesome-icon :icon="faGlobe" class="text-info me-1" />
-              {{ course.language || 'English' }}
+            <li v-if="course.updated_at" class="list-inline-item mb-2 text-muted">
+              Updated {{ formatDate(course.updated_at) }}
             </li>
           </ul>
         </b-col>
@@ -34,47 +37,19 @@
   </section>
 </template>
 
-<script setup lang="ts">
-import { defineProps } from 'vue';
-import { faStar, faUserGraduate, faSignal, faGlobe } from '@fortawesome/free-solid-svg-icons';
-import { BIconPatchExclamationFill } from 'bootstrap-icons-vue';
+<script setup>
+import { computed } from 'vue'
+import { faStar, faUserGraduate, faBookOpen } from '@fortawesome/free-solid-svg-icons'
+import { truncate } from '@/helpers/format'
 
-interface CourseType {
-  id?: number;
-  title?: string;
-  slug?: string;
-  description?: string;
-  image?: string;
-  ispublished?: boolean;
-  created_at?: string;
-  updated_at?: string;
-  instructor?: { id: number; email: string; full_name?: string };
-  price?: string;
-  final_price?: number;
-  discount_percentage?: string;
-  is_featured?: boolean;
-  total_modules?: number;
-  total_videos?: number;
-  total_documents?: number;
-  total_quizzes?: number;
-  tags?: string[];
-  category?: string;
-  level?: string;
-  language?: string;
-  certificate?: boolean;
-  rating?: number;
-  duration?: string;
-  student?: number;
-}
+const props = defineProps({
+  course: { type: Object, required: true },
+})
 
-defineProps({
-  course: {
-    type: Object as PropType<CourseType>,
-    required: true,
-  },
-});
+const descriptionText = computed(() =>
+  truncate(props.course.description, 280) || 'No description available.'
+)
 
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString('en-US', { month: '2-digit', year: 'numeric' });
-};
+const formatDate = (date) =>
+  new Date(date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
 </script>

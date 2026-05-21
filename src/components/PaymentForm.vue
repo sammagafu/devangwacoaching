@@ -70,8 +70,8 @@ const handleSubmit = async () => {
     }
 
     // Basic phone number format check (backend handles full validation)
-    if (phoneNumber.value && !phoneNumber.value.match(/^\+\d{12}$/)) {
-      throw new Error('Phone number should start with + followed by 12 digits (e.g., +254123456789)');
+    if (phoneNumber.value && !phoneNumber.value.match(/^\+25[45]\d{9}$/)) {
+      throw new Error('Use +254 or +255 followed by 9 digits (e.g., +254712345678)');
     }
     // Basic card number format check
     if (cardNumber.value && !cardNumber.value.match(/^\d{16}$/)) {

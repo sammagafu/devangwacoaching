@@ -2,7 +2,7 @@
   <b-card no-body class="p-2 border">
     <div class="rounded-top overflow-hidden">
       <div class="card-overlay-hover">
-        <img :src="item.cover || defaultAvatar" class="card-img-top" alt="course img">
+        <img :src="item.image || item.cover || defaultAvatar" class="card-img-top" alt="course img">
       </div>
       <div class="card-img-overlay">
         <div class="card-element-hover d-flex justify-content-end">
@@ -94,7 +94,7 @@ interface CourseType {
   avatar?: string;
 }
 
-defineProps({
+const props = defineProps({
   item: {
     type: Object as PropType<CourseType>,
     required: true,
@@ -102,26 +102,22 @@ defineProps({
 });
 
 const enrollCourse = async () => {
-  if (!item.id || !item.title || !item.slug) {
+  const item = props.item;
+  if (!item?.slug || !item?.title) {
     $toast.error('Course data is incomplete.');
     return;
   }
   try {
     addingToCart.value = true;
     cartStore.addToCart({
-      id: item.id,
-      title: item.title,
       slug: item.slug,
+      title: item.title,
       type: 'course',
-      image: item.image,
-      final_price: item.final_price ?? parseFloat(item.price || '0'),
+      image: item.image || item.cover,
+      final_price: Number(item.final_price ?? item.price ?? 0),
     });
-    await cartStore.fetchCartItems();
-    router.push({
-      name: 'shop.checkout',
-    });
-  } catch (error) {
-    console.error('Failed to add course to cart:', error);
+    router.push({ name: 'shop.checkout' });
+  } catch {
     $toast.error('Failed to add course to cart.');
   } finally {
     addingToCart.value = false;

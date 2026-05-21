@@ -3,141 +3,110 @@
     <section class="p-0 d-flex align-items-center position-relative overflow-hidden">
       <b-container fluid>
         <b-row>
-          <b-col cols="12" lg="6"
-            class="d-md-flex align-items-center justify-content-center bg-primary bg-opacity-10 vh-lg-100">
-            <div class="p-3 p-lg-5">
-              <div class="text-center">
-                <h2 class="fw-bold">Join our largest community</h2>
-                <p class="mb-0 h6 fw-light">Create an account to start learning today!</p>
-              </div>
-              <img :src="element02" class="mt-5" alt="">  
+          <b-col
+            cols="12"
+            lg="6"
+            class="d-md-flex align-items-center justify-content-center bg-primary bg-opacity-10 vh-lg-100"
+          >
+            <div class="p-3 p-lg-5 text-center">
+              <h2 class="fw-bold">Join Devangwa Coaching</h2>
+              <p class="mb-0 h6 fw-light">Create an account and start learning today.</p>
+              <img :src="element02" class="mt-5 img-fluid" alt="" />
             </div>
           </b-col>
 
           <b-col cols="12" lg="6" class="m-auto">
             <b-row class="my-5">
               <b-col sm="10" xl="8" class="m-auto">
-                <span class="mb-0 fs-1">🎉</span>
-                <h1 class="fs-2">Sign Up for Devangwa Coaching</h1>
-                <p class="lead mb-4">Create your account to get started.</p>
+                <h1 class="fs-2">Create account</h1>
+                <p class="lead mb-4">All fields marked with * are required.</p>
+
+                <b-alert v-if="error" variant="danger" show class="mb-4">{{ error }}</b-alert>
 
                 <b-form @submit.prevent="registerUser">
-                  <div v-if="error.length > 0" class="mb-4 text-danger">{{ error }}</div>
-                  
-                  <div class="mb-4">
-                    <label class="form-label">Account Type *</label>
-                    <div class="d-flex gap-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" 
-                          v-model="credentials.usertype" id="individual" value="individual">
-                        <label class="form-check-label" for="individual">Individual</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" 
-                          v-model="credentials.usertype" id="company" value="company">
-                        <label class="form-check-label" for="company">Company</label>
-                      </div>
+                  <b-form-group label="Account type *" class="mb-3">
+                    <div class="d-flex gap-4">
+                      <b-form-radio v-model="credentials.usertype" value="individual" name="usertype">
+                        Individual
+                      </b-form-radio>
+                      <b-form-radio v-model="credentials.usertype" value="company" name="usertype">
+                        Company
+                      </b-form-radio>
                     </div>
-                  </div>
+                  </b-form-group>
 
-                  <div class="mb-4">
-                    <b-form-group label="Full Name *">
-                      <b-input-group size="lg">
-                        <template #prepend>
-                          <span class="input-group-text bg-light rounded-start border-0 text-secondary px-3">
-                            <font-awesome-icon :icon="faUser" />
-                          </span>
-                        </template>
-                        <b-form-input type="text" class="border-0 bg-light rounded-end ps-1" 
-                          placeholder="Full Name" v-model="credentials.fullname" id="fullname-input" />
-                      </b-input-group>
-                    </b-form-group>
-                  </div>
+                  <b-form-group label="Full name *" label-for="fullname" class="mb-3">
+                    <b-form-input
+                      id="fullname"
+                      v-model="credentials.fullname"
+                      type="text"
+                      autocomplete="name"
+                      placeholder="Your full name"
+                      size="lg"
+                      required
+                    />
+                  </b-form-group>
 
-                  <div class="mb-4">
-                    <b-form-group label="Phone Number *">
-                      <b-input-group size="lg">
-                        <template #prepend>
-                          <span class="input-group-text bg-light rounded-start border-0 text-secondary px-3">
-                            <font-awesome-icon :icon="faPhone" />
-                          </span>
-                        </template>
-                        <b-form-input type="tel" class="border-0 bg-light rounded-end ps-1" 
-                          placeholder="Phone Number" v-model="credentials.phonenumber" id="phonenumber-input" />
-                      </b-input-group>
-                    </b-form-group>
-                  </div>
+                  <b-form-group label="Phone *" label-for="phone" class="mb-3">
+                    <b-form-input
+                      id="phone"
+                      v-model="credentials.phonenumber"
+                      type="tel"
+                      autocomplete="tel"
+                      placeholder="+255712345678"
+                      size="lg"
+                      required
+                    />
+                    <b-form-text>Use international format, e.g. +255712345678</b-form-text>
+                  </b-form-group>
 
-                  <div class="mb-4">
-                    <b-form-group label="Email address *">
-                      <b-input-group size="lg">
-                        <template #prepend>
-                          <span class="input-group-text bg-light rounded-start border-0 text-secondary px-3">
-                            <BIconEnvelopeFill />
-                          </span>
-                        </template>
-                        <b-form-input type="email" class="border-0 bg-light rounded-end ps-1" 
-                          placeholder="E-mail" v-model="credentials.email" id="username-input" />
-                      </b-input-group>
-                    </b-form-group>
-                  </div>
+                  <b-form-group label="Email *" label-for="email" class="mb-3">
+                    <b-form-input
+                      id="email"
+                      v-model="credentials.email"
+                      type="email"
+                      autocomplete="email"
+                      placeholder="you@example.com"
+                      size="lg"
+                      required
+                    />
+                  </b-form-group>
 
-                  <div class="mb-4">
-                    <b-form-group label="Password *">
-                      <b-input-group size="lg">
-                        <template #prepend>
-                          <span class="input-group-text bg-light rounded-start border-0 text-secondary px-3">
-                            <font-awesome-icon :icon="faLock" />
-                          </span>
-                        </template>
-                        <b-form-input :type="showPassword ? 'text' : 'password'" 
-                          class="border-0 bg-light rounded-end ps-1" 
-                          placeholder="*********" v-model="credentials.password" />
-                        <template #append>
-                          <span class="input-group-text bg-light rounded-end border-0 text-secondary px-3 cursor-pointer" 
-                            @click="togglePassword">
-                            <font-awesome-icon :icon="showPassword ? faEyeSlash : faEye" />
-                          </span>
-                        </template>
-                      </b-input-group>
-                    </b-form-group>
-                    <div id="passwordHelpBlock" class="form-text">
-                      Your password must be at least 8 characters
-                    </div>
-                  </div>
+                  <b-form-group label="Password *" label-for="password" class="mb-3">
+                    <b-input-group size="lg">
+                      <b-form-input
+                        id="password"
+                        v-model="credentials.password"
+                        :type="showPassword ? 'text' : 'password'"
+                        autocomplete="new-password"
+                        placeholder="At least 8 characters"
+                        minlength="8"
+                        required
+                      />
+                      <template #append>
+                        <b-button
+                          variant="light"
+                          @click="showPassword = !showPassword"
+                          :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                        >
+                          <font-awesome-icon :icon="showPassword ? faEyeSlash : faEye" />
+                        </b-button>
+                      </template>
+                    </b-input-group>
+                  </b-form-group>
 
-                  <div class="align-items-center mt-0">
-                    <div class="d-grid">
-                      <b-button variant="primary" class="mb-0" type="submit" :disabled="loading">Sign Up</b-button>
-                    </div>
+                  <div class="d-grid">
+                    <b-button variant="primary" type="submit" size="lg" :disabled="loading">
+                      <b-spinner v-if="loading" small class="me-2" />
+                      {{ loading ? 'Creating account…' : 'Sign up' }}
+                    </b-button>
                   </div>
                 </b-form>
 
-                <b-row>
-                  <div class="position-relative my-4">
-                    <hr>
-                    <p class="small position-absolute top-50 start-50 translate-middle bg-body px-5">Or</p>
-                  </div>
-
-                  <b-col xxl="6" class="d-grid">
-                    <a href="#" class="btn bg-google mb-2 mb-xxl-0 flex-centered">
-                      <font-awesome-icon :icon="faGoogle" class="fa-fw text-white me-2" />
-                      Sign up with Google
-                    </a>
-                  </b-col>
-                  <b-col xxl="6" class="d-grid">
-                    <a href="#" class="btn bg-facebook mb-0 flex-centered">
-                      <font-awesome-icon :icon="faFacebookF" class="fa-fw me-2" />
-                      Sign up with Facebook
-                    </a>
-                  </b-col>
-                </b-row>
-
-                <div class="mt-4 text-center">
-                  <span>Already have an account? 
-                    <router-link :to="{ name: 'auth.sign-in' }">Login here</router-link>
-                  </span>
-                </div>
+                <p class="mt-4 text-center mb-0">
+                  Already have an account?
+                  <router-link :to="{ name: 'auth.sign-in' }">Sign in</router-link>
+                </p>
               </b-col>
             </b-row>
           </b-col>
@@ -148,134 +117,102 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import authService from '@/services/authService';
-import element02 from '@/assets/images/element/02.svg';
-import { faLock, faEye, faEyeSlash, faUser, faPhone } from '@fortawesome/free-solid-svg-icons';
-import { faGoogle, faFacebookF } from '@fortawesome/free-brands-svg-icons';
-import { BIconEnvelopeFill } from 'bootstrap-icons-vue';
-import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
+import { ref, reactive, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
+import authService from '@/services/authService'
+import element02 from '@/assets/images/element/02.svg'
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
-const $toast = useToast();
-const router = useRouter();
+/** Tanzania / Kenya E.164 (+255… or +254…) */
+const PHONE_REGEX = /^\+25[45]\d{8,9}$/
 
+const router = useRouter()
+const $toast = useToast()
 const credentials = reactive({
   fullname: '',
   phonenumber: '',
-  usertype: '',
+  usertype: 'individual',
   email: '',
   password: '',
-});
+})
 
-const error = ref('');
-const loading = ref(false);
-const showPassword = ref(false);
+const error = ref('')
+const loading = ref(false)
+const showPassword = ref(false)
 
-const is_individual = computed(() => credentials.usertype === 'individual');
-const is_company = computed(() => credentials.usertype === 'company');
-
-const togglePassword = () => {
-  showPassword.value = !showPassword.value;
-};
+const is_individual = computed(() => credentials.usertype === 'individual')
+const is_company = computed(() => credentials.usertype === 'company')
 
 const validateForm = () => {
   if (!credentials.usertype) {
-    error.value = 'Please select an account type';
-    return false;
+    error.value = 'Please select an account type.'
+    return false
   }
-  if (!credentials.fullname) {
-    error.value = 'Full name is required';
-    return false;
+  if (!credentials.fullname.trim()) {
+    error.value = 'Full name is required.'
+    return false
   }
-  if (!credentials.phonenumber) {
-    error.value = 'Phone number is required';
-    return false;
+  let phone = credentials.phonenumber.trim()
+  if (!phone.startsWith('+')) {
+    phone = phone.startsWith('0') ? `+255${phone.slice(1)}` : `+255${phone}`
+    credentials.phonenumber = phone
   }
-  if (!/^\+?[\d\s-]{10,}$/.test(credentials.phonenumber)) {
-    error.value = 'Please enter a valid phone number';
-    return false;
+  if (!PHONE_REGEX.test(phone)) {
+    error.value = 'Enter a valid phone number (e.g. +255712345678 or +254712345678).'
+    return false
   }
-  if (!credentials.email) {
-    error.value = 'Email is required';
-    return false;
+  if (!credentials.email.trim()) {
+    error.value = 'Email is required.'
+    return false
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.email)) {
-    error.value = 'Please enter a valid email';
-    return false;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.email.trim())) {
+    error.value = 'Enter a valid email address.'
+    return false
   }
-  if (!credentials.password) {
-    error.value = 'Password is required';
-    return false;
+  if (!credentials.password || credentials.password.length < 8) {
+    error.value = 'Password must be at least 8 characters.'
+    return false
   }
-  if (credentials.password.length < 8) {
-    error.value = 'Password must be at least 8 characters';
-    return false;
-  }
-  return true;
-};
+  return true
+}
 
 const registerUser = async () => {
+  error.value = ''
+  if (!validateForm()) return
+
+  loading.value = true
   try {
-    console.log('Form submitted, validating...');
-    if (!validateForm()) {
-      console.log('Validation failed:', error.value);
-      $toast.error(error.value);
-      return;
-    }
-
-    console.log('Validation passed, proceeding with registration...');
-    console.log('Registration payload:', {
-      full_name: credentials.fullname,
-      phonenumber: credentials.phonenumber,
-      email: credentials.email,
-      password: credentials.password,
-      is_individual: is_individual.value,
-      is_company: is_company.value,
-    });
-
-    loading.value = true;
-    error.value = '';
-
     await authService.register({
-      full_name: credentials.fullname,
-      phonenumber: credentials.phonenumber,
-      email: credentials.email,
+      full_name: credentials.fullname.trim(),
+      phonenumber: credentials.phonenumber.trim(),
+      email: credentials.email.trim(),
       password: credentials.password,
       is_individual: is_individual.value,
       is_company: is_company.value,
-    });
-
-    $toast.success('Registration successful! Please log in.');
-    router.push({ name: 'auth.sign-in' });
-  } catch (error) {
-    console.error('Error registering user:', error);
-    const errorMessage = error.detail || error.message || Object.values(error)[0] || 'Registration failed. Please try again.';
-    error.value = errorMessage;
-    $toast.error(errorMessage);
+    })
+    $toast.success('Account created. Please sign in.')
+    router.push({ name: 'auth.sign-in', query: { registered: '1' } })
+  } catch (err) {
+    const data = err?.response?.data ?? err
+    const fieldMsg =
+      data?.phonenumber?.[0] ||
+      data?.email?.[0] ||
+      data?.password?.[0] ||
+      data?.full_name?.[0]
+    const firstField =
+      data && typeof data === 'object' && !fieldMsg
+        ? Object.values(data).flat?.()?.[0] || Object.values(data)[0]
+        : null
+    error.value =
+      fieldMsg ||
+      data?.detail ||
+      (Array.isArray(firstField) ? firstField[0] : firstField) ||
+      data?.message ||
+      'Registration failed. Please try again.'
+    $toast.error(error.value)
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>
-
-<style scoped>
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.flex-centered {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.form-check {
-  margin-bottom: 0;
-}
-
-.form-check-label {
-  cursor: pointer;
-}
-</style>

@@ -1,0 +1,1 @@
+import{c as n}from"./constants-Bu7G09dq.js";function i(t){const r=Number(t)||0;return r<=0?"Free":`${n}${r.toLocaleString()}`}function o(t,r=120){if(!t)return"";const e=String(t).replace(/<[^>]*>/g,"");return e.length<=r?e:`${e.slice(0,r).trim()}…`}export{i as f,o as t};

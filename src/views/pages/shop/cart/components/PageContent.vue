@@ -2,129 +2,122 @@
   <section class="pt-5">
     <b-container>
       <b-row class="g-4 g-sm-5">
-        <b-col lg="8" class="mb-4 mb-sm-0">
+        <b-col lg="8">
           <b-card no-body class="card-body p-4 shadow">
-            <div
-              class="alert alert-danger alert-dismissible d-flex justify-content-between align-items-center fade show py-3 pe-2"
-              role="alert">
-              <div>
-                <span class="fs-5 me-1">🔥</span>
-                These courses are at a limited discount, please checkout within<strong class="text-danger ms-1">2
-                  days and 18 hours</strong>
+            <div v-if="cartStore.isLoading" class="text-center py-5">
+              <b-spinner variant="primary" />
+              <p class="mt-3 text-muted mb-0">Updating cart…</p>
+            </div>
+
+            <div v-else-if="!cartStore.cartItems.length" class="text-center py-5">
+              <BIconCart3 class="display-4 text-muted mb-3" />
+              <h5>Your cart is empty</h5>
+              <p class="text-muted">Browse courses and add one to get started.</p>
+              <router-link :to="{ name: 'courses' }" class="btn btn-primary">Explore courses</router-link>
+            </div>
+
+            <div v-else>
+              <h4 class="mb-4">Cart items ({{ cartStore.cartItems.length }})</h4>
+              <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th scope="col">Item</th>
+                      <th scope="col" class="text-center">Price</th>
+                      <th scope="col" class="text-end">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in cartStore.cartItems" :key="`${item.type}-${item.slug}`">
+                      <td>
+                        <div class="d-flex align-items-center gap-3">
+                          <img
+                            :src="item.image"
+                            class="rounded"
+                            width="80"
+                            height="60"
+                            alt=""
+                            style="object-fit: cover;"
+                          >
+                          <div>
+                            <h6 class="mb-1">
+                              <router-link
+                                v-if="item.type === 'course'"
+                                :to="{ name: 'course.detail', params: { slug: item.slug } }"
+                              >
+                                {{ item.title }}
+                              </router-link>
+                              <span v-else>{{ item.title }}</span>
+                            </h6>
+                            <span class="badge bg-light text-dark text-capitalize">{{ item.type }}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <span class="fw-bold" :class="item.final_price <= 0 ? 'text-success' : 'text-primary'">
+                          {{ formatPrice(item.final_price) }}
+                        </span>
+                      </td>
+                      <td class="text-end">
+                        <b-button
+                          variant="outline-danger"
+                          size="sm"
+                          @click="cartStore.removeFromCart(item.slug, item.type)"
+                        >
+                          Remove
+                        </b-button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <button type="button" class="btn btn-link mb-0 text-primary-hover text-end" data-bs-dismiss="alert"
-                aria-label="Close">
-                <BIconXLg />
-              </button>
+              <div class="d-flex justify-content-between mt-4">
+                <router-link :to="{ name: 'courses' }" class="btn btn-light">Continue shopping</router-link>
+                <b-button variant="outline-secondary" @click="cartStore.clearCart">Clear cart</b-button>
+              </div>
             </div>
-
-            <div class="table-responsive border-0 rounded-3 mb-0">
-              <table class="table align-middle p-4 mb-0">
-                <tbody class="border-top-0">
-                  <tr>
-                    <td>
-                      <div class="d-lg-flex align-items-center">
-                        <div class="w-100px w-md-80px mb-2 mb-md-0">
-                          <img :src="courses08" class="rounded" alt="">
-                        </div>
-                        <h6 class="mb-0 ms-lg-3 mt-2 mt-lg-0">
-                          <a href="#">Building Scalable APIs with GraphQL</a>
-                        </h6>
-                      </div>
-                    </td>
-
-                    <td class="text-center">
-                      <h5 class="text-success mb-0">{{ currency }}350</h5>
-                    </td>
-                    <td>
-                      <a href="#" class="btn btn-sm btn-success-soft px-2 me-1 mb-1 mb-md-0">
-                        <font-awesome-icon :icon="faEdit" class="fa-fw" />
-                      </a>{{ ' ' }}
-                      <b-button :variant="null" size="sm" class="btn-danger-soft px-2 mb-0">
-                        <font-awesome-icon :icon="faTimes" class="fa-fw" />
-                      </b-button>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <div class="d-lg-flex align-items-center">
-                        <div class="w-100px w-md-80px mb-2 mb-md-0">
-                          <img :src="courses10" class="rounded" alt="">
-                        </div>
-                        <h6 class="mb-0 ms-lg-3 mt-2 mt-lg-0">
-                          <a href="#">Bootstrap 5 From Scratch</a>
-                        </h6>
-                      </div>
-                    </td>
-
-                    <td class="text-center">
-                      <h5 class="text-success mb-0">{{ currency }}150</h5>
-                    </td>
-                    <td>
-                      <a href="#" class="btn btn-sm btn-success-soft px-2 me-1 mb-1 mb-md-0">
-                        <font-awesome-icon :icon="faEdit" class="fa-fw" />
-                      </a>{{  ' ' }}
-                      <b-button :variant="null" size="sm" class="btn-danger-soft px-2 mb-0">
-                        <font-awesome-icon :icon="faTimes" class="fa-fw" />
-                      </b-button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <b-row class="g-3 mt-2">
-              <b-col md="6">
-                <b-input-group>
-                  <b-form-input type="email" placeholder="COUPON CODE" />
-                  <b-button type="button" variant="primary">Apply coupon</b-button>
-                </b-input-group>
-              </b-col>
-              <b-col md="6" class="text-md-end">
-                <b-button variant="primary" class="mb-0" disabled>Update cart</b-button>
-              </b-col>
-            </b-row>
           </b-card>
         </b-col>
-        <b-col lg="4">
-          <b-card no-body class="card-body p-4 shadow">
-            <h4 class="mb-3">Cart Total</h4>
 
-            <ul class="list-group list-group-borderless mb-2">
+        <b-col lg="4">
+          <b-card no-body class="card-body p-4 shadow sticky-lg-top" style="top: 100px;">
+            <h4 class="mb-3">Order summary</h4>
+            <ul class="list-group list-group-borderless mb-3">
               <li class="list-group-item px-0 d-flex justify-content-between">
-                <span class="h6 fw-light mb-0">Original Price</span>
-                <span class="h6 fw-light mb-0 fw-bold">{{ currency }}500</span>
-              </li>
-              <li class="list-group-item px-0 d-flex justify-content-between">
-                <span class="h6 fw-light mb-0">Coupon Discount</span>
-                <span class="text-danger">-{{ currency }}20</span>
-              </li>
-              <li class="list-group-item px-0 d-flex justify-content-between">
-                <span class="h5 mb-0">Total</span>
-                <span class="h5 mb-0">{{ currency }}480</span>
+                <span>Subtotal</span>
+                <span class="fw-bold">{{ formatPrice(subtotal) }}</span>
               </li>
             </ul>
-
-            <div class="d-grid">
-              <router-link :to="{ name: 'shop.checkout' }" class="btn btn-lg btn-success">Proceed to
-                Checkout</router-link>
+            <div class="d-grid gap-2">
+              <router-link
+                :to="{ name: 'shop.checkout' }"
+                class="btn btn-lg btn-success"
+                :class="{ disabled: !cartStore.cartItems.length }"
+              >
+                Proceed to checkout
+              </router-link>
             </div>
-
-            <p class="small mb-0 mt-2 text-center">By completing your purchase, you agree to these <a
-                href="#"><strong>Terms of Service</strong></a></p>
+            <p class="small text-muted mt-3 mb-0 text-center">
+              Secure checkout. You can enroll in free courses without payment.
+            </p>
           </b-card>
         </b-col>
       </b-row>
     </b-container>
   </section>
 </template>
-<script setup lang="ts">
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { faEdit } from '@fortawesome/free-regular-svg-icons';
-import { BIconXLg } from 'bootstrap-icons-vue';
-import { currency } from '@/helpers/constants';
 
-import courses08 from '@/assets/images/courses/4by3/08.jpg';
-import courses10 from '@/assets/images/courses/4by3/10.jpg';
+<script setup>
+import { computed, onMounted } from 'vue'
+import { BIconCart3 } from 'bootstrap-icons-vue'
+import { useCartStore } from '@/stores/cart'
+import { formatPrice } from '@/helpers/format'
+
+const cartStore = useCartStore()
+
+const subtotal = computed(() =>
+  cartStore.cartItems.reduce((sum, item) => sum + (Number(item.final_price) || 0), 0)
+)
+
+onMounted(() => cartStore.fetchCartItems())
 </script>

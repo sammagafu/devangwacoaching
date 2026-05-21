@@ -3,12 +3,11 @@ import authService from '@/services/authService';
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
-    // Initialize state from storage
     const user = authService.getUser();
     const token = authService.getToken();
     return {
-      user: user,
-      isAuthenticated: !!token && !!user, // Set based on token and user presence
+      user,
+      isAuthenticated: !!token && !!user,
       isAdmin: false,
       isStaff: false,
       isNormalUser: false,
@@ -17,47 +16,32 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async login(credentials, rememberMe) {
-      try {
-        const data = await authService.login(credentials, rememberMe);
-        this.user = data.user;
-        this.isAuthenticated = true;
-        this.updateRoles();
-        console.log('Auth state updated:', {
-          user: this.user,
-          isAuthenticated: this.isAuthenticated,
-        });
-        return data;
-      } catch (error) {
-        console.error('Login failed in store:', error);
-        throw error;
-      }
+      const data = await authService.login(credentials, rememberMe);
+      this.user = data.user;
+      this.isAuthenticated = true;
+      this.updateRoles();
+      return data;
     },
 
     async register(credentials) {
-      try {
-        const response = await api.post('accounts/users/', {
-          first_name: credentials.first_name,
-          last_name: credentials.last_name,
-          email: credentials.email,
-          phone_number: credentials.phone_number,
-          password: credentials.password,
-        });
+      await authService.register({
+        email: credentials.email,
+        password: credentials.password,
+        full_name: credentials.full_name || `${credentials.first_name || ''} ${credentials.last_name || ''}`.trim(),
+        phonenumber: credentials.phonenumber || credentials.phone_number || '',
+        is_individual: credentials.is_individual ?? true,
+        is_company: credentials.is_company ?? false,
+      });
 
-        const loginResponse = await authService.login(
-          {
-            email: credentials.email,
-            password: credentials.password,
-          },
-          true
-        );
+      const loginResponse = await authService.login(
+        { email: credentials.email, password: credentials.password },
+        true
+      );
 
-        this.user = loginResponse.user;
-        this.isAuthenticated = true;
-        this.updateRoles();
-        return loginResponse;
-      } catch (error) {
-        throw error.response?.data || { message: 'Registration failed' };
-      }
+      this.user = loginResponse.user;
+      this.isAuthenticated = true;
+      this.updateRoles();
+      return loginResponse;
     },
 
     async logout() {
@@ -67,35 +51,17 @@ export const useAuthStore = defineStore('auth', {
       this.isAdmin = false;
       this.isStaff = false;
       this.isNormalUser = false;
-      console.log('Logged out, auth state updated:', {
-        user: this.user,
-        isAuthenticated: this.isAuthenticated,
-      });
     },
 
     async initialize() {
-      try {
-        authService.initializeAuth();
-        this.user = authService.getUser();
+      authService.initializeAuth();
+      this.user = authService.getUser();
+      if (this.user && authService.getToken()) {
         this.isAuthenticated = await authService.isAuthenticated();
-        this.updateRoles();
-        console.log('Auth state initialized:', {
-          user: this.user,
-          isAuthenticated: this.isAuthenticated,
-          isAdmin: this.isAdmin,
-          isStaff: this.isStaff,
-          isNormalUser: this.isNormalUser,
-        });
-      } catch (error) {
-        console.error('Failed to initialize auth state:', error);
-        this.user = null;
+      } else {
         this.isAuthenticated = false;
-        this.isAdmin = false;
-        this.isStaff = false;
-        this.isNormalUser = false;
-        // Optionally clear storage and redirect to login
-        await authService.logout();
       }
+      this.updateRoles();
     },
 
     updateUser(user) {
@@ -103,7 +69,6 @@ export const useAuthStore = defineStore('auth', {
       const storage = localStorage.getItem('auth_token') ? localStorage : sessionStorage;
       storage.setItem('user_data', JSON.stringify(user));
       this.updateRoles();
-      console.log('User updated:', this.user);
     },
 
     updateRoles() {
@@ -113,7 +78,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     hasCompanies() {
-      return this.user && this.user.companies && this.user.companies.length > 0;
+      return this.user?.companies?.length > 0;
     },
 
     shouldShowCompanyModal() {

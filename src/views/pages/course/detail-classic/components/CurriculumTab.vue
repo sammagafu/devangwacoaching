@@ -197,7 +197,7 @@ interface CourseType {
   reviews?: number;
 }
 
-defineProps({
+const props = defineProps({
   course: {
     type: Object as PropType<CourseType>,
     required: true,
@@ -212,7 +212,8 @@ const socialLink = [
 ];
 
 const enrollCourse = async () => {
-  if (!course.id || !course.title || !course.slug) {
+  const course = props.course;
+  if (!course?.slug || !course?.title) {
     $toast.error('Course data is incomplete.');
     return;
   }
@@ -220,17 +221,14 @@ const enrollCourse = async () => {
   try {
     addingToCart.value = true;
     cartStore.addToCart({
-      id: course.id,
-      title: course.title,
       slug: course.slug,
+      title: course.title,
       type: 'course',
       image: course.image,
-      final_price: course.final_price ?? parseFloat(course.price || '0'),
+      final_price: Number(course.final_price ?? course.price ?? 0),
     });
-    await cartStore.fetchCartItems();
-    router.push('/checkout');
-  } catch (error) {
-    console.error('Failed to add course to cart:', error);
+    router.push({ name: 'shop.checkout' });
+  } catch {
     $toast.error('Failed to add course to cart.');
   } finally {
     addingToCart.value = false;

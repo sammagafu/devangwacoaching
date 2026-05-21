@@ -13,7 +13,7 @@
               </b-button>
             </div>
             <b-form-text v-if="couponError" class="text-danger">{{ couponError }}</b-form-text>
-            <b-form-text v-if="couponApplied" class="text-success">Coupon applied! Discount: {{ currency }}{{ couponDiscount }}</b-form-text>
+            <b-form-text v-if="couponApplied" class="text-success">Coupon applied! Discount: {{ formatPrice(couponDiscount) }}</b-form-text>
           </div>
           <hr>
           <div v-if="cartStore.cartItems.length === 0" class="text-center">
@@ -29,7 +29,7 @@
                   <router-link :to="{ name: item.type === 'course' ? 'course.detail' : 'event.detail', params: { slug: item.slug }}">{{ item.title }}</router-link>
                 </h6>
                 <div class="d-flex justify-content-between align-items-center mt-3">
-                  <span class="text-success">{{ currency }}{{ item.final_price }}</span>
+                  <span :class="item.final_price <= 0 ? 'text-success fw-bold' : 'text-primary fw-bold'">{{ formatPrice(item.final_price) }}</span>
                   <div class="text-primary-hover">
                     <a href="#" class="text-body me-2" @click.prevent="removeItem(item.slug, item.type)">
                       <BIconTrash class="me-1 mb-1" />Remove
@@ -42,15 +42,15 @@
             <ul class="list-group list-group-borderless mb-2" v-if="cartStore.cartItems.length > 0">
               <li class="list-group-item px-0 d-flex justify-content-between">
                 <span class="h6 fw-light mb-0">Original Price</span>
-                <span class="h6 fw-light mb-0 fw-bold">{{ currency }}{{ originalPrice }}</span>
+                <span class="h6 fw-light mb-0 fw-bold">{{ formatPrice(originalPrice) }}</span>
               </li>
               <li class="list-group-item px-0 d-flex justify-content-between">
                 <span class="h6 fw-light mb-0">Discount</span>
-                <span class="text-danger">-{{ currency }}{{ discount }}</span>
+                <span class="text-danger">-{{ formatPrice(discount) }}</span>
               </li>
               <li class="list-group-item px-0 d-flex justify-content-between">
                 <span class="h5 mb-0">Total</span>
-                <span class="h5 mb-0">{{ currency }}{{ totalPrice }}</span>
+                <span class="h5 mb-0">{{ formatPrice(totalPrice) }}</span>
               </li>
             </ul>
             <p class="small mb-0 mt-2 text-center">
@@ -68,8 +68,8 @@
 import { ref, computed } from 'vue';
 import { useToast } from 'vue-toast-notification';
 import { BIconTrash } from 'bootstrap-icons-vue';
-import { currency } from '@/helpers/constants';
-import { useCartStore } from '@/stores/cart';
+import { formatPrice } from '@/helpers/format'
+import { useCartStore } from '@/stores/cart'
 import avatar01 from '@/assets/images/avatar/01.jpg';
 
 const $toast = useToast();
@@ -113,7 +113,6 @@ const applyCoupon = async () => {
 };
 
 const removeItem = (slug, type) => {
-  console.log('Removing item:', { slug, type });
-  cartStore.removeFromCart(slug, type);
-};
+  cartStore.removeFromCart(slug, type)
+}
 </script>

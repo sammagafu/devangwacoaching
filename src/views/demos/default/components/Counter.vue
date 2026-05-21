@@ -4,10 +4,15 @@
       <b-row class="g-4">
         <b-col sm="6" xl="3" v-for="(item, idx) in counterData" :key="idx">
           <div
-            :class="`d-flex flex-column justify-content-center align-items-center p-4 bg-${item.variant} bg-opacity-15 rounded-3`">
-            <img :src="item.icon" class="mb-3" style="width: 60px; height: 60px;" />
+            :class="`d-flex flex-column justify-content-center align-items-center p-4 bg-${item.variant} bg-opacity-15 rounded-3 h-100`"
+          >
+            <span
+              :class="`icon-lg rounded-circle bg-${item.variant} bg-opacity-25 text-${item.variant} d-flex align-items-center justify-content-center mb-3`"
+            >
+              <component :is="item.icon" class="fs-4" />
+            </span>
             <h6 class="mb-2 text-center">{{ item.title }}</h6>
-            <p class="mb-0 text-center">{{ item.description }}</p>
+            <p class="mb-0 text-center small text-muted">{{ item.description }}</p>
           </div>
         </b-col>
       </b-row>
@@ -15,37 +20,38 @@
   </section>
 </template>
 
-<script setup lang="ts">
+<script setup>
+import {
+  BIconChatDotsFill,
+  BIconShieldExclamation,
+  BIconPeopleFill,
+  BIconHeartFill,
+} from 'bootstrap-icons-vue'
+
 const counterData = [
   {
-    icon: '/src/assets/images/painpoints/01.png',
+    icon: BIconChatDotsFill,
     title: 'Lack of Effective Communication',
     description: 'Struggling to share or receive information clearly within the team.',
-    variant: 'primary'
+    variant: 'primary',
   },
   {
-    icon: '/src/assets/images/painpoints/02.png',
+    icon: BIconShieldExclamation,
     title: 'Lack of Conflict Resolution Skills',
     description: 'Inability to address and resolve disputes constructively among colleagues.',
-    variant: 'primary'
+    variant: 'primary',
   },
   {
-    icon: '/src/assets/images/painpoints/03.png',
+    icon: BIconPeopleFill,
     title: 'Lack of Team Collaboration',
     description: 'Difficulty working together as a team to achieve common goals.',
-    variant: 'primary'
+    variant: 'primary',
   },
   {
-    icon: '/src/assets/images/painpoints/04.png',
+    icon: BIconHeartFill,
     title: 'Lack of Interpersonal Harmony',
-    description: 'Ongoing tensions or conflicts with colleagues disrupting workplace relationships.',
-    variant: 'primary'
-  }
-];
+    description: 'Ongoing tensions or conflicts disrupting workplace relationships.',
+    variant: 'primary',
+  },
+]
 </script>
-
-<style scoped>
-img {
-  object-fit: contain; /* Ensure the image fits within the specified dimensions */
-}
-</style>

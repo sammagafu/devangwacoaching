@@ -9,7 +9,8 @@ import { FcGoogle } from 'oh-vue-icons/icons';
 import VueApexCharts from "vue3-apexcharts";
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import authService from '@/services/authService'; // Add this
+import authService from '@/services/authService';
+import { useAuthStore } from '@/stores/auth';
 import ToastPlugin from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-default.css';
 import App from './App.vue';
@@ -39,5 +40,7 @@ app.use(VueAxios, axios);
 app.use(VueApexCharts);
 app.use(BootstrapIconsPlugin);
 app.use(ToastPlugin);
-authService.initializeAuth(); 
+authService.initializeAuth();
+const authStore = useAuthStore();
+authStore.initialize();
 app.mount('#app');

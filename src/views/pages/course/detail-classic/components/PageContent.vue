@@ -24,9 +24,9 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <div>
                       <div class="d-flex align-items-center">
-                        <h3 class="fw-bold mb-0 me-2">{{ currency }}{{ course.final_price ?? course.price }}</h3>
+                        <h3 class="fw-bold mb-0 me-2">{{ priceLabel }}</h3>
                         <span v-if="course.discount_percentage && parseFloat(course.discount_percentage) > 0"
-                          class="text-decoration-line-through mb-0 me-2">{{ currency }}{{ course.price }}</span>
+                          class="text-decoration-line-through mb-0 me-2">{{ formatPrice(course.price) }}</span>
                         <span v-if="course.discount_percentage && parseFloat(course.discount_percentage) > 0"
                           class="badge text-bg-orange mb-0">{{ course.discount_percentage }}% off</span>
                       </div>
@@ -53,18 +53,26 @@
                         <font-awesome-icon :icon="faLinkedinIn" class="me-2" />
                         LinkedIn
                       </b-dropdown-item>
-                      <b-dropdown-item href="#">
+                      <b-dropdown-item href="#" @click.prevent="copyCourseLink">
                         <font-awesome-icon :icon="faCopy" class="me-2" />
                         Copy link
                       </b-dropdown-item>
                     </b-dropdown>
                   </div>
 
-                  <div class="mt-3 d-sm-flex justify-content-sm-between">
-                    <a href="#" class="btn btn-outline-primary mb-0">Free trial</a>
-                    <b-button variant="success" class="mb-0" @click="enrollCourse" :disabled="addingToCart">
-                      {{ addingToCart ? 'Adding...' : 'Enroll Now' }}
-                    </b-button>
+                  <div class="mt-3 d-sm-flex justify-content-sm-between gap-2">
+                    <router-link
+                      v-if="isEnrolled"
+                      :to="{ name: 'student.course.details', params: { slug: course.slug } }"
+                      class="btn btn-success mb-0"
+                    >
+                      Go to Course
+                    </router-link>
+                    <template v-else>
+                      <b-button variant="success" class="mb-0" @click="enrollCourse" :disabled="addingToCart">
+                        {{ addingToCart ? 'Processing...' : (Number(course.final_price) > 0 ? 'Enroll Now' : 'Enroll Free') }}
+                      </b-button>
+                    </template>
                   </div>
                 </b-card-body>
               </b-card>
@@ -118,47 +126,11 @@
               </b-card>
             </b-col>
 
-            <b-col md="6" lg="12">
-              <b-card no-body class="card-body shadow p-4 mb-4">
-                <h4 class="mb-3">Recently Viewed</h4>
-                <b-row class="gx-3 mb-3">
-                  <b-col cols="4">
-                    <img class="rounded" :src="courses21" alt="">
-                  </b-col>
-                  <b-col cols="8">
-                    <h6 class="mb-0"><a href="#">Fundamentals of Business Analysis</a></h6>
-                    <ul class="list-group list-group-borderless mt-1 d-flex justify-content-between">
-                      <li class="list-group-item px-0 d-flex justify-content-between">
-                        <span class="text-success">{{ currency }}130</span>
-                        <span class="h6 fw-light">4.5
-                          <font-awesome-icon :icon="faStar" class="text-warning ms-1" />
-                        </span>
-                      </li>
-                    </ul>
-                  </b-col>
-                </b-row>
-                <b-row class="gx-3">
-                  <b-col cols="4">
-                    <img class="rounded" :src="courses18" alt="">
-                  </b-col>
-                  <b-col cols="8">
-                    <h6 class="mb-0"><a href="#">The Complete Video Production Bootcamp</a></h6>
-                    <ul class="list-group list-group-borderless mt-1 d-flex justify-content-between">
-                      <li class="list-group-item px-0 d-flex justify-content-between">
-                        <span class="text-success">{{ currency }}150</span>
-                        <span class="h6 fw-light">4.0
-                          <font-awesome-icon :icon="faStar" class="text-warning ms-1" />
-                        </span>
-                      </li>
-                    </ul>
-                  </b-col>
-                </b-row>
-              </b-card>
-
+            <b-col md="6" lg="12" v-if="course.tags?.length">
               <b-card no-body class="card-body shadow p-4">
                 <h4 class="mb-3">Popular Tags</h4>
                 <ul class="list-inline mb-0">
-                  <li v-for="tag in course.tags" :key="tag" class="list-inline-item">
+                  <li v-for="(tag, idx) in course.tags" :key="`${tag}-${idx}`" class="list-inline-item">
                     <a class="btn btn-outline-light btn-sm" href="#">{{ tag }}</a>
                   </li>
                 </ul>
@@ -171,92 +143,84 @@
   </section>
 </template>
 
-<script setup lang="ts">
-import { ref, defineProps } from 'vue';
-import { useRouter } from 'vue-router';
-import { useToast } from 'vue-toast-notification';
-import { useCartStore } from '@/stores/cart';
-import { currency } from '@/helpers/constants';
+<script setup>
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
+import { useCartStore } from '@/stores/cart'
+import { useAuthStore } from '@/stores/auth'
+import courseService from '@/services/courseService'
+import { formatPrice } from '@/helpers/format'
 import CustomGLightbox from '@/components/CustomGLightbox.vue';
 import DetailTabs from '@/views/pages/course/detail-classic/components/DetailTabs.vue';
 import { faShareAlt, faPlay, faStopwatch, faCopy, faBookOpen, faClock, faSignal, faGlobe, faUserClock, faMedal, faStar } from '@fortawesome/free-solid-svg-icons';
 import { faTwitterSquare, faFacebookSquare, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
-import courses01 from '@/assets/images/courses/4by3/01.jpg';
-import courses18 from '@/assets/images/courses/4by3/18.jpg';
-import courses21 from '@/assets/images/courses/4by3/21.jpg';
-import type { PropType } from 'vue';
+
+const props = defineProps({
+  course: { type: Object, required: true },
+  isEnrolled: { type: Boolean, default: false },
+});
+
+const emit = defineEmits(['enrolled']);
 
 const $toast = useToast();
+
+const priceLabel = computed(() => formatPrice(props.course?.final_price ?? props.course?.price));
+
+const copyCourseLink = async () => {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    $toast.success('Link copied to clipboard');
+  } catch {
+    $toast.error('Could not copy link');
+  }
+};
 const router = useRouter();
 const cartStore = useCartStore();
+const authStore = useAuthStore();
 const addingToCart = ref(false);
 
-interface CourseType {
-  id?: number;
-  title?: string;
-  slug?: string;
-  description?: string;
-  image?: string;
-  ispublished?: boolean;
-  created_at?: string;
-  instructor?: { id: number; email: string; full_name?: string };
-  price?: string;
-  final_price?: number;
-  discount_percentage?: string;
-  is_featured?: boolean;
-  total_modules?: number;
-  total_videos?: number;
-  total_documents?: number;
-  total_quizzes?: number;
-  tags?: string[];
-  category?: string;
-  level?: string;
-  language?: string;
-  certificate?: boolean;
-  rating?: number;
-  duration?: string;
-  student?: number;
-  modules?: { title: string; lectures: { title: string; time: string; isPremium: boolean }[] }[];
-  faqs?: { question: string; answer: string }[];
-  reviews?: number;
-  discount_deadline?: string;
-  video_url?: string;
-}
-
-// Explicitly define props with type
-const { course } = defineProps<{
-  course: CourseType;
-}>();
-
 const enrollCourse = async () => {
-  console.log('Course object in enrollCourse:', course); // Debug log
-  if (!course?.id || !course?.title || !course?.slug) {
+  const course = props.course;
+  if (!course?.slug || !course?.title) {
     $toast.error('Course data is incomplete.');
+    return;
+  }
+
+  if (!authStore.isAuthenticated) {
+    router.push({ name: 'auth.sign-in', query: { redirectedFrom: router.currentRoute.value.fullPath } });
     return;
   }
 
   try {
     addingToCart.value = true;
-    await cartStore.addToCart({
-      id: course.id,
-      title: course.title,
+    const price = Number(course.final_price ?? course.price ?? 0);
+
+    if (price <= 0) {
+      await courseService.enroll(course.slug);
+      $toast.success('Successfully enrolled!');
+      emit('enrolled');
+      router.push({ name: 'student.course.details', params: { slug: course.slug } });
+      return;
+    }
+
+    cartStore.addToCart({
       slug: course.slug,
+      title: course.title,
       type: 'course',
       image: course.image,
-      final_price: course.final_price ?? parseFloat(course.price || '0'),
+      final_price: price,
     });
-    await cartStore.fetchCartItems();
-    $toast.success('Course added to cart.');
-    router.push('/checkout');
-  } catch (error) {
-    console.error('Failed to add course to cart:', error);
-    $toast.error(error.message || 'Failed to add course to cart.');
+    router.push({ name: 'shop.checkout' });
+  } catch (err) {
+    const message = err?.response?.data?.detail || 'Failed to enroll. Please try again.'
+    $toast.error(typeof message === 'string' ? message : 'Failed to enroll.')
   } finally {
     addingToCart.value = false;
   }
 };
 
-const formatDeadline = (deadline: string) => {
+const formatDeadline = (deadline) => {
   const date = new Date(deadline);
   const now = new Date();
   const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));

@@ -1,86 +1,71 @@
 <template>
-  <b-card no-body class="shadow h-100">
-    <img :src="item.image || defaultAvatar" class="card-img-top" alt="course img">
-    <b-card-body class="pb-0">
-      <div class="d-flex justify-content-between mb-2">
-        <a href="#" :class="`badge bg-${item.badge?.class} bg-opacity-10 text-${item.badge?.class}`">
-          {{ item.badge?.text }}
-        </a>
-        <a href="#" class="h6 text-danger mb-0" v-if="item.isLike"><font-awesome-icon :icon="faHeart" /></a>
-        <a href="#" class="h6 fw-light mb-0" v-else><font-awesome-icon :icon="faHeartR" /></a>
-      </div>
-      <b-card-title tag="h5">
-        <router-link :to="{ name: 'course.detail', params: { slug: item.slug } }">{{ item.title }}</router-link>
+  <b-card no-body class="shadow h-100 course-card">
+    <router-link :to="{ name: 'course.detail', params: { slug: item.slug } }" class="text-decoration-none">
+      <img
+        :src="item.image || defaultImage"
+        class="card-img-top"
+        alt=""
+        style="height: 180px; object-fit: cover;"
+        loading="lazy"
+      >
+    </router-link>
+    <b-card-body class="pb-0 d-flex flex-column">
+      <span v-if="item.badge?.text" :class="`badge bg-${item.badge.class} bg-opacity-10 text-${item.badge.class} align-self-start mb-2`">
+        {{ item.badge.text }}
+      </span>
+      <b-card-title tag="h5" class="mb-2">
+        <router-link :to="{ name: 'course.detail', params: { slug: item.slug } }" class="text-dark stretched-link">
+          {{ item.title }}
+        </router-link>
       </b-card-title>
-      <p class="mb-2 text-truncate-2">{{ item.description }}</p>
-      <p class="mb-2 small" v-if="item.instructor">Instructor: {{ item.instructor.full_name }}</p>
-      <p class="mb-2 small" v-if="item.price !== undefined">
-        Price: TZS {{ item.final_price || item.price }}
-        <span v-if="item.discount_percentage > 0" class="text-success">
-          ({{ item.discount_percentage }}% off)
-        </span>
+      <p class="mb-2 text-muted small flex-grow-1">{{ descriptionPreview }}</p>
+      <p v-if="item.instructor?.full_name" class="mb-2 small">
+        <span class="text-muted">Instructor:</span> {{ item.instructor.full_name }}
       </p>
-      <ul class="list-inline mb-0 hstack gap-1">
-        <li class="list-inline-item me-0 small" v-for="(_star, idx) in Array(Math.floor(item.rating)).fill(0)" :key="idx">
-          <font-awesome-icon :icon="faStar" class="text-warning" />
-        </li>
-        <li class="list-inline-item me-0 small" v-if="!Number.isInteger(item.rating)">
-          <font-awesome-icon :icon="faStarHalfAlt" class="text-warning" />
-        </li>
-        <li class="list-inline-item me-0 small" v-for="(_star, idx) in item.rating < 5 && Array(5 - Math.ceil(item.rating)).fill(0)" :key="idx">
-          <font-awesome-icon :icon="faStarR" class="text-warning" />
-        </li>
-        <li class="list-inline-item ms-2 h6 fw-light mb-0">{{ item.rating }}/5.0</li>
-      </ul>
-    </b-card-body>
-    <b-card-footer class="pt-0 pb-3">
-      <hr>
-      <div class="d-flex justify-content-between">
-        <span class="h6 fw-light mb-0"><font-awesome-icon :icon="faClock" class="text-danger me-2" />{{ item.duration }}</span>
-        <span class="h6 fw-light mb-0"><font-awesome-icon :icon="faTable" class="text-orange me-2" />{{ item.lectures }} lectures</span>
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="h5 mb-0" :class="isFree ? 'text-success' : 'text-primary'">
+          {{ priceLabel }}
+        </span>
+        <span v-if="item.rating > 0" class="small">
+          <font-awesome-icon :icon="faStar" class="text-warning me-1" />
+          {{ item.rating }}
+        </span>
       </div>
+    </b-card-body>
+    <b-card-footer class="pt-0 pb-3 bg-transparent border-0">
+      <div class="d-flex justify-content-between small text-muted mb-3">
+        <span><font-awesome-icon :icon="faClock" class="me-1" />{{ item.duration || '—' }}</span>
+        <span>{{ item.lectures || 0 }} items</span>
+      </div>
+      <router-link :to="{ name: 'course.detail', params: { slug: item.slug } }" class="btn btn-primary w-100">
+        View course
+      </router-link>
     </b-card-footer>
   </b-card>
 </template>
 
-<script setup lang="ts">
-import type { PropType } from 'vue';
-import { faStar, faStarHalfAlt, faTable, faHeart } from '@fortawesome/free-solid-svg-icons';
-import { faClock, faHeart as faHeartR, faStar as faStarR } from '@fortawesome/free-regular-svg-icons';
-import avatar01 from '@/assets/images/avatar/01.jpg';
+<script setup>
+import { computed } from 'vue'
+import { faStar, faClock } from '@fortawesome/free-solid-svg-icons'
+import { formatPrice, truncate } from '@/helpers/format'
 
-const defaultAvatar = avatar01;
+const defaultImage = '/default-course-image.jpg'
 
-defineProps({
-  item: {
-    type: Object as PropType<ProductType>,
-    required: true,
-  },
-});
+const props = defineProps({
+  item: { type: Object, required: true },
+})
 
-interface ProductType {
-  id: number;
-  title: string;
-  slug: string;
-  description: string;
-  image?: string;
-  ispublished: boolean;
-  created_at: string;
-  instructor?: { id: number; email: string; full_name: string };
-  price?: number;
-  final_price?: number;
-  discount_percentage?: number;
-  is_featured?: boolean;
-  total_modules?: number;
-  total_videos?: number;
-  tags?: string[];
-  rating: number;
-  duration?: string;
-  lectures?: number;
-  category?: string;
-  level?: string;
-  language?: string;
-  badge?: { class: string; text: string };
-  isLike?: boolean;
-}
+const descriptionPreview = computed(() => truncate(props.item.description, 100))
+const isFree = computed(() => Number(props.item.final_price) <= 0)
+const priceLabel = computed(() => formatPrice(props.item.final_price))
 </script>
+
+<style scoped>
+.course-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+}
+</style>

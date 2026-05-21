@@ -56,18 +56,13 @@
               </template>
             </b-row>
           </b-col>
-          <RightSidebar 
+          <RightSidebar
             v-if="course"
-            :price="parseFloat(course.final_price)"
-            :lectures-count="course.total_videos"
-            :duration="'4h 50m'"
-            :level="'All levels'"
-            :language="'English'"
-            :deadline="course.discount_deadline"
-            :has-certificate="true"
-            :instructor="course.instructor"
-            :rating="4.5"
-            :tags="course.tags"
+            :course-slug="course.slug"
+            :price="Number(course.final_price) || 0"
+            :lectures-count="course.total_videos || 0"
+            :duration="`${course.total_videos || 0} lectures`"
+            :tags="(course.tags || []).map(t => typeof t === 'string' ? t : t.tag)"
           />
         </b-row>
       </b-container>
@@ -94,30 +89,27 @@ import videosfr from '@/assets/images/videos/fr.vtt';
 import videos720p from '@/assets/images/videos/720p.mp4';
 import videos1080p from '@/assets/images/videos/1080p.mp4';
 import poster from '@/assets/images/videos/poster.jpg';
-import { api } from '@/services/authService';
+import courseService from '@/services/courseService';
 import { useToast } from 'vue-toast-notification';
 
 const $toast = useToast();
 const route = useRoute();
 const router = useRouter();
 const player = ref(null);
-const course = ref<any>(null);
+const course = ref(null);
 const loading = ref(false);
 
 const fetchCourse = async () => {
   try {
     loading.value = true;
-    const slug = route.params.slug;
-    const response = await api.get(`course/courses/${slug}/`);
-    course.value = response.data;
-    
-    if (player.value && course.value.modules[0]?.videos[0]?.video_url) {
+    course.value = await courseService.fetchCourse(route.params.slug);
+
+    if (player.value && course.value?.modules?.[0]?.videos?.[0]?.video_url) {
       new Plyr(player.value);
     }
-  } catch (error) {
-    console.error('Failed to fetch course:', error);
-    $toast.error('Failed to fetch course: ' + (error.response?.data?.message || 'Course not found'));
-    await router.push({ name: 'admin.courses-list' });
+  } catch {
+    $toast.error('Course not found.');
+    await router.push({ name: 'courses' });
   } finally {
     loading.value = false;
   }

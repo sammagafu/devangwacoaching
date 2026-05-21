@@ -32,7 +32,9 @@
                     </p>
                   </b-col>
                   <b-col lg="5" class="text-lg-end">
-                    <a href="#" class="btn btn-outline-warning mb-0">Start Teaching Today</a>
+                    <router-link :to="{ name: 'become.instructor' }" class="btn btn-outline-warning mb-0">
+                      Start Teaching Today
+                    </router-link>
                   </b-col>
                 </b-row>
               </b-col>

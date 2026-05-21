@@ -29,7 +29,7 @@ import { useRoute } from 'vue-router';
 import CustomTinySlider from '@/components/CustomTinySlider.vue';
 import type { TinySliderSettings } from 'tiny-slider';
 import CourseCard from '@/views/pages/course/detail-classic/components/CourseCard.vue';
-import { api } from '@/services/authService';
+import courseService from '@/services/courseService';
 import avatar01 from '@/assets/images/avatar/01.jpg';
 import { useToast } from 'vue-toast-notification';
 
@@ -65,10 +65,6 @@ interface CourseType {
   avatar?: string;
 }
 
-defineProps<{
-  course: CourseType;
-}>();
-
 const settings: TinySliderSettings = {
   arrowKeys: true,
   gutter: 30,
@@ -90,36 +86,20 @@ const settings: TinySliderSettings = {
   },
 };
 
+const props = defineProps<{ course: CourseType }>();
+
 const fetchTopCourses = async () => {
   try {
     loading.value = true;
-    const response = await api.get('course/courses/', {
-      params: { limit: 6 },
-    });
-    console.log('Raw API response for top courses:', response.data);
-    topCourses.value = response.data
-      .filter((course: CourseType) => {
-        const isValid = course.id && course.title && course.slug;
-        if (!isValid) console.warn('Invalid course filtered out:', course);
-        return isValid;
-      })
-      .map((course: CourseType) => ({
+    const courses = await courseService.fetchCourses();
+    topCourses.value = courses
+      .filter((c) => c.slug !== route.params.slug && c.id && c.title)
+      .slice(0, 6)
+      .map((course) => ({
         ...course,
-        image: course.image || '/default-course-image.jpg',
-        price: course.price || '0',
-        final_price: course.final_price ?? parseFloat(course.price || '0'),
-        category: course.tags?.length > 0 ? course.tags[0] : 'General',
-        rating: course.rating || 4.5,
-        student: course.student || 0,
         avatar: course.instructor?.avatar || defaultAvatar,
-        ispublished: course.ispublished ?? true,
       }));
-    console.log('Processed top courses:', topCourses.value);
-    if (!topCourses.value.length) {
-      $toast.info('No valid courses available.');
-    }
-  } catch (error) {
-    console.error('Failed to fetch top courses:', error);
+  } catch {
     error.value = 'Failed to load courses.';
     $toast.error('Failed to load courses.');
   } finally {
