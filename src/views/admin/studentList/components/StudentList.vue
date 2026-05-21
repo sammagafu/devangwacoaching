@@ -63,7 +63,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import { faMapMarkerAlt, faBan, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { BIconEye, BIconEnvelope } from 'bootstrap-icons-vue';
 import { api } from '@/services/authService';

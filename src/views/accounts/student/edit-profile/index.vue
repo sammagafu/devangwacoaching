@@ -107,7 +107,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import StudentLayout from '@/layouts/StudentLayout.vue';
 import avatar07 from '@/assets/images/avatar/07.jpg';
 import { faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';

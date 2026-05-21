@@ -12,8 +12,11 @@
                   <div class="bg-overlay bg-dark opacity-6"></div>
                   <div class="card-img-overlay d-flex align-items-start flex-column p-3">
                     <div class="m-auto">
-                      <CustomGLightbox :link="course.video_url || 'https://www.youtube.com/embed/tXHviS-4ygo'"
-                        class="btn btn-lg text-danger btn-round btn-white-shadow mb-0">
+                      <CustomGLightbox
+                        v-if="course.video_url"
+                        :link="course.video_url"
+                        class="btn btn-lg text-danger btn-round btn-white-shadow mb-0"
+                      >
                         <font-awesome-icon :icon="faPlay" />
                       </CustomGLightbox>
                     </div>

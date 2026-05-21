@@ -2,10 +2,21 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import courseService, { normalizeCourse } from '@/services/courseService';
 import { api } from '@/services/authService';
-import { useToast } from 'vue-toast-notification';
+
+function notify(type, message) {
+  if (!message) return;
+  import('vue-toast-notification').then(({ useToast }) => {
+    try {
+      useToast()[type](message);
+    } catch {
+      if (import.meta.env.DEV) {
+        console.log(`[cart] ${type}: ${message}`);
+      }
+    }
+  });
+}
 
 export const useCartStore = defineStore('cart', () => {
-  const $toast = useToast();
   const cartItems = ref([]);
   const isLoading = ref(false);
 
@@ -63,7 +74,7 @@ export const useCartStore = defineStore('cart', () => {
               price: Number(data.final_price) || 0,
             };
           } catch {
-            $toast.error(`Failed to load ${item.type} "${item.title || item.slug}".`);
+            notify('error', `Failed to load ${item.type} "${item.title || item.slug}".`);
             return null;
           }
         })
@@ -78,7 +89,7 @@ export const useCartStore = defineStore('cart', () => {
 
   const addToCart = (item) => {
     if (!item.slug || !item.type || !item.title) {
-      $toast.error('Invalid item. Cannot add to cart.');
+      notify('error', 'Invalid item. Cannot add to cart.');
       return;
     }
 
@@ -94,9 +105,9 @@ export const useCartStore = defineStore('cart', () => {
         price: Number(normalized.price ?? item.price ?? normalized.final_price) || 0,
       });
       saveCart();
-      $toast.success(`Added to cart: ${item.title}`);
+      notify('success', `Added to cart: ${item.title}`);
     } else {
-      $toast.info('Already in your cart.');
+      notify('info', 'Already in your cart.');
     }
   };
 
@@ -106,7 +117,7 @@ export const useCartStore = defineStore('cart', () => {
       const removed = cartItems.value[index];
       cartItems.value.splice(index, 1);
       saveCart();
-      $toast.info(`"${removed.title}" removed from cart.`);
+      notify('info', `"${removed.title}" removed from cart.`);
     }
   };
 

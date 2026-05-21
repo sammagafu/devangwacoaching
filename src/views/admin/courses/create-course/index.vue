@@ -115,7 +115,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import { useRouter, useRoute } from 'vue-router';
 import AdminLayout from '@/layouts/AdminLayout.vue';
 import Step1 from '@/views/admin/courses/create-course/components/Step1.vue';

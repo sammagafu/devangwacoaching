@@ -106,7 +106,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import CustomGLightbox from '@/components/CustomGLightbox.vue';
 import gallery from '@/assets/images/element/gallery.svg';

@@ -26,7 +26,6 @@
 <script setup>
 import { ref, defineEmits } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import { api } from '@/services/authService';
 
 const $toast = useToast();

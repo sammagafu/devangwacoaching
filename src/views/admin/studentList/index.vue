@@ -108,7 +108,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import AdminLayout from '@/layouts/AdminLayout.vue';
 import StudentGrid from '@/views/admin/studentList/components/StudentGrid.vue';
 import StudentList from '@/views/admin/studentList/components/StudentList.vue';

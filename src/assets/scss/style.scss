@@ -1,3 +1,6 @@
+// Vendor CSS (must load before theme overrides)
+@import "vendor-deps";
+
 // Bootstrap variables
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";

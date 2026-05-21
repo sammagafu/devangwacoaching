@@ -1,25 +1,37 @@
-<!-- src/views/demos/default/components/TrendingCourses.vue -->
 <template>
-  <section class="pb-5 pt-0 pt-lg-5">
+  <section
+    class="home-section home-section--muted home-courses pb-5"
+    data-aos="fade-up"
+    data-aos-offset="90"
+  >
     <b-container>
-      <b-row class="mb-4">
-        <b-col lg="8" class="mx-auto text-center">
-          <h2 class="fs-1">Our Trending Courses</h2>
-          <p class="mb-0">Check out most 🔥 courses in the market</p>
-        </b-col>
-      </b-row>
+      <HomeSectionHeader
+        :eyebrow="t.courses.eyebrow"
+        :title="t.courses.title"
+        :lead="t.courses.lead"
+        center
+      />
       <b-row>
         <div class="arrow-round arrow-blur arrow-hover">
-          <CustomTinySlider v-if="isSliderReady && courses.length" :settings="settings" id="trending-courses" class="pb-1">
-            <div v-for="(course, idx) in courses" :key="idx">
+          <CustomTinySlider
+            v-if="isSliderReady && courses.length"
+            :settings="settings"
+            id="trending-courses"
+            class="pb-1"
+          >
+            <div v-for="course in courses" :key="course.slug">
               <TrendingCoursesCard :item="course" />
             </div>
           </CustomTinySlider>
-          <div v-else-if="!isSliderReady" class="text-center">
-            <p>Loading trending courses...</p>
+          <div v-else-if="loading" class="text-center py-5">
+            <b-spinner variant="primary" />
+            <p class="mt-3 mb-0 dw-muted">{{ t.courses.loading }}</p>
           </div>
-          <div v-else class="text-center">
-            <p>No trending courses available.</p>
+          <div v-else class="text-center py-5">
+            <p class="dw-muted mb-3">{{ t.courses.empty }}</p>
+            <router-link :to="{ name: 'courses' }" class="btn btn-dw-primary">
+              {{ t.courses.viewAll }}
+            </router-link>
           </div>
         </div>
       </b-row>
@@ -28,15 +40,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
-import { useToast } from 'vue-toast-notification';
-import CustomTinySlider from '@/components/CustomTinySlider.vue';
-import TrendingCoursesCard from '@/views/demos/default/components/TrendingCoursesCard.vue';
-import { api } from '@/services/authService';
+import { ref, onMounted } from 'vue'
+import HomeSectionHeader from '@/views/demos/default/components/HomeSectionHeader.vue'
+import CustomTinySlider from '@/components/CustomTinySlider.vue'
+import TrendingCoursesCard from '@/views/demos/default/components/TrendingCoursesCard.vue'
+import { useHomeLocale } from '@/composables/useHomeLocale'
+import courseService from '@/services/courseService'
 
-const $toast = useToast();
-const courses = ref([]);
-const isSliderReady = ref(false);
+const { t } = useHomeLocale()
+
+const courses = ref([])
+const loading = ref(true)
+const isSliderReady = ref(false)
 
 const settings = {
   arrowKeys: true,
@@ -56,45 +71,46 @@ const settings = {
     992: { items: 2 },
     1200: { items: 3 },
   },
-};
+}
+
+function mapCourseForCard(course) {
+  return {
+    slug: course.slug,
+    title: course.title,
+    image: course.image,
+    type: 'course',
+    final_price: course.final_price,
+    price: course.price,
+    category: course.category,
+    ribbon: course.is_featured ? 'Featured' : '',
+    badges: (course.tags || []).slice(0, 2).map((tag) => ({ text: tag, class: 'primary' })),
+    rating: course.rating || 0,
+    reviews: course.reviews || 0,
+    students: course.student || 0,
+    time: course.duration,
+    lectures: (course.total_videos || 0) + (course.total_documents || 0),
+    instructor: {
+      name: course.instructor?.full_name || 'Devangwa Coach',
+      avatar: course.instructor?.avatar || null,
+    },
+  }
+}
 
 const fetchTrendingCourses = async () => {
+  loading.value = true
   try {
-    const response = await api.get('course/courses/');
-    courses.value = response.data.map(course => ({
-      slug: course.slug || '',
-      title: course.title || 'Untitled Course',
-      image: course.cover || 'https://placehold.co/300x200?text=Course',
-      final_price: course.final_price || 0,
-      price: parseFloat(course.price) || course.final_price || 0,
-      category: course.category || 'Unknown',
-      ribbon: course.ribbon || '',
-      badges: course.categories?.map(cat => ({ text: cat.name, class: 'primary' })) || [{ text: course.category || 'General', class: 'primary' }],
-      rating: course.rating || 4.5,
-      reviews: course.reviews || 0,
-      students: course.students || 0,
-      time: course.duration || 'N/A',
-      lectures: course.total_modules || 0,
-      instructor: {
-        name: course.instructor?.full_name || course.instructor?.email || 'Unknown Instructor',
-        avatar: course.instructor?.avatar || 'https://placehold.co/50?text=Avatar',
-      },
-    }));
-    console.log('Fetched trending courses:', courses.value);
-    isSliderReady.value = courses.value.length > 0;
-  } catch (err) {
-    console.error('Failed to fetch trending courses:', err);
-    $toast.error('Failed to load trending courses. Please try again.');
-    isSliderReady.value = false;
+    const list = await courseService.fetchCourses()
+    const featured = list.filter((c) => c.is_featured)
+    const source = featured.length ? featured : list
+    courses.value = source.slice(0, 12).map(mapCourseForCard)
+    isSliderReady.value = courses.value.length > 0
+  } catch {
+    courses.value = []
+    isSliderReady.value = false
+  } finally {
+    loading.value = false
   }
-};
+}
 
-onMounted(() => {
-  fetchTrendingCourses();
-});
-
-// Watch courses to update slider readiness
-watch(courses, () => {
-  isSliderReady.value = courses.value.length > 0;
-});
+onMounted(fetchTrendingCourses)
 </script>

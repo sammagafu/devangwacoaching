@@ -99,7 +99,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import { useRouter } from 'vue-router';
 import StudentLayout from '@/layouts/StudentLayout.vue';
 import CategoryTable from '@/views/accounts/student/community/components/CategoryTable.vue';

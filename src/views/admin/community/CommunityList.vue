@@ -45,7 +45,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import { api } from '@/services/authService';
 
 const $toast = useToast();

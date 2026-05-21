@@ -1,1 +1,0 @@
-import{d as e,J as a,c as o,o as t,y as n,bc as r,w as i,b5 as c}from"./index-EugCKl6U.js";const p=e({__name:"CustomStickyElement",props:{customClass:{},id:{},is:{}},setup(d){return a(()=>{new Sticky("[data-sticky]")}),(s,l)=>(t(),o(n(s.is??"div"),r({id:s.id,class:s.customClass},s.$attrs),{default:i(()=>[c(s.$slots,"default")]),_:3},16,["id","class"]))}});export{p as _};

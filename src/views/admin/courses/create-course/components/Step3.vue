@@ -208,7 +208,6 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import { faPlay, faTimes, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { BIconPlusCircle } from 'bootstrap-icons-vue';
 

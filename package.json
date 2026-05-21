@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
+    "dev:clean": "rm -rf node_modules/.vite && vite --host",
     "preview": "vite preview",
     "build": "vite build",
     "type-check": "vue-tsc --build --force",

@@ -1,0 +1,132 @@
+// Homepage motion — respects prefers-reduced-motion
+
+@keyframes dw-nav-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dw-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dw-fade-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes dw-hero-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes dw-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.06);
+  }
+}
+
+@keyframes dw-shimmer-line {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translateX(-50%) scaleX(0.85);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translateX(-50%) scaleX(1);
+  }
+}
+
+@keyframes dw-orb-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(2%, -3%) scale(1.03);
+  }
+  66% {
+    transform: translate(-2%, 2%) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dw-animate--fade-up {
+    opacity: 0;
+    animation: dw-fade-up 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--dw-delay, 0s);
+  }
+
+  .dw-animate--fade-in-right {
+    opacity: 0;
+    animation: dw-fade-in-right 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--dw-delay, 0.15s);
+  }
+
+  .home-hero__orb {
+    animation: dw-orb-drift 18s ease-in-out infinite;
+  }
+
+  .home-hero__orb--blue {
+    animation-duration: 22s;
+    animation-delay: -4s;
+  }
+
+  .home-hero__orb--teal {
+    animation-duration: 20s;
+    animation-delay: -8s;
+  }
+
+  .home-hero__img.dw-animate--float {
+    animation: dw-hero-float 5.5s ease-in-out infinite;
+    animation-delay: 1.2s;
+  }
+
+  .home-hero__glow {
+    animation: dw-glow-pulse 4s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dw-animate--fade-up,
+  .dw-animate--fade-in-right {
+    opacity: 1;
+    animation: none;
+  }
+
+  .home-hero__orb,
+  .home-hero__img,
+  .home-hero__glow {
+    animation: none !important;
+  }
+}

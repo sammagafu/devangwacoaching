@@ -19,6 +19,11 @@ const useLayout = useLayoutStore();
 useLayout.setTheme(useLayout.theme);
 
 onMounted(() => {
-  AOS.init();
+  AOS.init({
+    duration: 700,
+    easing: 'ease-out-cubic',
+    once: true,
+    offset: 90,
+  });
 });
 </script>

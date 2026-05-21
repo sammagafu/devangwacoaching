@@ -1,32 +1,56 @@
 <template>
-  <TopBar1 />
-  <main>
+  <div class="home-page">
+    <HomeNav />
+    <section class="home-hero-shell">
+      <HomeHero />
+    </section>
 
-    <MainBanner />
+    <main>
+      <HomeFeatures />
+      <HomeAboutGrid />
+      <HomeSolutions />
+      <HomeReviews />
+      <HomeReviewsCta />
+      <TrendingCourses />
+    </main>
 
-    <Counter />
-
-    <Reviews />
-    
-    <About />
-
-    <ActionBox />
-
-    <TrendingCourses />
-    <CountDown />
-
-  </main>
-  <Footer1 />
+    <Footer1 home-mode />
+  </div>
 </template>
-<script setup lang="ts">
-import TopBar1 from '@/views/demos/default/components/TopBar1.vue';
-import MainBanner from '@/views/demos/default/components/MainBanner.vue';
-import Counter from '@/views/demos/default/components/Counter.vue';
-import PopularCourse from '@/views/demos/default/components/PopularCourse.vue';
-import About from '@/views/demos/default/components/About.vue';
-import ActionBox from '@/views/demos/default/components/ActionBox.vue';
-import TrendingCourses from '@/views/demos/default/components/TrendingCourses.vue';
-import Reviews from '@/views/demos/default/components/Reviews.vue';
-import Footer1 from '@/views/demos/default/components/Footer1.vue';
-import CountDown from '@/components/CountDown.vue';
+
+<script setup>
+import { onMounted, nextTick, watch } from 'vue'
+import AOS from 'aos'
+import { useHomeLocale } from '@/composables/useHomeLocale'
+import HomeNav from '@/views/demos/default/components/HomeNav.vue'
+import HomeHero from '@/views/demos/default/components/HomeHero.vue'
+import HomeFeatures from '@/views/demos/default/components/HomeFeatures.vue'
+import HomeAboutGrid from '@/views/demos/default/components/HomeAboutGrid.vue'
+import HomeSolutions from '@/views/demos/default/components/HomeSolutions.vue'
+import HomeReviews from '@/views/demos/default/components/HomeReviews.vue'
+import HomeReviewsCta from '@/views/demos/default/components/HomeReviewsCta.vue'
+import TrendingCourses from '@/views/demos/default/components/TrendingCourses.vue'
+import Footer1 from '@/views/demos/default/components/Footer1.vue'
+
+const { locale } = useHomeLocale()
+
+const refreshMotion = async () => {
+  await nextTick()
+  AOS.refresh()
+}
+
+onMounted(refreshMotion)
+
+watch(locale, refreshMotion)
 </script>
+
+<style scoped>
+.home-hero-shell {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-page :deep(main) {
+  padding: 0;
+}
+</style>

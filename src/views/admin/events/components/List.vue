@@ -336,7 +336,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import { useRouter } from 'vue-router';
 import { api } from '@/services/authService';
 import TopBar8 from '@/views/admin/courses/create-course/components/TopBar8.vue';

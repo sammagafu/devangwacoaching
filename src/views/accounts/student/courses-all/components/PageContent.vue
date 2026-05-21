@@ -56,11 +56,15 @@
 
           <div v-if="loading" class="row g-4">
             <b-col v-for="n in 6" :key="n" sm="6" xl="4">
-              <b-card class="shadow-sm">
-                <b-placeholder-img card-img="top" />
+              <b-card class="shadow-sm border-0">
+                <div class="placeholder-glow">
+                  <span class="placeholder col-12 rounded-top" style="height: 11rem" />
+                </div>
                 <b-card-body>
-                  <b-placeholder width="85%" />
-                  <b-placeholder width="55%" class="mt-2" />
+                  <div class="placeholder-glow">
+                    <span class="placeholder col-10 mb-2" />
+                    <span class="placeholder col-7" />
+                  </div>
                 </b-card-body>
               </b-card>
             </b-col>
@@ -135,7 +139,7 @@ const emit = defineEmits([
 const normalizedCourses = computed(() =>
   (props.coursesList || []).map((course) => ({
     ...course,
-    image: course.image || course.cover || '/default-course-image.jpg',
+    image: course.image || course.cover,
     final_price: Number(course.final_price ?? course.price ?? 0),
     price: Number(course.price ?? course.final_price ?? 0),
     rating: Number(course.rating) || 0,

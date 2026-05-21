@@ -16,12 +16,12 @@
           <a href="#" class="btn btn-primary">Get Started</a>
         </b-col>
         <b-col md="7">
-          <img :src="element05" alt="">
+          <img :src="heroImage" alt="">
         </b-col>
       </b-row>
     </b-container>
   </section>
 </template>
 <script setup lang="ts">
-import element05 from '@/assets/images/element/05.svg';
+import heroImage from '@/assets/images/element/hero.png'
 </script>

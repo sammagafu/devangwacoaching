@@ -67,11 +67,11 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useToast } from 'vue-toast-notification';
-import { faShoppingCart, faStar, faTable } from '@fortawesome/free-solid-svg-icons';
-import { faBookmark, faClock } from '@fortawesome/free-regular-svg-icons';
-import { useCartStore } from '@/stores/cart';
+import { computed } from 'vue'
+import { faShoppingCart, faStar, faTable } from '@fortawesome/free-solid-svg-icons'
+import { faBookmark, faClock } from '@fortawesome/free-regular-svg-icons'
+import { useCartStore } from '@/stores/cart'
+import { formatPrice } from '@/helpers/format'
 
 const props = defineProps({
   item: {
@@ -80,31 +80,21 @@ const props = defineProps({
   },
 });
 
-const $toast = useToast();
-const cartStore = useCartStore();
+const cartStore = useCartStore()
 
-const price = computed(() => {
-  return props.item.final_price === 0 ? 'Free' : `$${props.item.final_price.toFixed(2)}`;
-});
+const price = computed(() => formatPrice(props.item.final_price))
 
 const addToCart = () => {
-  try {
-    cartStore.addToCart({
-      slug: props.item.slug || '',
-      type: props.item.type || 'course',
-      title: props.item.title || 'Untitled Course',
-      final_price: props.item.final_price || 0,
-      price: props.item.price || props.item.final_price || 0,
-      image: props.item.image || 'https://placehold.co/300x200?text=Course',
-      category: props.item.category || 'Unknown',
-    });
-    $toast.success(`${props.item.title || 'Course'} added to cart!`);
-  } catch (err) {
-    $toast.error('Failed to add course to cart.');
-  }
-};
+  cartStore.addToCart({
+    slug: props.item.slug || '',
+    type: props.item.type || 'course',
+    title: props.item.title || 'Untitled Course',
+    final_price: props.item.final_price || 0,
+    price: props.item.price || props.item.final_price || 0,
+    image: props.item.image,
+    category: props.item.category || 'Unknown',
+  })
+}
 
-const toggleBookmark = () => {
-  $toast.info('Bookmark functionality not implemented.');
-};
+const toggleBookmark = () => {}
 </script>

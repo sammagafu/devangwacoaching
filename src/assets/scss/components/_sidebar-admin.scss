@@ -13,9 +13,62 @@
       
       // Styling for navbar-expand
       &#{$infix} {
-        
+        // Navbar styling for navbar expand (declarations before nested rules)
+        @include media-breakpoint-up($next) {
+          & {
+            position: fixed;
+            z-index: 1030;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .offcanvas {
+            position: relative;
+          }
+
+          .navbar-brand {
+            padding: 1.3rem;
+          }
+
+          .navbar-nav .nav-item {
+            position: relative;
+          }
+        }
+
+        // Navbar styling for navbar collapse
+        @include media-breakpoint-down($next) {
+          & {
+            position: absolute;
+            left: -300px;
+            height: 100vh;
+            z-index: 9;
+          }
+
+          .navbar-brand {
+            display: none;
+          }
+
+          .sidebar-content {
+            padding: 1rem;
+          }
+
+          .navbar-nav > .nav-item > .nav-link {
+            padding: 0.2rem;
+            margin-bottom: 0;
+            font-size: 0.938rem;
+          }
+
+          .offcanvas .offcanvas-body .navbar-nav .nav-item {
+            border-bottom: 0;
+            padding: 0;
+          }
+        }
+
         // Navbar styling for all screen sizes
-        
         .sidebar-content {
           padding: 0 1rem 1rem;
           width: 16.25rem;
@@ -102,60 +155,6 @@
           -webkit-box-direction: normal;
           -ms-flex-flow: column nowrap;
           flex-flow: column nowrap;
-        }
-
-        // Navbar styling for navbar expand
-        @include media-breakpoint-up($next) {
-          position: fixed;
-          z-index: 1030;
-          top: 0;
-          left: 0;
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-          align-items: stretch;
-      
-          .offcanvas {
-            position: relative;
-          }
-      
-          .navbar-brand {
-            padding: 1.3rem;
-          }
-
-          .navbar-nav .nav-item {
-            position: relative;
-          }
-             
-        }
-        
-
-        // Navbar styling for navbar collapse
-        @include media-breakpoint-down($next) {
-          position: absolute;
-          left: -300px;
-          height: 100vh;
-          z-index: 9;
-
-          .navbar-brand {
-            display: none;
-          }
-
-          .sidebar-content {
-            padding: 1rem;
-          }
-
-          .navbar-nav > .nav-item > .nav-link {
-            padding: 0.2rem;
-            margin-bottom: 0;
-            font-size: 0.938rem;
-          }
-
-          .offcanvas .offcanvas-body .navbar-nav .nav-item {
-            border-bottom: 0;
-            padding: 0;
-          }
-          
         }
       }
     }

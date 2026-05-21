@@ -1,5 +1,5 @@
 <template>
-  <section class="py-0 py-xl-5">
+  <section class="home-section py-0 py-xl-5">
     <b-container>
       <b-row class="g-4">
         <b-col sm="6" xl="3" v-for="(item, idx) in counterData" :key="idx">

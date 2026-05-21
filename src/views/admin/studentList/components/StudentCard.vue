@@ -104,7 +104,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import { faMapMarkerAlt, faUser, faCheckCircle, faBan, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { BIconThreeDots, BIconPencilSquare, BIconTrash, BIconCalendar, BIconEnvelopeFill } from 'bootstrap-icons-vue';
 import { useRouter } from 'vue-router';

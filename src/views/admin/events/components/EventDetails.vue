@@ -220,7 +220,6 @@
   import { ref, computed, onMounted } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import { useToast } from 'vue-toast-notification';
-  import 'vue-toast-notification/dist/theme-sugar.css';
   import { api } from '@/services/authService';
   import AdminLayout from '@/layouts/AdminLayout.vue';
   import { currency } from '@/helpers/constants';

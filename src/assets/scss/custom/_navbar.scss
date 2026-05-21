@@ -110,6 +110,7 @@
 				
 					.dropdown-menu {
 						z-index: -1;
+						box-shadow: none !important;
 						> * {
 							z-index: 1;
 							position: relative;
@@ -128,7 +129,6 @@
 						li {
 							position: relative;
 						}
-						box-shadow: none !important;
 					}
 				}
       }
