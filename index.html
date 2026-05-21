@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#066ac9">
@@ -23,8 +22,6 @@
       left: 50%;
       background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
       display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
       height: 100%;
       width: 100%;
       transform: translate(-50%, -50%);
@@ -32,13 +29,8 @@
       justify-content: center;
       z-index: 9999;
       opacity: 1;
-      transition: all 15s linear;
+      transition: opacity 0.7s linear;
       overflow: hidden;
-    }
-
-    #splash-screen .splash-mark {
-      width: 88px;
-      height: 88px;
     }
 
     #splash-screen .splash-logo {
@@ -64,8 +56,7 @@
 <body>
   <div id="app"></div>
   <div id="splash-screen">
-    <img alt="" class="splash-mark" src="/favicon.svg" aria-hidden="true" />
-    <img alt="Devangwa Coaching" class="splash-logo light" src="/splash-logo.svg" />
+    <img alt="Devangwa Coaching" class="splash-logo" src="/splash-logo.svg" />
   </div>
   <script type="module" src="/src/main.js"></script>
   <script>

@@ -3,22 +3,28 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#066ac9">
+  <link rel="manifest" href="/site.webmanifest">
 
   <!-- Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
-  <title>Devangwa - LMS, Education and Course Theme</title>
+  <title>Devangwa Coaching | Relationship & Marriage Programmes</title>
 
   <style>
     #splash-screen {
       position: fixed;
       top: 50%;
       left: 50%;
-      background: white;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
       display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
       height: 100%;
       width: 100%;
       transform: translate(-50%, -50%);
@@ -28,6 +34,17 @@
       opacity: 1;
       transition: all 15s linear;
       overflow: hidden;
+    }
+
+    #splash-screen .splash-mark {
+      width: 88px;
+      height: 88px;
+    }
+
+    #splash-screen .splash-logo {
+      height: 56px;
+      width: auto;
+      max-width: min(340px, 85vw);
     }
 
     #splash-screen.remove {
@@ -42,14 +59,15 @@
       }
     }
   </style>
-  <script type="module" crossorigin src="/assets/index-CUHicreI.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-BA1WNpqN.css">
+  <script type="module" crossorigin src="/assets/index-BW4bSRme.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DpMTGTO3.css">
 </head>
 
 <body>
   <div id="app"></div>
   <div id="splash-screen">
-    <img alt="Logo" class="light" src="/assets/logo-DhvgkZkT.svg" style="height: 10%;" />
+    <img alt="" class="splash-mark" src="/favicon.svg" aria-hidden="true" />
+    <img alt="Devangwa Coaching" class="splash-logo light" src="/splash-logo.svg" />
   </div>
   <script>
     const appEl = document.querySelector('#app');

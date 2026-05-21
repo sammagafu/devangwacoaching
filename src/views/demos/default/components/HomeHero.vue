@@ -6,9 +6,9 @@
       <span class="home-hero__orb home-hero__orb--teal" />
     </div>
 
-    <b-container class="home-hero__container position-relative">
-      <b-row class="home-hero__row align-items-end gx-4 gx-xl-5">
-        <b-col lg="6" class="order-2 order-lg-1 home-hero__col-copy">
+    <b-container class="home-hero__container position-relative px-3 px-sm-4">
+      <b-row class="home-hero__row align-items-end g-3 g-lg-4 gx-xl-5">
+        <b-col lg="6" class="order-2 order-lg-1 home-hero__col-copy pb-2 pb-lg-0">
           <div class="home-hero__panel dw-animate dw-animate--fade-up" style="--dw-delay: 0.05s">
             <p class="home-hero__eyebrow dw-animate dw-animate--fade-up" style="--dw-delay: 0.12s">
               {{ t.hero.eyebrow }}
@@ -34,14 +34,14 @@
             </ul>
 
             <div
-              class="d-flex flex-column flex-sm-row gap-3 dw-animate dw-animate--fade-up"
+              class="home-hero__actions d-flex flex-column gap-3 dw-animate dw-animate--fade-up"
               style="--dw-delay: 0.52s"
             >
-              <router-link :to="{ name: 'courses' }" class="btn home-hero__btn-primary btn-lg">
+              <router-link :to="{ name: 'courses' }" class="btn home-hero__btn-primary btn-lg w-100">
                 {{ t.hero.ctaPrimary }}
                 <BIconArrowRight class="ms-2" />
               </router-link>
-              <router-link :to="{ name: 'auth.sign-up' }" class="btn home-hero__btn-secondary btn-lg">
+              <router-link :to="{ name: 'auth.sign-up' }" class="btn home-hero__btn-secondary btn-lg w-100">
                 {{ t.hero.ctaSecondary }}
               </router-link>
             </div>
@@ -192,8 +192,15 @@ const { t } = useHomeLocale()
   line-height: 1.75;
   font-weight: 400;
   color: var(--dw-hero-lead, #5a6b7d);
-  margin: 0 0 1.25rem;
+  margin: 0 auto 1.25rem;
   max-width: 32rem;
+}
+
+@media (min-width: 992px) {
+  .home-hero__lead {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 .home-hero__trust li {
@@ -288,12 +295,79 @@ const { t } = useHomeLocale()
 }
 
 @media (max-width: 991.98px) {
+  .home-hero {
+    padding-top: 0.5rem;
+  }
+
   .home-hero__row {
     min-height: auto;
   }
 
+  .home-hero__col-visual {
+    padding-top: 0.25rem;
+  }
+
+  .home-hero__panel {
+    padding: 1.35rem 1.15rem 1.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .home-hero__panel::before {
+    top: 1rem;
+    bottom: 1rem;
+    width: 3px;
+  }
+
+  .home-hero__title {
+    font-size: clamp(1.5rem, 6.5vw, 2rem);
+  }
+
+  .home-hero__lead {
+    font-size: 1rem;
+  }
+
+  .home-hero__trust {
+    justify-content: center;
+  }
+
   .home-hero__img {
-    max-height: min(45vh, 380px);
+    max-height: min(42vh, 320px);
+  }
+
+  .home-hero__orb {
+    filter: blur(48px);
+  }
+
+  .home-hero__orb--navy {
+    width: 55%;
+    height: 40%;
+  }
+
+  .home-hero__orb--blue {
+    width: 50%;
+    right: -5%;
+  }
+
+  .home-hero__orb--teal {
+    width: 45%;
+    left: 15%;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .home-hero__actions {
+    flex-direction: row !important;
+  }
+
+  .home-hero__actions .btn {
+    width: auto;
+    flex: 1 1 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .home-hero__img {
+    max-height: min(38vh, 280px);
   }
 }
 

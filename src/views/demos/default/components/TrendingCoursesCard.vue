@@ -1,4 +1,3 @@
-<!-- src/views/demos/default/components/TrendingCoursesCard.vue -->
 <template>
   <b-card no-body class="action-trigger-hover border bg-transparent">
     <img :src="item.image || 'https://placehold.co/300x200?text=Course'" class="card-img-top" alt="course">

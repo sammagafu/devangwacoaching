@@ -105,7 +105,7 @@
                 <img class="rounded-1 h-60px" :src="item.logo" alt="university logo">
                 <b-card-title tag="h5" class="mt-3 mb-0">{{ item.name }}</b-card-title>
                 <span>{{ item.description }}</span>
-                <router-link :to="{name: 'demos.university'}" class="btn btn-lg btn-link p-0 mt-3 stretched-link"><u>Visit University</u></router-link>
+                <router-link :to="{ name: 'demos.default' }" class="btn btn-lg btn-link p-0 mt-3 stretched-link"><u>Back to home</u></router-link>
               </b-card>
             </b-col>
           </b-row>

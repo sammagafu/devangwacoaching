@@ -45,6 +45,12 @@ watch(locale, refreshMotion)
 </script>
 
 <style scoped>
+.home-page {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: clip;
+}
+
 .home-hero-shell {
   display: flex;
   flex-direction: column;
@@ -52,5 +58,12 @@ watch(locale, refreshMotion)
 
 .home-page :deep(main) {
   padding: 0;
+}
+
+.home-page :deep(.container),
+.home-page :deep(.container-fluid),
+.home-page :deep(.container-lg) {
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
 }
 </style>

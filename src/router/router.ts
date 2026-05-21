@@ -4,101 +4,20 @@ const setTitle = (pageName?: string) => {
     : 'Devangwa | LMS, Education and Course';
 };
 
+/** Production home only — theme preview demos removed to shrink bundle and avoid missing assets */
 const demoRoutes = [
   {
     path: '/',
     redirect: { name: 'demos.default' },
-    name: 'index'
+    name: 'index',
   },
   {
     path: '',
     name: 'demos.default',
     meta: {
-      title: setTitle('Home')
+      title: setTitle('Home'),
     },
-    component: () => import('@/views/demos/default/index.vue')
-  },
-  {
-    path: '/demos/education',
-    name: 'demos.education',
-    meta: {
-      title: setTitle('Education')
-    },
-    component: () => import('@/views/demos/education/index.vue')
-  },
-  {
-    path: '/demos/academy',
-    name: 'demos.academy',
-    meta: {
-      title: setTitle('Academy')
-    },
-    component: () => import('@/views/demos/academy/index.vue')
-  },
-  {
-    path: '/demos/course',
-    name: 'demos.course',
-    meta: {
-      title: setTitle('Course')
-    },
-    component: () => import('@/views/demos/course/index.vue')
-  },
-  {
-    path: '/demos/university',
-    name: 'demos.university',
-    meta: {
- Eletype: {
-      title: setTitle('University')
-    },
-    component: () => import('@/views/demos/university/index.vue')
-  }
-},
-  {
-    path: '/demos/kindergarten',
-    name: 'demos.kindergarten',
-    meta: {
-      title: setTitle('Kindergarten')
-    },
-    component: () => import('@/views/demos/kindergarten/index.vue')
-  },
-  {
-    path: '/demos/landing',
-    name: 'demos.landing',
-    meta: {
-      title: setTitle('Landing')
-    },
-    component: () => import('@/views/demos/landing/index.vue')
-  },
-  {
-    path: '/demos/tutor',
-    name: 'demos.tutor',
-    meta: {
-      title: setTitle('Tutor')
-    },
-    component: () => import('@/views/demos/tutor/index.vue')
-  },
-  {
-    path: '/demos/school',
-    name: 'demos.school',
-    meta: {
-      title: setTitle('School')
-    },
-    component: () => import('@/views/demos/school/index.vue')
-  },
-  {
-    path: '/demos/abroad',
-    name: 'demos.abroad',
-    meta: {
-      title: setTitle('Abroad')
-    },
-    component: () => import('@/views/demos/abroad/index.vue')
-  },
-  {
-    path: '/demos/workshop',
-    name: 'demos.workshop',
-    meta: {
-      title: setTitle('Workshop')
-    },
-    component: () => import('@/views/demos/workshop/index.vue')
+    component: () => import('@/views/demos/default/index.vue'),
   },
 ];
 

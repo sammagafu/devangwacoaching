@@ -1,11 +1,15 @@
 <template>
   <header class="home-nav home-nav--fixed" :class="{ 'home-nav--scrolled': isScrolled }">
-    <b-container fluid="lg">
+    <b-container fluid="lg" class="home-nav__container">
       <nav class="navbar navbar-expand-lg home-nav__bar px-0">
         <LogoBox logo-class="home-nav__logo" />
         <MobileNavbarToggler class="d-lg-none ms-auto" />
 
-        <b-collapse id="navbarCollapse" class="navbar-collapse" is-nav>
+        <b-collapse id="navbarCollapse" class="navbar-collapse home-nav__collapse" is-nav>
+          <div class="home-nav__mobile-toolbar d-lg-none">
+            <HomePreferences />
+          </div>
+
           <ul class="navbar-nav home-nav__links mx-lg-auto">
             <li v-for="link in navLinks" :key="link.key" class="nav-item">
               <component
@@ -13,6 +17,7 @@
                 v-bind="linkProps(link)"
                 class="nav-link home-nav__link"
                 active-class="is-active"
+                @click="closeMobileNav"
               >
                 {{ link.label }}
               </component>
@@ -20,12 +25,16 @@
           </ul>
 
           <ul class="navbar-nav home-nav__actions ms-lg-3 align-items-lg-center gap-lg-2">
-            <li class="nav-item d-none d-lg-block">
+            <li class="nav-item d-none d-lg-flex align-items-center">
               <HomePreferences />
             </li>
             <template v-if="authStore.isAuthenticated">
               <li class="nav-item">
-                <router-link :to="{ name: 'student.dashboard' }" class="nav-link home-nav__link">
+                <router-link
+                  :to="{ name: 'student.dashboard' }"
+                  class="nav-link home-nav__link"
+                  @click="closeMobileNav"
+                >
                   {{ t.nav.dashboard }}
                 </router-link>
               </li>
@@ -33,12 +42,20 @@
             </template>
             <template v-else>
               <li class="nav-item">
-                <router-link :to="{ name: 'auth.sign-in' }" class="nav-link home-nav__link">
+                <router-link
+                  :to="{ name: 'auth.sign-in' }"
+                  class="nav-link home-nav__link"
+                  @click="closeMobileNav"
+                >
                   {{ t.nav.signIn }}
                 </router-link>
               </li>
-              <li class="nav-item">
-                <router-link :to="{ name: 'auth.sign-up' }" class="btn btn-dw-primary btn-sm mb-0">
+              <li class="nav-item home-nav__cta-item">
+                <router-link
+                  :to="{ name: 'auth.sign-up' }"
+                  class="btn btn-dw-primary btn-sm mb-0 home-nav__cta"
+                  @click="closeMobileNav"
+                >
                   {{ t.nav.getStarted }}
                 </router-link>
               </li>
@@ -46,10 +63,6 @@
           </ul>
         </b-collapse>
       </nav>
-
-      <div class="d-lg-none pb-3">
-        <HomePreferences />
-      </div>
     </b-container>
   </header>
 </template>
@@ -79,6 +92,16 @@ const isScrolled = ref(false)
 
 const onScroll = () => {
   isScrolled.value = window.scrollY > 16
+}
+
+const closeMobileNav = () => {
+  if (window.innerWidth >= 992) return
+  const panel = document.getElementById('navbarCollapse')
+  const toggler = document.querySelector('[data-bs-target="#navbarCollapse"]')
+  if (!panel?.classList.contains('show')) return
+  panel.classList.remove('show')
+  toggler?.setAttribute('aria-expanded', 'false')
+  toggler?.classList.add('collapsed')
 }
 
 onMounted(() => {
@@ -124,14 +147,32 @@ onUnmounted(() => {
   }
 }
 
+.home-nav__container {
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
 .home-nav__bar {
-  padding: 0.85rem 0;
+  padding: 0.65rem 0;
+  gap: 0.5rem;
 }
 
 .home-nav :deep(.home-nav__logo .brand-lockup__logo),
 .home-nav :deep(.home-nav__logo .navbar-brand-item) {
-  height: 2.15rem !important;
-  max-width: 190px;
+  height: 2rem !important;
+  max-width: min(160px, 42vw);
+}
+
+@media (min-width: 992px) {
+  .home-nav__bar {
+    padding: 0.85rem 0;
+  }
+
+  .home-nav :deep(.home-nav__logo .brand-lockup__logo),
+  .home-nav :deep(.home-nav__logo .navbar-brand-item) {
+    height: 2.15rem !important;
+    max-width: 190px;
+  }
 }
 
 .home-nav__link {
@@ -147,16 +188,61 @@ onUnmounted(() => {
   }
 }
 
-
 @media (max-width: 991.98px) {
-  .home-nav :deep(.navbar-collapse) {
-    padding-top: 0.75rem;
+  .home-nav__collapse {
     margin-top: 0.5rem;
+    padding: 0.75rem 0 1rem;
+    border-top: 1px solid var(--dw-border);
+    max-height: calc(100dvh - var(--home-nav-height, 4.5rem));
+    overflow-y: auto;
+  }
+
+  .home-nav__mobile-toolbar {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 0.85rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--dw-border);
+  }
+
+  .home-nav__links {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .home-nav__links .nav-item {
+    width: 100%;
+  }
+
+  .home-nav__link {
+    display: block;
+    width: 100%;
+    padding: 0.65rem 0.25rem !important;
+    font-size: 1rem;
+  }
+
+  .home-nav__actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.35rem;
+    padding-top: 0.5rem;
     border-top: 1px solid var(--dw-border);
   }
 
-  .home-nav__actions .btn {
+  .home-nav__actions .nav-item {
     width: 100%;
+  }
+
+  .home-nav__cta-item {
+    margin-top: 0.25rem;
+  }
+
+  .home-nav__cta {
+    display: block;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    text-align: center;
   }
 }
 </style>

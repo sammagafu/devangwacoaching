@@ -178,7 +178,7 @@ import avatar08 from '@/assets/images/avatar/08.jpg';
 import avatar02 from '@/assets/images/avatar/02.jpg';
 import avatar05 from '@/assets/images/avatar/05.jpg';
 import avatar03 from '@/assets/images/avatar/03.jpg';
-import logoMobile from '@/assets/images/logo-mobile.svg';
+import logoMobile from '@/assets/images/logo.svg';
 import logoMobilelight from '@/assets/images/logo-mobile-light.svg';
 
 const offcanvas = ref(false);

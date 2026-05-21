@@ -5,6 +5,7 @@
 .home-page {
   --home-nav-height: 4.75rem;
   scroll-padding-top: var(--home-nav-height);
+  overflow-x: clip;
 
   /* Brand */
   --dw-ink: #1a2b42;
@@ -693,4 +694,76 @@
 [data-bs-theme='dark'] .home-page .home-footer .nav-link:hover,
 [data-bs-theme='dark'] .home-page .home-footer a:hover {
   color: #7ec8ff;
+}
+
+// ─── Mobile layout ────────────────────────────────────────────────────────────
+
+@media (max-width: 991.98px) {
+  .home-page {
+    --home-nav-height: 4.25rem;
+  }
+
+  .home-page .home-hero-shell {
+    padding-top: var(--home-nav-height);
+  }
+
+  .home-page .home-section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .home-page .dw-section-title {
+    font-size: clamp(1.35rem, 5.5vw, 1.85rem);
+  }
+
+  .home-page .dw-section-lead {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .home-page .dw-eyebrow {
+    letter-spacing: 0.12em;
+  }
+
+  .home-page .home-cta__title {
+    font-size: clamp(1.35rem, 5vw, 1.75rem);
+  }
+
+  .home-page .home-cta__panel .btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  .home-page .home-courses .arrow-round {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .home-page .btn-dw-primary:not(.btn-sm),
+  .home-page .btn-dw-outline {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .home-page {
+    --home-nav-height: 4rem;
+  }
+
+  .home-page .home-section {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .home-page .home-prefs {
+    gap: 0.45rem;
+    flex-wrap: nowrap;
+  }
+
+  .home-page .home-prefs__option {
+    padding: 0.38rem 0.6rem;
+    font-size: 0.68rem;
+  }
 }

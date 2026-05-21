@@ -30,10 +30,19 @@ Use a **relative** URL (`/api/v1/`) when the SPA is served by the same host as D
 | Command | Description |
 |---------|-------------|
 | `npm run dev` | Development server with HMR |
-| `npm run build` | Production build → `dist/` |
+| `npm run build` | Production build → `dist/` (required before Docker deploy) |
 | `npm run preview` | Preview production build |
 | `npm run lint` | ESLint |
 | `npm run type-check` | Vue TypeScript check |
+
+## Production deploy
+
+1. Copy `.env.example` → `.env` and set `VITE_API_URL=/api/v1/` when served with Django/nginx.
+2. Run `npm run build` — must complete without errors.
+3. For the combined image, build from the **monorepo root**:  
+   `docker build -f devangwabackend/Dockerfile -t devangwa-app .`
+4. Do **not** commit `dist/` or `.env` (see root `.gitignore`).
+5. Keep `VITE_USE_FAKE_BACKEND` unset or `false` in production.
 
 ## Project structure
 
