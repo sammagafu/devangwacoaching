@@ -12,6 +12,7 @@
       :filters="filters"
       :sort-options="sortOptions"
       @apply-filters="applyFilters"
+      @clear-filters="clearFilters"
     />
   </PagesLayout>
 </template>
@@ -59,7 +60,12 @@ const fetchCourses = async () => {
 const applyFilters = (newFilters) => {
   filters.value = newFilters
   currentPage.value = 1
-  fetchCourses()
+  offcanvas.value = false
+}
+
+const clearFilters = () => {
+  filters.value = {}
+  currentPage.value = 1
 }
 
 onMounted(() => {

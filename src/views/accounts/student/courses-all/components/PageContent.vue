@@ -2,15 +2,18 @@
   <section class="py-5">
     <b-container>
       <b-row>
-        <b-col lg="4" xl="3" class="d-lg-block" :class="{ 'd-none': !offcanvas }">
+        <b-col lg="4" xl="3">
+          <div class="d-none d-lg-block home-courses-filter-sidebar">
+            <Filter :courses="coursesList" @filter-applied="$emit('apply-filters', $event)" />
+          </div>
           <b-offcanvas
             :model-value="offcanvas"
             @update:model-value="$emit('update:offcanvas', $event)"
             placement="end"
-            title="Filters"
-            responsive="lg"
+            title="Filter programmes"
+            class="d-lg-none"
           >
-            <Filter @filter-applied="$emit('apply-filters', $event)" />
+            <Filter :courses="coursesList" @filter-applied="$emit('apply-filters', $event)" />
           </b-offcanvas>
         </b-col>
         <b-col lg="8" xl="9">
@@ -21,8 +24,8 @@
                   <b-form-input
                     :model-value="searchQuery"
                     type="search"
-                    placeholder="Search courses by title…"
-                    aria-label="Search courses"
+                    placeholder="Search programmes by title…"
+                    aria-label="Search programmes"
                     @update:model-value="$emit('update:searchQuery', $event)"
                   />
                   <b-button type="button" variant="primary">
@@ -51,7 +54,7 @@
           </b-row>
 
           <p class="text-muted small mb-4">
-            {{ loading ? 'Loading…' : `Showing ${filteredCourses.length} of ${coursesList.length} courses` }}
+            {{ loading ? 'Loading…' : `Showing ${filteredCourses.length} of ${coursesList.length} programmes` }}
           </p>
 
           <div v-if="loading" class="row g-4">
@@ -77,9 +80,9 @@
           </div>
 
           <div v-else class="text-center py-5">
-            <h5 class="text-muted">No courses match your search</h5>
-            <p class="mb-3">Try a different keyword or clear filters.</p>
-            <b-button variant="outline-primary" @click="clearSearch">Clear search</b-button>
+            <h5 class="text-muted">No programmes match your filters</h5>
+            <p class="mb-3">Try a different keyword, focus area, or clear filters.</p>
+            <b-button variant="outline-primary" @click="clearAll">Clear filters</b-button>
           </div>
 
           <nav
@@ -115,6 +118,7 @@ import { computed } from 'vue'
 import { faSearch, faSlidersH } from '@fortawesome/free-solid-svg-icons'
 import CourseCard from '@/views/accounts/student/courses-all/components/CourseCard.vue'
 import Filter from '@/views/accounts/student/courses-all/components/Filter.vue'
+import { courseMatchesFocus } from '@/helpers/courseFilters'
 
 const props = defineProps({
   coursesList: { type: Array, default: () => [] },
@@ -134,6 +138,7 @@ const emit = defineEmits([
   'update:searchQuery',
   'update:sortValue',
   'update:currentPage',
+  'clear-filters',
 ])
 
 const normalizedCourses = computed(() =>
@@ -164,6 +169,9 @@ const filteredList = computed(() => {
         c.description?.toLowerCase().includes(q) ||
         c.instructor?.full_name?.toLowerCase().includes(q)
     )
+  }
+  if (props.filters?.focus) {
+    list = list.filter((c) => courseMatchesFocus(c, props.filters.focus))
   }
   if (props.filters?.price === 'free') list = list.filter((c) => c.final_price <= 0)
   if (props.filters?.price === 'paid') list = list.filter((c) => c.final_price > 0)
@@ -201,5 +209,16 @@ const goPage = (page) => {
   emit('update:currentPage', page)
 }
 
-const clearSearch = () => emit('update:searchQuery', '')
+const clearAll = () => {
+  emit('update:searchQuery', '')
+  emit('clear-filters')
+  emit('update:currentPage', 1)
+}
 </script>
+
+<style scoped>
+.home-courses-filter-sidebar {
+  position: sticky;
+  top: 5.5rem;
+}
+</style>
